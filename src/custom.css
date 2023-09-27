@@ -1,0 +1,254 @@
+body {
+    font-family: 'Rubik', sans-serif;
+}
+
+::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #bdbcb7;
+}
+
+::-webkit-scrollbar-track {
+    background: #eae6df;
+}
+
+
+/* Login_ Signup */
+.login_signup {
+    display: flex;
+    justify-content: center;
+}
+
+.login_signup_img {
+    background: #64B5F6 url('/public/images/maya.png') no-repeat center bottom;
+    background-size: contain;
+}
+
+.login_signup .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #000;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.login_signup input.form-control,
+.login_signup button.btn {
+    height: 50px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.login_signup .form-control:focus,
+.login_signup .form-check-input:focus,
+.login_signup .form-check-input:active .login_signup .form-control:active {
+    box-shadow: none;
+    border: 1px solid #86b7fe;
+}
+
+.login_signup .social-media .social-icon {
+    display: block;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 16px;
+    margin-right: 5px;
+    border-radius: 50%;
+}
+
+.login_signup .social-media .social-icon span {
+    color: #999999;
+}
+
+.login_signup .social-media .social-icon:hover,
+.login_signup.social-media .social-icon:focus {
+    background: #0d6efd;
+}
+
+.login_signup .social-media .social-icon:hover span,
+.login_signup .social-media .social-icon:focus span {
+    color: #fff;
+}
+
+@media (max-width: 767.98px) {
+    .login_signup_img {
+        height: 250px;
+        background-position: top;
+        border-radius: 0 !important;
+    }
+}
+
+.login_signup form {
+    display: none;
+    flex-direction: column;
+}
+
+.login_signup form.active {
+    display: block;
+}
+
+/* Login_ Signup End */
+
+/* Launch Page */
+header .userprofile button:focus,
+header .userprofile button:active:focus,
+.sessiondrawer a:focus,
+.sessiondrawer a:active:focus,
+header .navbar-toggler:focus,
+.sessiondrawer .btn-close {
+    outline: none;
+    box-shadow: none;
+}
+
+header .priceing {
+    font-weight: 600;
+}
+
+header .userprofile img {
+    width: 24px;
+    margin-right: 0.5rem;
+}
+
+#aboutMaya {
+    background-color: #000;
+    color: #fefefe;
+}
+
+#aboutMaya_leftBG {
+    background: #b0efff url('/public/images/launch_ai_img.jpg') no-repeat center;
+    background-size: contain;
+}
+
+.bnrheading h2 {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.guidline {
+    text-align: justify;
+}
+
+.guidline2 {
+    padding-right: 4.5rem;
+}
+
+.guidline ul li {
+    list-style: none;
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.guidline ul li::before {
+    content: "\f058";
+    font-family: FontAwesome;
+    position: absolute;
+    left: 0;
+    font-size: 1.3rem;
+    color: #34c1ef;
+}
+
+.issuebox .card {
+    box-shadow: 0 0.2rem 0.21rem rgba(0, 0, 0, .15);
+    border: none;
+}
+
+.issuebox .card .card-body {
+    padding: 0.8rem 0.5rem 0.3rem;
+}
+
+
+.issuebox .card .card-body .card-subtitle {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+}
+
+.issuebox .card .card-body .card-text {
+    font-size: 0.7rem;
+    color: #FFEB3B;
+}
+
+@media (max-width: 1023.98px) {
+    .guidline {
+        padding-right: 0;
+    }
+
+    #launchModal .btn-close {
+        transform: none !important;
+        right: 0 !important;
+        left: inherit !important;
+    }
+}
+
+/* Launch Page  end*/
+
+/* switch checkbox */
+.customSwitch {
+    position: relative;
+}
+
+.customSwitch .form-switch.form-switch-xl .form-check-input {
+    height: 2rem;
+    width: calc(4rem + 0.75rem);
+    border-radius: 5rem;
+    cursor: pointer;
+}
+
+.customSwitch .form-check-input:focus {
+    box-shadow: none;
+    border: none
+}
+
+.customSwitch .form-switch .form-check-input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+.customSwitch .form-check-input {
+    background-color: #212529;
+    border-color: #060606;
+}
+
+.customSwitch .form-check-input:checked {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+}
+
+
+.customSwitch .form-check-input::after,
+.customSwitch .form-check-input:checked::after {
+    content: 'Text';
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: #fff;
+    position: absolute;
+    top: 0.85rem;
+    right: 0.5rem;
+    animation: fadeIn 1s ease infinite;
+}
+
+.customSwitch .form-check-input:checked::after {
+    content: 'Speak';
+    left: 0.5rem;
+}
+
+.customSwitch .form-check-input:active {
+    filter: none;
+}
+
+
+@keyframes fadeIn {
+
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
