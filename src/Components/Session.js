@@ -3,9 +3,9 @@ import Typewriter from 'typewriter-effect';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import {
     useSpeechSynthesis,
-    // useSpeechRecognition
 } from 'react-speech-kit';
 import { QuestionsService } from '../services';
+import { useTimer } from 'react-timer-hook';
 
 const defaultVoice = {
     default: false,
@@ -24,33 +24,20 @@ export default function Session() {
     const [apiData, setAPIDate] = useState({})
 
     //Timer Duration
-    const [timerDuration, setTimerDuration] = useState(20);
+    const [timerDuration, setTimerDuration] = useState(13);
 
+    const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (timerDuration * 1000) });
     useEffect(() => {
         getQuestions();
+        pause()
     }, []);
 
-    const startTimer = useCallback(() => {
-        let timer = setInterval(function () {
-            console.log(timerDuration)
-            setTimerDuration((prev) => {
-                console.log(prev)
-                if (prev <= 0) {
-                    clearInterval(timer);
-                    stopTimer()
-                    return prev
-                } else {
-                    console.log(prev)
-                    return prev - 1
-                }
-            });
-
-        }, 1000);
-    })
-
-    const stopTimer = () => {
-        SpeechRecognition.stopListening()
-    }
+    useEffect(() => {
+        if (isTimerRunning) {
+        } else {
+            SpeechRecognition.stopListening()
+        }
+    }, [isTimerRunning])
 
 
     const getQuestions = async () => {
@@ -65,6 +52,10 @@ export default function Session() {
     };
 
     const submitQuestion = async () => {
+        resetTranscript()
+        if (patientAnswer === "") {
+            return
+        }
         let sId = localStorage.getItem('sessionId');
         if (!sId) {
             window.alert("No Id Found");
@@ -76,25 +67,42 @@ export default function Session() {
         }
         const data = await QuestionsService.getQuestions(reqData);
         if (data.question) {
+            setPatientAnswer("")
             setQuestion(data.question.text);
             setAPIDate(data)
+            await startListening()
+            setTimeout(() => {
+                restart(Date.now() + (timerDuration * 1000))
+            }, 2000)
         }
     };
 
 
 
-    const { speak, voices } = useSpeechSynthesis();
+    const { voices } = useSpeechSynthesis();
+
+    const speak = ({ text }) => {
+        const speakObj = new SpeechSynthesisUtterance()
+        speakObj.text = text;
+        speakObj.voice = voices.filter(function (voice) {
+            return voice.name == "Google UK English Female"
+
+        })[0];
+        window.speechSynthesis.speak(speakObj)
+    }
 
 
     const [patientAnswer, setPatientAnswer] = useState();
     const startListening = () => {
-        SpeechRecognition.startListening({ continuous: true, language: 'en-IN' });
+        SpeechRecognition.startListening({ continuous: true, language: 'en-IN' })
     }
 
-    const { transcript, browserSupportsSpeechRecognition } = useSpeechRecognition();
+    const { transcript, browserSupportsSpeechRecognition, listening, resetTranscript } = useSpeechRecognition();
     useEffect(() => {
         setPatientAnswer(transcript)
     }, [transcript])
+
+
 
 
     if (!browserSupportsSpeechRecognition) {
@@ -123,19 +131,12 @@ export default function Session() {
                                                 options={{
                                                     delay: 8,
                                                     cursor: ""
-                                                }
-
-                                                }
-
+                                                }}
                                             />
                                         </p>
                                     </div>
                                     <div className="">
                                         <h5 className="mb-2 text-warning">Question</h5>
-                                        <audio id="myAudio">
-                                            <source src="voice/question1.mp3" type="audio/mpeg" controls />
-                                            Your browser does not support the audio element.
-                                        </audio>
                                         <div id="typewriter">
                                             <p id="text" className="border border-warning p-2 rounded">
                                                 <Typewriter
@@ -147,21 +148,23 @@ export default function Session() {
                                                             typewriter.typeString(question)
                                                                 .start().callFunction(() => {
                                                                     speak({
-                                                                        text: question, defaultVoice: defaultVoice
+                                                                        text: question, voice: [voices.filter(function (voice) {
+                                                                            return voice.name == "Google UK English Female"
+                                                                        })[0]]
                                                                     })
-                                                                    // listen();
-                                                                    startListening()
-                                                                    startTimer()
+                                                                    setTimeout(() => {
+                                                                        start()
+                                                                        startListening();
+
+                                                                    }, 3000)
                                                                 })
                                                         }
                                                     }}
                                                     key={question}
-
                                                     options={{
                                                         delay: 8,
                                                         cursor: ""
                                                     }}
-
                                                 />
                                             </p>
                                         </div>
@@ -176,7 +179,6 @@ export default function Session() {
                                                             below)</span>
                                                     </small>
                                                 </h5>
-
                                                 {/* Todo - Text area */}
                                                 <div style={{ minHeight: "50px" }} className="form-control border-primary p-2 rounded mb-0 bg-white"
                                                     id="chat3" readOnly>
@@ -185,7 +187,7 @@ export default function Session() {
                                                 <div className="py-2 text-end">
                                                     <button type="button" className="btn btn-primary btn-sm"
                                                         id="editButton">Edit</button>
-                                                    <button onClick={submitQuestion} type="button" className="btn btn-success btn-sm" id="submit-button">
+                                                    <button onClick={submitQuestion} disabled={isTimerRunning} type="button" className="btn btn-success btn-sm" id="submit-button">
                                                         Submit
                                                     </button>
                                                     <button type="button" className="btn btn-success btn-sm" id="loader"
@@ -201,21 +203,18 @@ export default function Session() {
                                         <div className="col-md-2">
                                             <h5 className="mb-2 text-dark">Timer</h5>
                                             <div className="text-center shadow-sm pb-2 border-dark border rounded">
-                                                <div id="timer" className="fw-bold lead">{timerDuration}</div>
+                                                <div id="timer" className="fw-bold lead">{seconds}</div>
                                                 <div className="d-flex align-items-center justify-content-evenly pt-1">
                                                     <button id="startButton" className="py-0 btn btn-sm btn-primary"
-                                                    // onClick={startTimer}
                                                     >
                                                         <i className="fa-solid fa-play"></i></button>
                                                     <button id="stopButton" className="py-0 btn btn-sm btn-danger"
                                                         style={{ display: "none" }}
-                                                    //  onClick={stopTimer}
                                                     >
                                                         <i
                                                             className="fa-solid fa-stop"></i></button>
                                                     <button id="addTimeButton" className="py-0 btn btn-sm btn-dark"
                                                         style={{ display: "none" }}
-                                                    // onClick={addTime}
                                                     ><i
                                                         className="fa-solid fa-stopwatch-20"></i></button>
                                                 </div>
@@ -297,6 +296,37 @@ export default function Session() {
                     </div>
                 </div>
             </div>
+            {/* <MyTimer expiryTimestamp={Date.now() + 10000} /> */}
         </>
     )
+}
+
+
+function MyTimer({ expiryTimestamp }) {
+    const {
+        totalSeconds,
+        seconds,
+        minutes,
+        hours,
+        days,
+        isRunning,
+        start,
+        pause,
+        resume,
+        restart,
+    } = useTimer({ expiryTimestamp, onExpire: () => console.warn('onExpire called') });
+
+
+    return {
+        totalSeconds,
+        seconds,
+        minutes,
+        hours,
+        days,
+        isRunning,
+        start,
+        pause,
+        resume,
+        restart,
+    }
 }
