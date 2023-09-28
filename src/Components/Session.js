@@ -13,9 +13,11 @@ export default function Session() {
     const [instructions, setInstructions] = useState("Try to be brief and factual. If you do not know exact age, does not matter, give appx number as the age. Example: I am 45 years old or Patient is about 34 years old.");
     const [instructionWriter, setInstructionWriter] = useState(null);
     const [apiData, setAPIDate] = useState({})
+    const [answers, , setAnswers] = useState(null)
+    const [disorderCounts, setDisorderCounts] = useState(null)
 
     //Timer Duration
-    const [timerDuration, setTimerDuration] = useState(10);
+    const [timerDuration, setTimerDuration] = useState(5);
 
     const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (timerDuration * 1000) });
     useEffect(() => {
@@ -54,16 +56,19 @@ export default function Session() {
         const reqData = {
             currentQuestionCode: apiData.question.code,
             textResponse: patientAnswer,
-            sessionId: sId
+            sessionId: sId,
+            answers: answers,
+            disorderCounts: disorderCounts
         }
         const data = await QuestionsService.getQuestions(reqData);
+        console.log(data)
         if (data.question) {
             setPatientAnswer("")
             setQuestion(data.question.text);
             setAPIDate(data)
-            // setTimeout(() => {
-            //     restart(Date.now() + (timerDuration * 1000))
-            // }, 2000)
+
+            setAnswers(data.answers)
+            setDisorderCounts(data.disorderCounts)
         }
     };
 
