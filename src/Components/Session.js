@@ -7,15 +7,6 @@ import {
 import { QuestionsService } from '../services';
 import { useTimer } from 'react-timer-hook';
 
-const defaultVoice = {
-    default: false,
-    lang: "en-GB",
-    localService: false,
-    name: "Google UK English Female",
-    voiceURI: "Google UK English Female"
-}
-
-
 export default function Session() {
     const [questionWriter, setQuestionWriter] = useState(null);
     const [question, setQuestion] = useState("");
@@ -24,7 +15,7 @@ export default function Session() {
     const [apiData, setAPIDate] = useState({})
 
     //Timer Duration
-    const [timerDuration, setTimerDuration] = useState(13);
+    const [timerDuration, setTimerDuration] = useState(10);
 
     const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (timerDuration * 1000) });
     useEffect(() => {
@@ -70,10 +61,9 @@ export default function Session() {
             setPatientAnswer("")
             setQuestion(data.question.text);
             setAPIDate(data)
-            await startListening()
-            setTimeout(() => {
-                restart(Date.now() + (timerDuration * 1000))
-            }, 2000)
+            // setTimeout(() => {
+            //     restart(Date.now() + (timerDuration * 1000))
+            // }, 2000)
         }
     };
 
@@ -81,13 +71,13 @@ export default function Session() {
 
     const { voices } = useSpeechSynthesis();
 
-    const speak = ({ text }) => {
+    const speak = ({ text, onEnd }) => {
         const speakObj = new SpeechSynthesisUtterance()
         speakObj.text = text;
         speakObj.voice = voices.filter(function (voice) {
             return voice.name == "Google UK English Female"
-
         })[0];
+        speakObj.onend = onEnd
         window.speechSynthesis.speak(speakObj)
     }
 
@@ -148,15 +138,12 @@ export default function Session() {
                                                             typewriter.typeString(question)
                                                                 .start().callFunction(() => {
                                                                     speak({
-                                                                        text: question, voice: [voices.filter(function (voice) {
-                                                                            return voice.name == "Google UK English Female"
-                                                                        })[0]]
+                                                                        text: question,
+                                                                        onEnd: () => {
+                                                                            restart(Date.now() + (timerDuration * 1000))
+                                                                            startListening();
+                                                                        }
                                                                     })
-                                                                    setTimeout(() => {
-                                                                        start()
-                                                                        startListening();
-
-                                                                    }, 3000)
                                                                 })
                                                         }
                                                     }}
