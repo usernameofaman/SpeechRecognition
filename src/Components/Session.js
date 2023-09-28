@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import Typewriter from 'typewriter-effect';
-// import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { useSpeechSynthesis, useSpeechRecognition } from 'react-speech-kit';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import {
+    useSpeechSynthesis,
+    // useSpeechRecognition
+} from 'react-speech-kit';
 import { QuestionsService } from '../services';
 
 const defaultVoice = {
@@ -46,9 +49,7 @@ export default function Session() {
     })
 
     const stopTimer = () => {
-        // SpeechRecognition.stopListening();
-        stop()
-        // setPatientAnswer(transcript)
+        SpeechRecognition.stopListening()
     }
 
 
@@ -81,32 +82,25 @@ export default function Session() {
     };
 
 
-    // Text To Speech Code
+
     const { speak, voices } = useSpeechSynthesis();
 
 
-
-
-    // Speech Recognition Code 
-
-    const { listen, listening, stop } = useSpeechRecognition({
-        onResult: (result) => {
-            setPatientAnswer(result);
-        },
-    });
-
-
-
     const [patientAnswer, setPatientAnswer] = useState();
-    // const startListening = () => {
-    //     SpeechRecognition.startListening({ continuous: true, language: 'en-IN' });
-    //     startTimer()
-    // }
+    const startListening = () => {
+        SpeechRecognition.startListening({ continuous: true, language: 'en-IN' });
+    }
 
-    // const { transcript, browserSupportsSpeechRecognition } = useSpeechRecognition();
-    // if (!browserSupportsSpeechRecognition) {
-    //     return null
-    // }
+    const { transcript, browserSupportsSpeechRecognition } = useSpeechRecognition();
+    useEffect(() => {
+        setPatientAnswer(transcript)
+    }, [transcript])
+
+
+    if (!browserSupportsSpeechRecognition) {
+        return null
+    }
+
 
 
     return (
@@ -155,7 +149,8 @@ export default function Session() {
                                                                     speak({
                                                                         text: question, defaultVoice: defaultVoice
                                                                     })
-                                                                    listen();
+                                                                    // listen();
+                                                                    startListening()
                                                                     startTimer()
                                                                 })
                                                         }
