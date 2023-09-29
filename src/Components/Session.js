@@ -13,7 +13,7 @@ export default function Session() {
     const [instructions, setInstructions] = useState("Try to be brief and factual. If you do not know exact age, does not matter, give appx number as the age. Example: I am 45 years old or Patient is about 34 years old.");
     const [instructionWriter, setInstructionWriter] = useState(null);
     const [apiData, setAPIDate] = useState({})
-    const [answers, , setAnswers] = useState(null)
+    const [answers, setAnswers] = useState(null)
     const [disorderCounts, setDisorderCounts] = useState(null)
 
     //Timer Duration
@@ -66,7 +66,6 @@ export default function Session() {
             setPatientAnswer("")
             setQuestion(data.question.text);
             setAPIDate(data)
-
             setAnswers(data.answers)
             setDisorderCounts(data.disorderCounts)
         }
