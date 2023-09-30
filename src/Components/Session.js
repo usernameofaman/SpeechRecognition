@@ -1,37 +1,99 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import Typewriter from 'typewriter-effect';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import {
-    useSpeechSynthesis,
-} from 'react-speech-kit';
 import { QuestionsService } from '../services';
 import { useTimer } from 'react-timer-hook';
+import "../App.css"
 
-export default function Session() {
+
+export default function Session({ voice }) {
     const [questionWriter, setQuestionWriter] = useState(null);
     const [question, setQuestion] = useState("");
-    const [instructions, setInstructions] = useState("Try to be brief and factual. If you do not know exact age, does not matter, give appx number as the age. Example: I am 45 years old or Patient is about 34 years old.");
+    // const [instructions, setInstructions] = useState("Try to be brief and factual. If you do not know exact age, does not matter, give appx number as the age. Example: I am 45 years old or Patient is about 34 years old.");
+    const [instructions, setInstructions] = useState("Try to be brief and factual. ");
     const [instructionWriter, setInstructionWriter] = useState(null);
     const [apiData, setAPIDate] = useState({})
     const [answers, setAnswers] = useState(null)
     const [disorderCounts, setDisorderCounts] = useState(null)
+    const [submitInProcess, setSubmitInProcess] = useState(false)
+    const [listenerState, setListenerState] = useState("NOT_STARTED")
+    // ListernStates = [ "NOT_STARTED" , "STARTED" , "ENDED" ]
 
     //Timer Duration
     const [timerDuration, setTimerDuration] = useState(5);
 
     const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (timerDuration * 1000) });
-    useEffect(() => {
-        getQuestions();
+
+    const firstInstructionsRead = async () => {
+        await getQuestions();
+        speak({
+            text: instructions,
+            onEnd: setTimeout(nowReadQuestion, 5000)
+            // time is inclusive of talking time of instructions
+        })
         pause()
+    }
+
+    const nowReadQuestion = async () => {
+        await setQuestion((prev) => {
+            speak({
+                text: prev,
+                onEnd: () => {
+                    restart(Date.now() + (timerDuration * 1000))
+                    startListening();
+                }
+            })
+            return prev
+        })
+
+
+    }
+
+    useEffect(() => {
+        firstInstructionsRead()
     }, []);
 
     useEffect(() => {
-        if (isTimerRunning) {
-        } else {
+        if (apiData && !apiData.sessionId)
+            nowReadQuestion()
+    }, [question]);
+
+
+    const speak = ({ text, onEnd }) => {
+        console.log("Speaking", text)
+        const speakObj = new SpeechSynthesisUtterance()
+        speakObj.text = text;
+        speakObj.voice = voice;
+        speakObj.onend = onEnd
+        window.speechSynthesis.speak(speakObj)
+    }
+
+    useEffect(() => {
+        if (!isTimerRunning && listenerState === "STARTED") {
+            setListenerState("ENDED")
             SpeechRecognition.stopListening()
         }
     }, [isTimerRunning])
 
+
+
+    const allowReanswer = () => {
+        nowReadQuestion()
+    }
+
+    const [patientAnswer, setPatientAnswer] = useState();
+    const [patientAnswerBox, setPatientAnswerBox] = useState(false);
+
+    const startListening = () => {
+        setListenerState("STARTED")
+        SpeechRecognition.startListening({ continuous: true, language: 'en-IN' })
+    }
+
+    const { transcript, browserSupportsSpeechRecognition, listening, resetTranscript } = useSpeechRecognition();
+
+    useEffect(() => {
+        setPatientAnswer(transcript)
+    }, [transcript])
 
     const getQuestions = async () => {
         const data = await QuestionsService.getQuestions();
@@ -45,6 +107,7 @@ export default function Session() {
     };
 
     const submitQuestion = async () => {
+        setSubmitInProcess(true)
         resetTranscript()
         if (patientAnswer === "") {
             return
@@ -61,42 +124,19 @@ export default function Session() {
             disorderCounts: disorderCounts
         }
         const data = await QuestionsService.getQuestions(reqData);
-        console.log(data)
         if (data.question) {
             setPatientAnswer("")
             setQuestion(data.question.text);
             setAPIDate(data)
             setAnswers(data.answers)
             setDisorderCounts(data.disorderCounts)
+            setSubmitInProcess(false)
+        }
+
+        if(data.message === "All Lots are completed"){
+            speak({ text: "Thank you for answering all of the questions." })
         }
     };
-
-
-
-    const { voices } = useSpeechSynthesis();
-
-    const speak = ({ text, onEnd }) => {
-        const speakObj = new SpeechSynthesisUtterance()
-        speakObj.text = text;
-        speakObj.voice = voices.filter(function (voice) {
-            return voice.name == "Google UK English Female"
-        })[0];
-        speakObj.onend = onEnd
-        window.speechSynthesis.speak(speakObj)
-    }
-
-
-    const [patientAnswer, setPatientAnswer] = useState();
-    const startListening = () => {
-        SpeechRecognition.startListening({ continuous: true, language: 'en-IN' })
-    }
-
-    const { transcript, browserSupportsSpeechRecognition, listening, resetTranscript } = useSpeechRecognition();
-    useEffect(() => {
-        setPatientAnswer(transcript)
-    }, [transcript])
-
-
 
 
     if (!browserSupportsSpeechRecognition) {
@@ -136,19 +176,9 @@ export default function Session() {
                                                 <Typewriter
                                                     onInit={(typewriter) => {
                                                         if (question !== "") {
-
                                                             setQuestionWriter(typewriter)
-                                                            console.log("In Process", question)
                                                             typewriter.typeString(question)
-                                                                .start().callFunction(() => {
-                                                                    speak({
-                                                                        text: question,
-                                                                        onEnd: () => {
-                                                                            restart(Date.now() + (timerDuration * 1000))
-                                                                            startListening();
-                                                                        }
-                                                                    })
-                                                                })
+                                                                .start()
                                                         }
                                                     }}
                                                     key={question}
@@ -165,29 +195,33 @@ export default function Session() {
                                             <div className="">
                                                 <h5 className="mb-2 text-primary">Answer
                                                     <small>
-                                                        <span id="speakshow">(Try to Speak out your response)</span>
-                                                        <span id="textshow" style={{ display: "none" }}>(Type your response
+                                                        <span id="speakshow">(Try to Speak out your response) {listening ? <span><i class="fa fa-circle text-danger Blink"></i> Listening</span> : ""}</span>
+                                                        < span id="textshow" style={{ display: "none" }}>(Type your response
                                                             below)</span>
                                                     </small>
                                                 </h5>
                                                 {/* Todo - Text area */}
                                                 <div style={{ minHeight: "50px" }} className="form-control border-primary p-2 rounded mb-0 bg-white"
                                                     id="chat3" readOnly>
-                                                    <span id="textshow">{patientAnswer}</span>
+                                                    <textarea onChange={(e) => setPatientAnswer(e.target.value)} disabled={!patientAnswerBox} cols="120" style={{ maxWidth: "100%" }} rows={3} className='patient-answer-box' value={patientAnswer} />
                                                 </div>
                                                 <div className="py-2 text-end">
-                                                    <button type="button" className="btn btn-primary btn-sm"
-                                                        id="editButton">Edit</button>
-                                                    <button onClick={submitQuestion} disabled={isTimerRunning} type="button" className="btn btn-success btn-sm" id="submit-button">
-                                                        Submit
-                                                    </button>
-                                                    <button type="button" className="btn btn-success btn-sm" id="loader"
-                                                        style={{ display: "none" }}>
-                                                        <span className="spinner-border spinner-border-sm" role="status"
-                                                            aria-hidden="true"></span>
-                                                        Processing...
-                                                    </button>
-                                                    <button type="button" className="btn btn-danger btn-sm">Discard</button>
+                                                    {submitInProcess ?
+                                                        <button type="button" className="btn btn-success btn-sm" id="loader"
+                                                            style={{ display: "" }}>
+                                                            <span className="spinner-border spinner-border-sm" role="status"
+                                                                aria-hidden="true"></span>
+                                                            Processing...
+                                                        </button> :
+                                                        <>
+                                                            <button type="button" style={{ marginRight: 3 }} className="btn btn-primary btn-sm"
+                                                                id="editButton" onClick={() => setPatientAnswerBox(!patientAnswerBox)}>Edit</button>
+                                                            <button style={{ marginRight: 3 }} onClick={submitQuestion} disabled={isTimerRunning} type="button" className="btn btn-success btn-sm" id="submit-button">
+                                                                Submit
+                                                            </button>
+
+                                                            <button type="button" className="btn btn-danger btn-sm">Discard</button>
+                                                        </>}
                                                 </div>
                                             </div>
                                         </div>
@@ -196,11 +230,13 @@ export default function Session() {
                                             <div className="text-center shadow-sm pb-2 border-dark border rounded">
                                                 <div id="timer" className="fw-bold lead">{seconds}</div>
                                                 <div className="d-flex align-items-center justify-content-evenly pt-1">
-                                                    <button id="startButton" className="py-0 btn btn-sm btn-primary"
+                                                    <button id="startButton"
+                                                        style={{ display: (listenerState === "ENDED" && patientAnswer === "") ? "block" : "none" }}
+                                                        className="py-0 btn btn-sm btn-primary"
                                                     >
                                                         <i className="fa-solid fa-play"></i></button>
                                                     <button id="stopButton" className="py-0 btn btn-sm btn-danger"
-                                                        style={{ display: "none" }}
+                                                        style={{ display: listenerState === "STARTED" ? "block" : "none" }}
                                                     >
                                                         <i
                                                             className="fa-solid fa-stop"></i></button>
@@ -305,7 +341,7 @@ function MyTimer({ expiryTimestamp }) {
         pause,
         resume,
         restart,
-    } = useTimer({ expiryTimestamp, onExpire: () => console.warn('onExpire called') });
+    } = useTimer({ expiryTimestamp, onExpire: () => console.warn('Timer Ended') });
 
 
     return {

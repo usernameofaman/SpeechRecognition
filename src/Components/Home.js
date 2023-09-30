@@ -4,7 +4,7 @@ import { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../custom.css'
 import Session from './Session';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const App = () => {
 
@@ -161,7 +161,7 @@ const App = () => {
                         </div>
                     </div>
                 </div>
-            </div> : <Session />}
+            </div> : <VoiceLoader />}
 
             <div className="modal fade show" id="launchModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1"
                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -250,3 +250,27 @@ const App = () => {
 };
 
 export default App;
+
+
+function VoiceLoader() {
+    const [voicesLoaded, setVoicesLoaded] = useState(false);
+
+    useEffect(() => {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = function () {
+                let voices = window.speechSynthesis.getVoices();
+                let voice = voices.filter(function (voice) {
+                    return voice.name == "Google हिन्दी"
+                })[0];
+                setVoicesLoaded(voice)
+            };
+        }
+    }, []);
+
+    return (
+        <div>
+            {voicesLoaded ? <Session voice={voicesLoaded} /> : <p>Loading voices...</p>}
+        </div>
+    );
+}
+
