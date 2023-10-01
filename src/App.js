@@ -1,12 +1,34 @@
-import React from 'react'
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './Components/Home'
-import Speech from './Components/SpeechRecognition'
 
-export default function App() {
+// Parent component
+function App() {
     return (
-        <>
-            <Home />
-            {/* <Speech/> */}
-        </>
-    )
+        <Router>
+                <Routes>
+                    <Route path="/" element={<Home/>} />
+
+                    <Route path="/about" element={About} />
+                    <Route path="/contact" element={Contact} />
+
+                    <Route element={NotFound} />
+                </Routes>
+        </Router>
+    );
 }
+
+// Other child components
+function About() {
+    return <h2>About Component</h2>;
+}
+
+function Contact() {
+    return <h2>Contact Component</h2>;
+}
+
+function NotFound() {
+    return <h2>404 - Not Found</h2>;
+}
+
+export default App;
