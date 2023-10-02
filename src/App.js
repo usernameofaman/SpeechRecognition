@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './Components/Home'
+import Admin from './Components/Admin';
 
 // Parent component
 function App() {
@@ -11,6 +12,7 @@ function App() {
 
                     <Route path="/about" element={About} />
                     <Route path="/contact" element={Contact} />
+                    <Route path="/admin" element={<Admin/>} />
 
                     <Route element={NotFound} />
                 </Routes>
