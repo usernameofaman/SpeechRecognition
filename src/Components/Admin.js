@@ -235,11 +235,10 @@ export default function ResponsiveDrawer(props) {
                 </TableRow>
               )}
 
-              {activeTab === "Disorders" && (
+              {activeTab === "Disorder" && (
                 <TableRow>
-                  <TableCell>LOT Number</TableCell>
                   <TableCell>Name</TableCell>
-                  <TableCell>Color</TableCell>
+                  <TableCell>Red Required</TableCell>
                 </TableRow>
               )}
             </TableHead>
@@ -263,8 +262,10 @@ export default function ResponsiveDrawer(props) {
                 ))}
               {activeTab === "Disorder" &&
                 allDisorderData.map((item) => (
-                  <TableRow key={item?.id}>
-                    <TableCell>{item?.text}</TableCell>
+                  <TableRow key={item}>
+                    <TableCell>{item?.name}</TableCell>
+                    <TableCell>{item?.redRequired}</TableCell>
+
                   </TableRow>
                 ))}
             </TableBody>
