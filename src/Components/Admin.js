@@ -15,6 +15,8 @@ import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import DataTable from "./dataTable"; // Adjust the import path as needed
+
 import {
   Table,
   TableContainer,
@@ -32,28 +34,10 @@ const drawerWidth = 240;
 export default function ResponsiveDrawer(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
-  // const [activeButton, setActiveButton] = useState('Questions'); // Default to Questions
-  // console.log(activeButton, "Active Button");
   const [allQuestionsData, setAllQuestionsData] = useState([]);
   const [allLots, setAllLots] = useState([]);
   const [allDisorderData, setAllDisorderData] = useState([]);
-  // const [activeData, SetActiveData] = useState([]);
   const [activeTab, setActiveTab] = useState("Questions"); // Initial active tab
-
-  // const handleDrawerToggle = () => {
-  //   setMobileOpen(!mobileOpen);
-  // };
-
-  // const getAllQuestionsData = async () => {
-  //   const data = await QuestionsService.getAllQuestionsData();
-  //   if (data.question) {
-  //     setAllQuestionsData(data);
-  //   }
-  //   if (data.sessionId) {
-  //     localStorage.setItem("sessionId", data.sessionId);
-  //   }
-  //   console.log(data, 'data ko to check kiya jaye bc', allQuestionsData, "??")
-  // };
 
   const fetchData = async () => {
     try {
@@ -147,30 +131,35 @@ export default function ResponsiveDrawer(props) {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-        }}
+    <CssBaseline />
+    <AppBar
+      position="fixed"
+      sx={{
+        width: { sm: `calc(100% - ${drawerWidth}px)` },
+        ml: { sm: `${drawerWidth}px` },
+      }}
+    >
+    <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                // onClick={handleDrawerToggle}
+                sx={{ mr: 2, display: { sm: "none" } }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" noWrap component="div">
+                Admin Portal
+              </Typography>
+            </Toolbar>
+    </AppBar>
+    <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        aria-label="mailbox folders"
       >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            // onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Admin Portal
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Box
+       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
@@ -207,71 +196,25 @@ export default function ResponsiveDrawer(props) {
           {drawer}
         </Drawer>
       </Box>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-        }}
-      >
-        <Toolbar />
-
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              {activeTab === "Questions" && (
-                <TableRow>
-                  <TableCell>Text</TableCell>
-                  <TableCell>Code</TableCell>
-                  <TableCell>Color</TableCell>
-                </TableRow>
-              )}
-
-              {activeTab === "LOTS" && (
-                <TableRow>
-                  <TableCell>LOT Number</TableCell>
-                  <TableCell>Name</TableCell>
-                </TableRow>
-              )}
-
-              {activeTab === "Disorder" && (
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Red Required</TableCell>
-                </TableRow>
-              )}
-            </TableHead>
-            <TableBody>
-              {activeTab === "Questions" &&
-                allQuestionsData.map((item) => {
-                  return (
-                    <TableRow key={item.id}>
-                      <TableCell>{item?.text}</TableCell>
-                      <TableCell>{item?.code}</TableCell>
-                      <TableCell>{item?.color}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {activeTab === "LOTS" &&
-                allLots.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{item?.lotNumber}</TableCell>
-                    <TableCell>{item?.name}</TableCell>
-                  </TableRow>
-                ))}
-              {activeTab === "Disorder" &&
-                allDisorderData.map((item) => (
-                  <TableRow key={item}>
-                    <TableCell>{item?.name}</TableCell>
-                    <TableCell>{item?.redRequired}</TableCell>
-
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+    
     </Box>
+    <Box
+      component="main"
+      sx={{
+        flexGrow: 1,
+        p: 3,
+        width: { sm: `calc(100% - ${drawerWidth}px)` },
+      }}
+    >
+      <Toolbar />
+      <DataTable
+        activeTab={activeTab}
+        allQuestionsData={allQuestionsData}
+        allLots={allLots}
+        allDisorderData={allDisorderData}
+      />
+    </Box>
+    </Box>
+  
   );
 }
