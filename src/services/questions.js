@@ -6,7 +6,7 @@ export default {
     getQuestions,
     getAllQuestionsData,
     getAllDisorderData,
-    getAllLots
+    getAllLots,
 };
 
 

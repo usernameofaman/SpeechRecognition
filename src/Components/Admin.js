@@ -15,7 +15,8 @@ import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import DataTable from "./dataTable"; // Adjust the import path as needed
+import DataTable from "./dataTable"; 
+import DataGrid from "./dataGrid";
 
 import {
   Table,
@@ -213,6 +214,11 @@ export default function ResponsiveDrawer(props) {
         allLots={allLots}
         allDisorderData={allDisorderData}
       />
+      {/* <DataGrid
+       activeTab={activeTab}
+       allQuestionsData={allQuestionsData}
+       allLots={allLots}
+       allDisorderData={allDisorderData}/> */}
     </Box>
     </Box>
   
