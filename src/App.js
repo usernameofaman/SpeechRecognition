@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './Components/Home'
-import Admin from './Components/Admin';
+import Admin from './Components/AdminConsole/Admin';
 
 // Parent component
 function App() {

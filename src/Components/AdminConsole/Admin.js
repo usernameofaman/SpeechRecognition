@@ -28,7 +28,7 @@ import {
   Paper,
   Button,
 } from "@mui/material";
-import { QuestionsService } from "../services";
+import { QuestionsService } from "../../services";
 
 const drawerWidth = 240;
 

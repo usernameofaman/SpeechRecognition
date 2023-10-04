@@ -7,20 +7,21 @@ import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
-import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit";
+import DisorderModel from "./Models/DisorderModel";
+import { QuestionsService } from "../../services";
 
 function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   // State for Questions
-  const [selectedRowQuestions, setSelectedRowQuestions] = useState(null);
   const [isModalOpenQuestions, setIsModalOpenQuestions] = useState(false);
   const [modalDataQuestions, setModalDataQuestions] = useState(allQuestionsData);
-  const [editedQuestionValue, setEditedQuestionValue] = useState(allQuestionsData);
   const [isEditable, setIsEditable] = useState(false);
-  
+  const [createMode, setCreateMode] = useState(false)
+
 
   // State for LOTS
   const [selectedRowLots, setSelectedRowLots] = useState(null);
@@ -33,19 +34,40 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   const [modalDataDisorder, setModalDataDisorder] = useState({});
 
 
-  const handleChange = (event) => {
-    setEditedQuestionValue(event.target.value);
+  const handleChange = (e) => {
+    console.log(modalDataQuestions)
+    setModalDataQuestions({ ...modalDataQuestions, [e.target.name]: e.target.value });
+
   };
 
-  const handleEditClickQuestion = () => {
-    setIsEditable(!isEditable);
+  const handleEditClickQuestion = async () => {
+    let requestData = { ...modalDataQuestions }
+    const response = await QuestionsService.updateQuestion(requestData);
+    if (response._id) {
+      setIsEditable(!isEditable);
+    } else {
+      window.alert("API Failed")
+    }
   };
+
+  const startAddQuestion = () => {
+    setModalDataQuestions({})
+    setIsModalOpenQuestions(true);
+    setIsEditable(true)
+    setCreateMode(true)
+  }
+
+  const handleAddQuestion = async () => {
+    let requestData = { ...modalDataQuestions }
+    const response = await QuestionsService.addQuestion(requestData)
+    console.log(response)
+  }
 
 
   // Function to open the modal
   const openModal = (index) => {
     if (activeTab === "Questions") {
-      setSelectedRowQuestions(index);
+      console.log(index, allQuestionsData[index])
       setModalDataQuestions(allQuestionsData[index]);
       setIsModalOpenQuestions(true);
     } else if (activeTab === "LOTS") {
@@ -69,6 +91,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   return (
     <div>
       <TableContainer>
+        <Button variant="contained" onClick={startAddQuestion}>Add </Button>
         <Table>
           <TableHead>
             {/* Table headers */}
@@ -159,16 +182,20 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
           <TextField
             label="Text"
             variant="outlined"
+            name="text"
             disabled={!isEditable}
             fullWidth
             margin="normal"
             sx={{ mt: 2 }}
-            value={isEditable ? editedQuestionValue : modalDataQuestions.text}
+            value={modalDataQuestions.text}
             onChange={handleChange}
           />
           <TextField
             label="Code"
             variant="outlined"
+            disabled={!isEditable}
+            onChange={handleChange}
+            name="code"
             fullWidth
             margin="normal"
             sx={{ mt: 2 }}
@@ -177,22 +204,25 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
           <TextField
             label="Color"
             variant="outlined"
+            disabled={!isEditable}
+            onChange={handleChange}
+            name="color"
             fullWidth
             margin="normal"
             sx={{ mt: 2 }}
             value={modalDataQuestions.color}
           />
 
-<Button onClick={handleEditClickQuestion}>
-          {isEditable ? "Save" : "Edit"}
-        </Button>
-        <Button >
-         Delete
-        </Button>
+          <Button onClick={createMode ? handleAddQuestion : handleEditClickQuestion}>
+            {isEditable ? "Save" : "Edit"}
+          </Button>
+          {/* <Button >
+            Delete
+          </Button> */}
 
         </Box>
       </Modal>
-      
+
 
       {/* LOTS Modal */}
       <Modal
@@ -237,47 +267,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
       </Modal>
 
       {/* Disorder Modal */}
-      <Modal
-        open={isModalOpenDisorder}
-        onClose={closeModal}
-        aria-labelledby="modal-modal-title-disorder"
-        aria-describedby="modal-modal-description-disorder"
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 900,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            textAlign: "center",
-          }}
-        >
-          <Typography id="modal-modal-title-disorder" variant="h6" component="h2">
-            Disorder Modal
-          </Typography>
-          <TextField
-            label="Name"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataDisorder.name}
-          />
-          <TextField
-            label="Red Required"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataDisorder.redRequired}
-          />
- 
-        </Box>
-      </Modal>
+      <DisorderModel isModalOpenDisorder={isModalOpenDisorder} closeModal={closeModal} modalDataDisorder={modalDataDisorder} />
     </div>
   );
 }

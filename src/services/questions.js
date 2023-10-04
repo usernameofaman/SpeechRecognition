@@ -7,6 +7,8 @@ export default {
     getAllQuestionsData,
     getAllDisorderData,
     getAllLots,
+    updateQuestion,
+    addQuestion
 };
 
 
@@ -55,6 +57,35 @@ async function getAllLots(requestData) {
 async function getAllDisorderData(requestData) {
     let url = process.env.REACT_APP_API_URI + "/api/all-disorder"
     return httpService(httpConstants.METHOD_TYPE.GET, getHeaders(),requestData, url)
+        .then(
+            response => {
+                if (!response)
+                    return Promise.reject(response);
+                return Promise.resolve(response);
+            }
+        ).catch(function (err) {
+            return Promise.reject(err);
+        });
+}
+
+async function updateQuestion(requestData) {
+    let url = process.env.REACT_APP_API_URI + `/api/updateQuestion/${requestData._id}`
+    return httpService(httpConstants.METHOD_TYPE.PUT, getHeaders(),requestData, url)
+        .then(
+            response => {
+                if (!response)
+                    return Promise.reject(response);
+                return Promise.resolve(response);
+            }
+        ).catch(function (err) {
+            return Promise.reject(err);
+        });
+}
+
+
+async function addQuestion(requestData) {
+    let url = process.env.REACT_APP_API_URI + `/api/add-question`
+    return httpService(httpConstants.METHOD_TYPE.POST, getHeaders(),requestData, url)
         .then(
             response => {
                 if (!response)
