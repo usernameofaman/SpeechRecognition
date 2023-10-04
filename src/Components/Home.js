@@ -114,7 +114,7 @@ const App = () => {
                                         id="userprofilemenu" data-bs-toggle="dropdown" aria-expanded="true">
                                         <img className="img-fluid rounded-circle"
                                             src="https://cdn4.sharechat.com/img_378239_1efadecf_1664979374920_sc.jpg?tenant=sc&amp;referrer=pwa-sharechat-service&amp;f=920_sc.jpg"
-                                            className="" alt="user img" /><span className="d-none d-md-flex">Username</span>
+                                             alt="user img" /><span className="d-none d-md-flex">Username</span>
                                     </button>
                                     <ul className="dropdown-menu dropdown-menu-end dropdown-menu-md-start"
                                         aria-labelledby="userprofilemenu">

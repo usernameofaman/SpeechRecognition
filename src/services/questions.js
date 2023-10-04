@@ -8,7 +8,8 @@ export default {
     getAllDisorderData,
     getAllLots,
     updateQuestion,
-    addQuestion
+    addQuestion,
+    deleteQuestion
 };
 
 
@@ -86,6 +87,20 @@ async function updateQuestion(requestData) {
 async function addQuestion(requestData) {
     let url = process.env.REACT_APP_API_URI + `/api/add-question`
     return httpService(httpConstants.METHOD_TYPE.POST, getHeaders(),requestData, url)
+        .then(
+            response => {
+                if (!response)
+                    return Promise.reject(response);
+                return Promise.resolve(response);
+            }
+        ).catch(function (err) {
+            return Promise.reject(err);
+        });
+}
+
+async function deleteQuestion(requestData) {
+    let url = process.env.REACT_APP_API_URI + `/api/delete-question/${requestData._id}`
+    return httpService(httpConstants.METHOD_TYPE.DELETE, getHeaders(),requestData, url)
         .then(
             response => {
                 if (!response)
