@@ -54,8 +54,13 @@ export default function Session({ voice }) {
     }, []);
 
     useEffect(() => {
-        if (apiData && !apiData.sessionId)
-            nowReadQuestion()
+        if (apiData && !apiData.sessionId) {
+            speak({
+                text: instructions,
+                onEnd: setTimeout(nowReadQuestion, 5000)
+                // time is inclusive of talking time of instructions
+            })
+        }
     }, [question]);
 
 
@@ -99,6 +104,8 @@ export default function Session({ voice }) {
         const data = await QuestionsService.getQuestions();
         if (data.question) {
             setQuestion(data.question.text);
+            if (data.question.instructions)
+                setInstructions(data.question.instructions)
             setAPIDate(data)
         }
         if (data.sessionId) {
@@ -133,7 +140,7 @@ export default function Session({ voice }) {
             setSubmitInProcess(false)
         }
 
-        if(data.message === "All Lots are completed"){
+        if (data.message === "All Lots are completed") {
             speak({ text: "Thank you for answering all of the questions." })
         }
     };
