@@ -34,9 +34,12 @@ export default function Session({ voice }) {
 
 
     const readInstructions = async (question) => {
+        let text = question.text;
+        let length = text.split(" ").length;
+        let timeTakenToSpeak = length / 2.83;
         speak({
             text: question.instructions || "",
-            onEnd: setTimeout(nowReadQuestion, 5000)
+            onEnd: setTimeout(nowReadQuestion, 5000 + (timeTakenToSpeak * 1000))
             // time is inclusive of talking time of instructions
         })
 
