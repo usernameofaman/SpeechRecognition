@@ -10,7 +10,7 @@ export default function Session({ voice }) {
     const [questionWriter, setQuestionWriter] = useState(null);
     const [question, setQuestion] = useState("");
     // const [instructions, setInstructions] = useState("Try to be brief and factual. If you do not know exact age, does not matter, give appx number as the age. Example: I am 45 years old or Patient is about 34 years old.");
-    const [instructions, setInstructions] = useState("Try to be brief and factual. ");
+    const [instructions, setInstructions] = useState("");
     const [instructionWriter, setInstructionWriter] = useState(null);
     const [apiData, setAPIDate] = useState({})
     const [answers, setAnswers] = useState(null)
@@ -23,15 +23,26 @@ export default function Session({ voice }) {
     const [timerDuration, setTimerDuration] = useState(5);
 
     const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (timerDuration * 1000) });
+    useEffect(async () => {
+        try {
+            getQuestions();
+        } catch {
+            console.log("Error")
+        }
+    }, [])
 
-    const firstInstructionsRead = async () => {
-        await getQuestions();
+
+
+    const readInstructions = async (question) => {
+        let text = question.text;
+        let length = text.split(" ").length;
+        let timeTakenToSpeak = length / 2.83;
         speak({
-            text: instructions,
-            onEnd: setTimeout(nowReadQuestion, 5000)
+            text: question.instructions || "",
+            onEnd: setTimeout(nowReadQuestion, 5000 + (timeTakenToSpeak * 1000))
             // time is inclusive of talking time of instructions
         })
-        pause()
+
     }
 
     const nowReadQuestion = async () => {
@@ -45,23 +56,9 @@ export default function Session({ voice }) {
             })
             return prev
         })
-
-
     }
 
-    useEffect(() => {
-        firstInstructionsRead()
-    }, []);
 
-    useEffect(() => {
-        if (apiData && !apiData.sessionId) {
-            speak({
-                text: instructions,
-                onEnd: setTimeout(nowReadQuestion, 5000)
-                // time is inclusive of talking time of instructions
-            })
-        }
-    }, [question]);
 
 
     const speak = ({ text, onEnd }) => {
@@ -104,8 +101,8 @@ export default function Session({ voice }) {
         const data = await QuestionsService.getQuestions();
         if (data.question) {
             setQuestion(data.question.text);
-            if (data.question.instructions)
-                setInstructions(data.question.instructions)
+            setInstructions(data.question.instructions);
+            readInstructions(data.question)
             setAPIDate(data)
         }
         if (data.sessionId) {
@@ -117,6 +114,7 @@ export default function Session({ voice }) {
         setSubmitInProcess(true)
         resetTranscript()
         if (patientAnswer === "") {
+            setSubmitInProcess(false)
             return
         }
         let sId = localStorage.getItem('sessionId');
@@ -134,10 +132,14 @@ export default function Session({ voice }) {
         if (data.question) {
             setPatientAnswer("")
             setQuestion(data.question.text);
+            setInstructions(data.question.instructions);
             setAPIDate(data)
             setAnswers(data.answers)
             setDisorderCounts(data.disorderCounts)
             setSubmitInProcess(false)
+
+
+            readInstructions(data.question)
         }
 
         if (data.message === "All Lots are completed") {
@@ -169,6 +171,7 @@ export default function Session({ voice }) {
                                                     typewriter.typeString(instructions)
                                                         .start()
                                                 }}
+                                                key={instructions}
                                                 options={{
                                                     delay: 8,
                                                     cursor: ""
