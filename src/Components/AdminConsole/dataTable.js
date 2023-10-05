@@ -26,12 +26,12 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   // State for Questions
   const [isModalOpenQuestions, setIsModalOpenQuestions] = useState(false);
   const [modalDataQuestions, setModalDataQuestions] =
-    useState(allQuestionsData);
+    useState({});
   const [isEditable, setIsEditable] = useState(false);
   const [createMode, setCreateMode] = useState(false);
   const [questionRadiovalue, setQuestionRadioValue] = React.useState(true);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  console.log("createMode", createMode);
+  console.log("createMode", createMode, modalDataQuestions);
 
   // State for LOTS
   const [selectedRowLots, setSelectedRowLots] = useState(null);
@@ -74,9 +74,24 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     answers[aIndex] = currentAnswer;
     state.possibleAnswers = answers;
     setModalDataQuestions(state)
-
-    console.log(currentAnswer);
   }
+
+  const addRowToPossibleAnswers = () => {
+    let state = { ...modalDataQuestions };
+    let answers = state.possibleAnswers;
+    answers.push({ code : "", text : "" })
+    state.possibleAnswers = answers;
+    setModalDataQuestions(state)
+  }
+
+  const removeRowToPossibleAnswers = (index) => {
+    let state = { ...modalDataQuestions };
+    let answers = state.possibleAnswers;
+    answers.splice(index , 1)
+    state.possibleAnswers = answers;
+    setModalDataQuestions(state)
+  }
+
 
   const handleLotChange = (e) => {
     console.log(modalDataLots);
@@ -146,16 +161,8 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   };
 
 
-
-  // const startAddQuestion = () => {
-  //   setModalDataQuestions({});
-  //   setIsModalOpenQuestions(true);
-  //   setIsEditable(true);
-  //   setCreateMode(true);
-  // };
-
   const startAddQuestion = () => {
-    setModalDataQuestions({});
+    setModalDataQuestions({ possibleAnswers: [{ text: "", code: "" }] });
     setCreateMode(true);
     setModalDataLots({});
     setCreateMode(true);
@@ -502,7 +509,6 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
           {
             modalDataQuestions.possibleAnswers && modalDataQuestions.possibleAnswers.map((answer, aIndex) => (
               <div style={{ display: "flex" }}>
-                {console.log(answer)}
                 <TextField
                   style={{ marginRight: 4 }}
                   label="Possible Answers - Code"
@@ -531,7 +537,10 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
                     answer.text || ""
                   }
                 />
+                <Button onClick={() => addRowToPossibleAnswers()}>Add</Button>
+                <Button onClick={() => removeRowToPossibleAnswers(aIndex)}>Remove</Button>
               </div>
+
             ))}
 
           <Button
