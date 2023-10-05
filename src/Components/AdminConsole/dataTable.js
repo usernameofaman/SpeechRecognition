@@ -409,6 +409,18 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
             value={modalDataQuestions.color}
           />
 
+<TextField
+            label="Instructions"
+            variant="outlined"
+            disabled={!isEditable}
+            onChange={handleQuestionChange}
+            name="instructions"
+            fullWidth
+            margin="normal"
+            sx={{ mt: 2 }}
+            value={modalDataQuestions.instructions}
+          />
+
           <TextField
             label="Type"
             variant="outlined"
