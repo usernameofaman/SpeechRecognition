@@ -13,20 +13,17 @@ import Typography from "@mui/material/Typography";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import DisorderModel from "./Models/DisorderModel";
+import QuestionModal from "./Models/QuestionModal";
+import LotModal from "./Models/LotModal";
 import DeleteDialog from "./Models/deleteDialog";
 import { QuestionsService } from "../../services";
 import { LotService } from "../../services";
 import { DisorderService } from "../../services";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormLabel from "@mui/material/FormLabel";
 
 function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   // State for Questions
   const [isModalOpenQuestions, setIsModalOpenQuestions] = useState(false);
-  const [modalDataQuestions, setModalDataQuestions] =
-    useState({});
+  const [modalDataQuestions, setModalDataQuestions] = useState({});
   const [isEditable, setIsEditable] = useState(false);
   const [createMode, setCreateMode] = useState(false);
   const [questionRadiovalue, setQuestionRadioValue] = React.useState(true);
@@ -60,45 +57,72 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     });
   };
 
-  const handlePossibleAnswers = (e, aIndex) => {
-    let state = { ...modalDataQuestions };
-    let answers = state.possibleAnswers;
-    let currentAnswer = answers[aIndex];
-
-    if (e.target.name === "possibleAnswersCode") {
-      currentAnswer.code = e.target.value
-    } else {
-      currentAnswer.text = e.target.value
-    }
-
-    answers[aIndex] = currentAnswer;
-    state.possibleAnswers = answers;
-    setModalDataQuestions(state)
-  }
-
-  const addRowToPossibleAnswers = () => {
-    let state = { ...modalDataQuestions };
-    let answers = state.possibleAnswers;
-    answers.push({ code : "", text : "" })
-    state.possibleAnswers = answers;
-    setModalDataQuestions(state)
-  }
-
-  const removeRowToPossibleAnswers = (index) => {
-    let state = { ...modalDataQuestions };
-    let answers = state.possibleAnswers;
-    answers.splice(index , 1)
-    state.possibleAnswers = answers;
-    setModalDataQuestions(state)
-  }
-
-
   const handleLotChange = (e) => {
     console.log(modalDataLots);
     setModalDataLots({
       ...modalDataLots,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handlePossibleAnswers = (e, aIndex) => {
+    let state = { ...modalDataQuestions };
+    let answers = state.possibleAnswers;
+    let currentAnswer = answers[aIndex];
+
+    if (e.target.name === "possibleAnswersCode") {
+      currentAnswer.code = e.target.value;
+    } else {
+      currentAnswer.text = e.target.value;
+    }
+
+    answers[aIndex] = currentAnswer;
+    state.possibleAnswers = answers;
+    setModalDataQuestions(state);
+  };
+
+  const handleLotQuestions = (e, qIndex) => {
+    const updatedModalDataLots = { ...modalDataLots };
+    const questions = updatedModalDataLots.questions;
+
+    if (e.target.name === "lotquesec") {
+      questions[qIndex] = e.target.value;
+    }
+
+    updatedModalDataLots.questions = questions;
+    setModalDataLots(updatedModalDataLots);
+  };
+
+  const addRowToLotQuestions = () => {
+    let state = { ...modalDataLots };
+    let answers = state.questions;
+    answers.push("");
+    state.questions = answers;
+    setModalDataLots(state);
+  };
+
+  const removeRowToLotQuestions = (index) => {
+    let state = { ...modalDataLots };
+    let answers = state.questions;
+    answers.splice(index, 1);
+    state.questions = answers;
+    setModalDataLots(state);
+  };
+
+  const addRowToPossibleAnswers = () => {
+    let state = { ...modalDataQuestions };
+    let answers = state.possibleAnswers;
+    answers.push({ code: "", text: "" });
+    state.possibleAnswers = answers;
+    setModalDataQuestions(state);
+  };
+
+  const removeRowToPossibleAnswers = (index) => {
+    let state = { ...modalDataQuestions };
+    let answers = state.possibleAnswers;
+    answers.splice(index, 1);
+    state.possibleAnswers = answers;
+    setModalDataQuestions(state);
   };
 
   const handleDisorderChange = (e) => {
@@ -110,7 +134,6 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   };
 
   const deleteQuestion = async () => {
-
     let requestData = { ...modalDataQuestions };
     console.log("reqD :", requestData._id);
     const response = await QuestionsService.deleteQuestion(requestData);
@@ -121,8 +144,29 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     } else {
       window.alert("API Failed");
     }
+  };
 
-  }
+  const deleteLot = async () => {
+    let requestData = { ...modalDataQuestions };
+    const response = await LotService.deleteLot(requestData);
+
+    if (response._id) {
+      window.alert("Successfully Deleted");
+    } else {
+      window.alert("API Failed");
+    }
+  };
+
+  const deleteDisorder = async () => {
+    let requestData = { ...modalDataQuestions };
+    const response = await DisorderService.deleteDisorder(requestData);
+
+    if (response._id) {
+      window.alert("Successfully Deleted");
+    } else {
+      window.alert("API Failed");
+    }
+  };
 
   //Aman's Code
 
@@ -160,31 +204,45 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     }
   };
 
+  const handleEditClickLot = async () => {
+    if (isEditable) {
+      let requestData = { ...modalDataLots };
+      console.log("reqD :", requestData._id);
+      const response = await LotService.updateLot(requestData);
+      console.log("resD :", response);
+
+      if (response._id) {
+        setIsEditable(false); // Disable edit mode after saving
+      } else {
+        window.alert("API Failed");
+      }
+    } else {
+      setIsEditable(true); // Enable edit mode
+    }
+  };
 
   const startAddQuestion = () => {
     setModalDataQuestions({ possibleAnswers: [{ text: "", code: "" }] });
     setCreateMode(true);
-    setModalDataLots({});
+    setModalDataLots({ questions: [""] });
     setCreateMode(true);
     setModalDataDisorder({});
     setCreateMode(true);
 
-    if (activeTab === 'Questions') {
+    if (activeTab === "Questions") {
       setIsModalOpenQuestions(true);
       setIsEditable(true);
-    } else if (activeTab === 'LOTS') {
+    } else if (activeTab === "LOTS") {
       // Open Lot Modal (modify as needed)
       setIsModalOpenLots(true);
       setIsEditable(true);
-    }
-    else if (activeTab === 'Disorder') {
+    } else if (activeTab === "Disorder") {
       // Open Lot Modal (modify as needed)
       setIsModalOpenDisorder(true);
       setIsEditable(true);
     }
     // Add more conditions for other tabs if needed
   };
-
 
   const closeAddQuestionModal = () => {
     setCreateMode(false);
@@ -218,13 +276,9 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     console.log(response);
   };
 
-  const handleEditLot = async () => {
+  const handleEditLot = async () => {};
 
-  };
-
-  const handleEditDisorder = async () => {
-
-  };
+  const handleEditDisorder = async () => {};
 
   // Function to open the modal
   const openModal = (index) => {
@@ -295,15 +349,14 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
                     <Button onClick={() => openModal(index)}>Open Popup</Button>
                   </TableCell>
                   <TableCell>
-                    <Button onClick={() => handleDeleteClick(index)}
+                    <Button
+                      onClick={() => handleDeleteClick(index)}
                       aria-label="Delete"
                       color="secondary" // Customize the color as needed
-
                     >
                       <DeleteIcon />
                     </Button>
                   </TableCell>
-
                 </TableRow>
               ))}
             {activeTab === "LOTS" &&
@@ -313,6 +366,15 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
                   <TableCell>{item?.name}</TableCell>
                   <TableCell>
                     <Button onClick={() => openModal(index)}>Open Popup</Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => handleDeleteClick(index)}
+                      aria-label="Delete"
+                      color="secondary" // Customize the color as needed
+                    >
+                      <DeleteIcon />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -324,312 +386,20 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
                   <TableCell>
                     <Button onClick={() => openModal(index)}>Open Popup</Button>
                   </TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => handleDeleteClick(index)}
+                      aria-label="Delete"
+                      color="secondary" // Customize the color as needed
+                    >
+                      <DeleteIcon />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
         </Table>
       </TableContainer>
-
-      {/* Modals */}
-      {/* Questions Modal */}
-      <Modal
-        BackdropProps={{
-          onClick: null, // Disable backdrop click
-        }}
-        open={isModalOpenQuestions}
-        onClose={closeModal}
-        aria-labelledby="modal-modal-title-questions"
-        aria-describedby="modal-modal-description-questions"
-      >
-        <Box
-          sx={{
-            maxHeight: 500,
-            overflow: "scroll",
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 900,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            textAlign: "center",
-          }}
-        >
-          <Typography
-            id="modal-modal-title-questions"
-            variant="h6"
-            component="h2"
-          >
-            Questions Modal
-          </Typography>
-
-          <Button
-            edge="end"
-            color="inherit"
-            aria-label="close"
-            onClick={closeAddQuestionModal}
-          >
-            <CloseIcon />
-          </Button>
-
-          <TextField
-            label="Text"
-            variant="outlined"
-            disabled={!isEditable}
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            name="text"
-            value={modalDataQuestions.text}
-            onChange={handleQuestionChange}
-          />
-
-          <TextField
-            label="Code"
-            variant="outlined"
-            disabled={!isEditable}
-            onChange={handleQuestionChange}
-            name="code"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataQuestions.code}
-          />
-
-          <TextField
-            label="Color"
-            variant="outlined"
-            disabled={!isEditable}
-            onChange={handleQuestionChange}
-            name="color"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataQuestions.color}
-          />
-
-<TextField
-            label="Instructions"
-            variant="outlined"
-            disabled={!isEditable}
-            onChange={handleQuestionChange}
-            name="instructions"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataQuestions.instructions}
-          />
-
-          <TextField
-            label="Type"
-            variant="outlined"
-            disabled={!isEditable}
-            onChange={handleQuestionChange}
-            name="type"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataQuestions.type}
-          />
-
-          <TextField
-            label="Media URL"
-            variant="outlined"
-            disabled={!isEditable}
-            onChange={handleQuestionChange}
-            name="mediaUrl"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataQuestions.mediaUrl}
-          />
-
-          <TextField
-            label="Alternative Question"
-            variant="outlined"
-            disabled={!isEditable}
-            onChange={handleQuestionChange}
-            name="alternateQuestion"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataQuestions.alternateQuestion}
-          />
-
-          <TextField
-            label="Question Logic"
-            variant="outlined"
-            disabled={!isEditable}
-            onChange={handleQuestionChange}
-            name="questionLogic"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataQuestions.questionLogic}
-          />
-
-          <TextField
-            label="Summary"
-            variant="outlined"
-            disabled={!isEditable}
-            onChange={handleQuestionChange}
-            name="summary"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataQuestions.summary}
-          />
-
-          <TextField
-            label="Timer"
-            variant="outlined"
-            disabled={!isEditable}
-            onChange={handleQuestionChange}
-            name="timer"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataQuestions.timer}
-          />
-
-          <FormLabel id="demo-controlled-radio-buttons-group">
-            hasCustomPrompt
-          </FormLabel>
-          <RadioGroup
-            name="hasCustomPrompt"
-            value={modalDataQuestions.hasCustomPrompt ? "true" : "false"}
-            onChange={handleQuestionChange}
-            disabled={!isEditable}
-          >
-            <FormControlLabel value="true" control={<Radio />} label="true" />
-            <FormControlLabel value="false" control={<Radio />} label="false" />
-          </RadioGroup>
-
-          <TextField
-            label="CustomPrompt"
-            variant="outlined"
-            disabled={!isEditable}
-            onChange={handleQuestionChange}
-            name="customPrompt"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataQuestions.customPrompt}
-          />
-
-          {
-            modalDataQuestions.possibleAnswers && modalDataQuestions.possibleAnswers.map((answer, aIndex) => (
-              <div style={{ display: "flex" }}>
-                <TextField
-                  style={{ marginRight: 4 }}
-                  label="Possible Answers - Code"
-                  variant="outlined"
-                  disabled={!isEditable}
-                  onChange={(e) => { handlePossibleAnswers(e, aIndex) }}
-                  name="possibleAnswersCode"
-                  fullWidth
-                  margin="normal"
-                  sx={{ mt: 2 }}
-                  value={
-                    answer.code || ""
-                  }
-                />
-
-                <TextField
-                  label="Possible Answers - Text"
-                  variant="outlined"
-                  disabled={!isEditable}
-                  onChange={(e) => { handlePossibleAnswers(e, aIndex) }}
-                  name="possibleAnswersText"
-                  fullWidth
-                  margin="normal"
-                  sx={{ mt: 2 }}
-                  value={
-                    answer.text || ""
-                  }
-                />
-                <Button onClick={() => addRowToPossibleAnswers()}>Add</Button>
-                <Button onClick={() => removeRowToPossibleAnswers(aIndex)}>Remove</Button>
-              </div>
-
-            ))}
-
-          <Button
-            onClick={createMode ? handleAddQuestion : handleEditClickQuestion}
-          >
-            {isEditable ? "Save" : "Edit"}
-          </Button>
-
-          {/* <Button >
-            Delete
-          </Button> */}
-        </Box>
-      </Modal>
-
-      {/* LOTS Modal */}
-      <Modal
-        BackdropProps={{
-          onClick: null, // Disable backdrop click
-        }}
-        open={isModalOpenLots}
-        onClose={closeModal}
-        aria-labelledby="modal-modal-title-lots"
-        aria-describedby="modal-modal-description-lots"
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 900,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            textAlign: "center",
-          }}
-        >
-          <Typography id="modal-modal-title-lots" variant="h6" component="h2">
-            LOTS Modal
-          </Typography>
-          <Button
-            edge="end"
-            color="inherit"
-            aria-label="close"
-            onClick={closeAddLotModal}
-          >
-            <CloseIcon />
-          </Button>
-          <TextField
-            label="Lot Number"
-            variant="outlined"
-            disabled={!isEditable}
-            onChange={handleLotChange}
-            name="lotNumber"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataLots?.lotNumber}
-          />
-          <TextField
-            label="Name"
-            variant="outlined"
-            disabled={!isEditable}
-            onChange={handleLotChange}
-            name="name"
-            fullWidth
-            margin="normal"
-            sx={{ mt: 2 }}
-            value={modalDataLots?.name}
-          />
-          <Button
-            onClick={createMode ? handleAddLot : handleEditLot}
-          >
-            {isEditable ? "Save" : "Edit"}
-          </Button>
-        </Box>
-      </Modal>
 
       {/* Disorder Modal */}
       <DisorderModel
@@ -643,10 +413,48 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
         createMode={createMode}
         closeAddDisorderModal={closeAddDisorderModal}
       />
+
+      {/* Question Modal */}
+      <QuestionModal
+        isModalOpenQuestions={isModalOpenQuestions}
+        closeModal={closeModal}
+        modalDataQuestions={modalDataQuestions}
+        handleQuestionChange={handleQuestionChange}
+        isEditable={isEditable}
+        handleAddQuestion={handleAddQuestion}
+        handleEditClickQuestion={handleEditClickQuestion}
+        createMode={createMode}
+        closeAddQuestionModal={closeAddQuestionModal}
+        startAddQuestion={startAddQuestion}
+        openModal={openModal}
+        addRowToPossibleAnswers={addRowToPossibleAnswers}
+        removeRowToPossibleAnswers={removeRowToPossibleAnswers}
+        handlePossibleAnswers={handlePossibleAnswers}
+      />
+
+      {/* Lot Modal */}
+      <LotModal
+        isModalOpenLots={isModalOpenLots}
+        closeModal={closeModal}
+        modalDataLots={modalDataLots}
+        handleLotChange={handleLotChange}
+        isEditable={isEditable}
+        handleAddLot={handleAddLot}
+        handleEditClickLot={handleEditClickLot}
+        createMode={createMode}
+        closeAddLotModal={closeAddLotModal}
+        addRowToLotQuestions={addRowToLotQuestions}
+        removeRowToLotQuestions={removeRowToLotQuestions}
+        handleLotQuestions={handleLotQuestions}
+      />
+
       <DeleteDialog
         openDeleteDialog={openDeleteDialog}
         closeDeleteDialog={handleCloseDeleteDialog}
         deleteQuestion={deleteQuestion}
+        deleteLot={deleteLot}
+        deleteDisorder={deleteDisorder}
+        activeTab={activeTab}
       />
     </div>
   );
