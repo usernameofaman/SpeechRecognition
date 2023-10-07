@@ -81,6 +81,22 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     setModalDataQuestions(state);
   };
 
+  const addRowToPossibleAnswers = () => {
+    let state = { ...modalDataQuestions };
+    let answers = state.possibleAnswers;
+    answers.push({ code: "", text: "" });
+    state.possibleAnswers = answers;
+    setModalDataQuestions(state);
+  };
+
+  const removeRowToPossibleAnswers = (index) => {
+    let state = { ...modalDataQuestions };
+    let answers = state.possibleAnswers;
+    answers.splice(index, 1);
+    state.possibleAnswers = answers;
+    setModalDataQuestions(state);
+  };
+
   const handleLotQuestions = (e, qIndex) => {
     const updatedModalDataLots = { ...modalDataLots };
     const questions = updatedModalDataLots.questions;
@@ -109,22 +125,92 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     setModalDataLots(state);
   };
 
-  const addRowToPossibleAnswers = () => {
-    let state = { ...modalDataQuestions };
-    let answers = state.possibleAnswers;
-    answers.push({ code: "", text: "" });
-    state.possibleAnswers = answers;
-    setModalDataQuestions(state);
+  const handleDisorderQuestions = (e, qIndex, category) => {
+    const updatedModalDataDisorder = { ...modalDataDisorder };
+
+    if (category === "redQuestions") {
+      updatedModalDataDisorder.redQuestions = [
+        ...modalDataDisorder.redQuestions,
+      ];
+      updatedModalDataDisorder.redQuestions[qIndex] = e.target.value;
+    } else if (category === "blackQuestions") {
+      updatedModalDataDisorder.blackQuestions = [
+        ...modalDataDisorder.blackQuestions,
+      ];
+      updatedModalDataDisorder.blackQuestions[qIndex] = e.target.value;
+    } else if (category === "blueQuestions") {
+      updatedModalDataDisorder.blueQuestions = [
+        ...modalDataDisorder.blueQuestions,
+      ];
+      updatedModalDataDisorder.blueQuestions[qIndex] = e.target.value;
+    } else if (category === "greenQuestions") {
+      updatedModalDataDisorder.greenQuestions = [
+        ...modalDataDisorder.greenQuestions,
+      ];
+      updatedModalDataDisorder.greenQuestions[qIndex] = e.target.value;
+    }
+
+    setModalDataDisorder(updatedModalDataDisorder);
   };
 
-  const removeRowToPossibleAnswers = (index) => {
-    let state = { ...modalDataQuestions };
-    let answers = state.possibleAnswers;
+  const addRowToDisorderRedQuestions = () => {
+    let state = { ...modalDataDisorder };
+    let answers = state.redQuestions;
+    answers.push("");
+    state.redQuestions = answers;
+    setModalDataDisorder(state);
+  };
+
+  const addRowToDisorderBlackQuestions = () => {
+    let state = { ...modalDataDisorder };
+    let answers = state.blackQuestions;
+    answers.push("");
+    state.blackQuestionsblueQuestions = answers;
+    setModalDataDisorder(state);
+  };
+  const addRowToDisorderBlueQuestions = () => {
+    let state = { ...modalDataDisorder };
+    let answers = state.blueQuestions;
+    answers.push("");
+    state.blueQuestions = answers;
+    setModalDataDisorder(state);
+  };
+  const addRowToDisorderGreenQuestions = () => {
+    let state = { ...modalDataDisorder };
+    let answers = state.greenQuestions;
+    answers.push("");
+    state.greenQuestions = answers;
+    setModalDataDisorder(state);
+  };
+  const removeRowToDisorderRedQuestions = (index) => {
+    let state = { ...modalDataDisorder };
+    let answers = state.questions;
     answers.splice(index, 1);
-    state.possibleAnswers = answers;
-    setModalDataQuestions(state);
+    state.questions = answers;
+    setModalDataDisorder(state);
   };
 
+  const removeRowToDisorderBlackQuestions = (index) => {
+    let state = { ...modalDataDisorder };
+    let answers = state.questions;
+    answers.splice(index, 1);
+    state.questions = answers;
+    setModalDataDisorder(state);
+  };
+  const removeRowToDisorderBlueQuestions = (index) => {
+    let state = { ...modalDataDisorder };
+    let answers = state.questions;
+    answers.splice(index, 1);
+    state.questions = answers;
+    setModalDataDisorder(state);
+  };
+  const removeRowToDisorderGreenQuestions = (index) => {
+    let state = { ...modalDataDisorder };
+    let answers = state.questions;
+    answers.splice(index, 1);
+    state.questions = answers;
+    setModalDataDisorder(state);
+  };
   const handleDisorderChange = (e) => {
     console.log(modalDataDisorder);
     setModalDataDisorder({
@@ -168,31 +254,11 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     }
   };
 
-  //Aman's Code
 
-  // const handleEditClickQuestion = async () => {
-  //   if (createMode) {
-  //     let requestData = { ...modalDataQuestions };
-  //     console.log("reqD :", requestData);
-  //     const response = await QuestionsService.updateQuestion(requestData);
-  //     console.log("resD :", response);
-
-  //     if (response._id) {
-  //     } else {
-  //       window.alert("API Failed");
-  //     }
-  //   } else {
-  //     setIsEditable(!isEditable);
-  //   }
-  // };
-
-  //Updated with GPT
   const handleEditClickQuestion = async () => {
     if (isEditable) {
       let requestData = { ...modalDataQuestions };
-      console.log("reqD :", requestData._id);
       const response = await QuestionsService.updateQuestion(requestData);
-      console.log("resD :", response);
 
       if (response._id) {
         setIsEditable(false); // Disable edit mode after saving
@@ -226,7 +292,12 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     setCreateMode(true);
     setModalDataLots({ questions: [""] });
     setCreateMode(true);
-    setModalDataDisorder({});
+    setModalDataDisorder({
+      redQuestions: [""],
+      blueQuestions: [""],
+      blackQuestions: [""],
+      greenQuestions: [""],
+    });
     setCreateMode(true);
 
     if (activeTab === "Questions") {
@@ -276,9 +347,20 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     console.log(response);
   };
 
-  const handleEditLot = async () => {};
+  const handleEditDisorder = async () => {
+    if (isEditable) {
+      let requestData = { ...modalDataDisorder };
+      const response = await DisorderService.updateDisorder(requestData);
 
-  const handleEditDisorder = async () => {};
+      if (response._id) {
+        setIsEditable(false); // Disable edit mode after saving
+      } else {
+        window.alert("API Failed");
+      }
+    } else {
+      setIsEditable(true); // Enable edit mode
+    }
+  };
 
   // Function to open the modal
   const openModal = (index) => {
@@ -412,6 +494,15 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
         handleEditDisorder={handleEditDisorder}
         createMode={createMode}
         closeAddDisorderModal={closeAddDisorderModal}
+        handleDisorderQuestions={handleDisorderQuestions}
+        addRowToDisorderRedQuestions={addRowToDisorderRedQuestions}
+        removeRowToDisorderRedQuestions={removeRowToDisorderRedQuestions}
+        addRowToDisorderBlueQuestions={addRowToDisorderBlueQuestions}
+        removeRowToDisorderBlueQuestions={removeRowToDisorderBlueQuestions}
+        addRowToDisorderBlackQuestions={addRowToDisorderBlackQuestions}
+        removeRowToDisorderBlackQuestions={removeRowToDisorderBlackQuestions}
+        addRowToDisorderGreenQuestions={addRowToDisorderGreenQuestions}
+        removeRowToDisorderGreenQuestions={removeRowToDisorderGreenQuestions}
       />
 
       {/* Question Modal */}

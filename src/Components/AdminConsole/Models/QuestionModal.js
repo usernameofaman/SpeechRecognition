@@ -25,7 +25,6 @@ export default function QuestionModal({
   handlePossibleAnswers,
   openModal,
 }) {
-  console.log("modalDQ:", modalDataQuestions);
   return (
     <Modal
       BackdropProps={{

@@ -20,7 +20,6 @@ export default function LotModal({
   removeRowToLotQuestions,
   handleLotQuestions,
 }) {
-  console.log("createMode: ", createMode);
   return (
     <Modal
       BackdropProps={{
@@ -85,7 +84,7 @@ export default function LotModal({
             <div style={{ display: "flex" }}>
               <TextField
                 style={{ marginRight: 4 }}
-                label="Code"
+                label="Question Code"
                 variant="outlined"
                 disabled={!isEditable}
                 onChange={(e) => {

@@ -16,7 +16,19 @@ export default function DisorderModel({
   handleEditDisorder,
   createMode,
   closeAddDisorderModal,
+  handleDisorderQuestions,
+  addRowToDisorderRedQuestions,
+  removeRowToDisorderRedQuestions,
+  addRowToDisorderBlueQuestions,
+  removeRowToDisorderBlueQuestions,
+  addRowToDisorderBlackQuestions,
+  removeRowToDisorderBlackQuestions,
+  addRowToDisorderGreenQuestions,
+  removeRowToDisorderGreenQuestions,
 }) {
+  console.log(modalDataDisorder.questions, "modalDataDisorder.ques consolelog");
+  console.log(isEditable, "isEditable State||", createMode, "createMode");
+
   return (
     <Modal
       BackdropProps={{
@@ -29,6 +41,8 @@ export default function DisorderModel({
     >
       <Box
         sx={{
+          maxHeight: 500,
+          overflow: "scroll",
           position: "absolute",
           top: "50%",
           left: "50%",
@@ -84,6 +98,111 @@ export default function DisorderModel({
           sx={{ mt: 2 }}
           value={modalDataDisorder?.redRequired}
         />
+
+        {modalDataDisorder.redQuestions &&
+          modalDataDisorder.redQuestions.map((answer, qIndex) => (
+            <div style={{ display: "flex" }}>
+              <TextField
+                style={{ marginRight: 4 }}
+                label="redQuestions"
+                variant="outlined"
+                disabled={!isEditable}
+                onChange={(e) => {
+                  handleDisorderQuestions(e, qIndex, "redQuestions");
+                }}
+                name="redQuestions"
+                fullWidth
+                margin="normal"
+                sx={{ mt: 2 }}
+                value={answer || ""}
+              />
+              <Button onClick={() => addRowToDisorderRedQuestions()}>
+                Add
+              </Button>
+              <Button onClick={() => removeRowToDisorderRedQuestions(qIndex)}>
+                Remove
+              </Button>
+            </div>
+          ))}
+
+        {modalDataDisorder.blackQuestions &&
+          modalDataDisorder.blackQuestions.map((answer, qIndex) => (
+            <div style={{ display: "flex" }}>
+              <TextField
+                style={{ marginRight: 4 }}
+                label="blackQuestions"
+                variant="outlined"
+                disabled={!isEditable}
+                onChange={(e) => {
+                  handleDisorderQuestions(e, qIndex, "blackQuestions");
+                }}
+                name="blackQuestions"
+                fullWidth
+                margin="normal"
+                sx={{ mt: 2 }}
+                value={answer || ""}
+              />
+              <Button onClick={() => addRowToDisorderBlackQuestions()}>
+                Add
+              </Button>
+              <Button onClick={() => addRowToDisorderBlackQuestions(qIndex)}>
+                Remove
+              </Button>
+            </div>
+          ))}
+
+        {modalDataDisorder.blueQuestions &&
+          modalDataDisorder.blueQuestions.map((answer, qIndex) => (
+            <div style={{ display: "flex" }}>
+              <TextField
+                style={{ marginRight: 4 }}
+                label="blueQuestions"
+                variant="outlined"
+                disabled={!isEditable}
+                onChange={(e) => {
+                  handleDisorderQuestions(e, qIndex, "blueQuestions");
+                }}
+                name="blueQuestions"
+                fullWidth
+                margin="normal"
+                sx={{ mt: 2 }}
+                value={answer || ""}
+              />
+              <Button onClick={() => addRowToDisorderBlueQuestions()}>
+                Add
+              </Button>
+              <Button onClick={() => removeRowToDisorderBlueQuestions(qIndex)}>
+                Remove
+              </Button>
+            </div>
+          ))}
+
+        {modalDataDisorder.greenQuestions &&
+          modalDataDisorder.greenQuestions.map((answer, qIndex) => (
+            <div style={{ display: "flex" }}>
+              <TextField
+                style={{ marginRight: 4 }}
+                label="greenQuestions"
+                variant="outlined"
+                disabled={!isEditable}
+                onChange={(e) => {
+                  handleDisorderQuestions(e, qIndex, "greenQuestions");
+                }}
+                name="greenQuestions"
+                fullWidth
+                margin="normal"
+                sx={{ mt: 2 }}
+                value={answer || ""}
+              />
+              <Button onClick={() => addRowToDisorderGreenQuestions()}>
+                Add
+              </Button>
+              <Button onClick={() => removeRowToDisorderGreenQuestions(qIndex)}>
+                Remove
+              </Button>
+            </div>
+          ))}
+
         <Button onClick={createMode ? handleAddDisorder : handleEditDisorder}>
           {isEditable ? "Save" : "Edit"}
         </Button>
