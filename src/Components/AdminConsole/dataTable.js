@@ -97,18 +97,6 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     setModalDataQuestions(state);
   };
 
-  const handleLotQuestions = (e, qIndex) => {
-    const updatedModalDataLots = { ...modalDataLots };
-    const questions = updatedModalDataLots.questions;
-
-    if (e.target.name === "lotquesec") {
-      questions[qIndex] = e.target.value;
-    }
-
-    updatedModalDataLots.questions = questions;
-    setModalDataLots(updatedModalDataLots);
-  };
-
   const addRowToLotQuestions = () => {
     let state = { ...modalDataLots };
     let answers = state.questions;
@@ -276,7 +264,6 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
       console.log("reqD :", requestData._id);
       const response = await LotService.updateLot(requestData);
       console.log("resD :", response);
-
       if (response._id) {
         setIsEditable(false); // Disable edit mode after saving
       } else {
@@ -336,11 +323,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     const response = await QuestionsService.addQuestion(requestData);
     console.log(response);
   };
-  const handleAddLot = async () => {
-    let requestData = { ...modalDataLots };
-    const response = await LotService.addLot(requestData);
-    console.log(response);
-  };
+
   const handleAddDisorder = async () => {
     let requestData = { ...modalDataDisorder };
     const response = await DisorderService.addDisorder(requestData);
@@ -530,13 +513,12 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
         modalDataLots={modalDataLots}
         handleLotChange={handleLotChange}
         isEditable={isEditable}
-        handleAddLot={handleAddLot}
         handleEditClickLot={handleEditClickLot}
         createMode={createMode}
         closeAddLotModal={closeAddLotModal}
         addRowToLotQuestions={addRowToLotQuestions}
         removeRowToLotQuestions={removeRowToLotQuestions}
-        handleLotQuestions={handleLotQuestions}
+        setModalDataLots={setModalDataLots}
       />
 
       <DeleteDialog

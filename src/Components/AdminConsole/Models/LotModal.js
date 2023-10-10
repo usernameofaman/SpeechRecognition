@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
+import AutoCompleteLot from './lotQuestionSelector'
+import { LotService, QuestionsService } from "../../../services";
 
 export default function LotModal({
   isModalOpenLots,
@@ -12,14 +14,46 @@ export default function LotModal({
   modalDataLots,
   isEditable,
   handleLotChange,
-  handleAddLot,
   handleEditClickLot,
   createMode,
   closeAddLotModal,
   addRowToLotQuestions,
   removeRowToLotQuestions,
-  handleLotQuestions,
+  setModalDataLots
 }) {
+
+  const handleAddLot = async () => {
+    let requestData = { ...modalDataLots };
+    const response = await LotService.addLot(requestData);
+  };
+
+
+  useEffect(() => {
+    getQuestions()
+  }, [])
+
+  const [questions, setQuestions] = useState([])
+  const getQuestions = async () => {
+    const questionsAll = await QuestionsService.getAllQuestionsData();
+    if (questionsAll && questionsAll.length >= 0) {
+      questionsAll.map((item) => ({ code: item.code, text: item.text }))
+      setQuestions(questionsAll)
+    }
+  }
+
+
+  const handleLotQuestions = (e, qIndex) => {
+    const updatedModalDataLots = { ...modalDataLots };
+    const questions = updatedModalDataLots.questions;
+
+    if (e.target.name === "lotquesec") {
+      questions[qIndex] = e.target.value;
+    }
+
+    updatedModalDataLots.questions = questions;
+    setModalDataLots(updatedModalDataLots);
+  };
+
   return (
     <Modal
       BackdropProps={{
@@ -81,22 +115,8 @@ export default function LotModal({
 
         {modalDataLots.questions &&
           modalDataLots.questions.map((answer, aIndex) => (
-            <div style={{ display: "flex" }}>
-              <TextField
-                style={{ marginRight: 4 }}
-                label="Question Code"
-                variant="outlined"
-                disabled={!isEditable}
-                onChange={(e) => {
-                  handleLotQuestions(e, aIndex);
-                }}
-                name="lotquesec"
-                fullWidth
-                margin="normal"
-                sx={{ mt: 2 }}
-                value={answer || ""}
-              />
-
+            <div style={{ display: "flex" , width:"100%" }}>
+              <AutoCompleteLot setModalDataLots={setModalDataLots} modalDataLots={modalDataLots} data={answer} disabled={!isEditable} questions={questions} setData={setModalDataLots} />
               <Button onClick={() => addRowToLotQuestions()}>Add</Button>
               <Button onClick={() => removeRowToLotQuestions(aIndex)}>
                 Remove
