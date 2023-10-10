@@ -5,11 +5,26 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../custom.css'
 import Session from './Session';
 import React, { useEffect } from 'react';
+import { SettingsService } from '../services';
+import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 
 const App = () => {
 
     const [sessionStarted, setSessionStarted] = React.useState(false)
 
+    const [useLLM, setUseLLM] = React.useState(false)
+
+    useEffect(() => {
+        getCurrentSetting()
+    }, []);
+
+
+    const getCurrentSetting = async () => {
+        const setting = await SettingsService.getSettings()
+        if (setting && setting._id) {
+            setUseLLM(setting.useLLM);
+        }
+    }
 
     return (
         <>
@@ -22,7 +37,8 @@ const App = () => {
                                 <i className=" fa-solid fa-sliders"></i>
                             </a>
 
-                            <div className="offcanvas offcanvas-start" tabIndex="-1" id="sessiondrawer"
+
+                            <div className="offcanvas offcanvas-start" tabIndex="1" id="sessiondrawer"
                                 aria-labelledby="sessiondrawerLabel">
                                 <div className="offcanvas-header">
                                     <h5 className="offcanvas-title" id="sessiondrawerLabel">Sessions</h5>
@@ -94,13 +110,20 @@ const App = () => {
                                 </div>
                             </div>
                         </div>
-                        <a className="navbar-brand" href="#"><img src="aipsychi.png" alt="Logo" className="img-fluid" /></a>
+                        <a className="navbar-brand" href="#"><img src="/images/aipsychi.png" alt="Logo" className="img-fluid" /></a>
                         <div className="d-flex ms-auto">
                             <div className="d-flex align-items-center customSwitch mb-3 mb-md-0">
                                 <div className="form-check form-switch form-switch-xl" id="togglecheckbox" style={{ display: "none" }}>
                                     <input className="form-check-input " type="checkbox" id="flexSwitchCheckChecked" checked />
                                 </div>
                             </div>
+                            <ul className="navbar-nav ms-0 ms-sm-3">
+                                <li className="nav-item">
+                                    <FormGroup>
+                                        <FormControlLabel control={<Switch checked={useLLM} />} label="Use LLM" />
+                                    </FormGroup>
+                                </li>
+                            </ul>
                             <ul className="navbar-nav ms-0 ms-sm-3">
                                 <li className="nav-item">
                                     <div className="p-2"><i className="fa-solid fa-wallet"></i>
@@ -114,7 +137,7 @@ const App = () => {
                                         id="userprofilemenu" data-bs-toggle="dropdown" aria-expanded="true">
                                         <img className="img-fluid rounded-circle"
                                             src="https://cdn4.sharechat.com/img_378239_1efadecf_1664979374920_sc.jpg?tenant=sc&amp;referrer=pwa-sharechat-service&amp;f=920_sc.jpg"
-                                             alt="user img" /><span className="d-none d-md-flex">Username</span>
+                                            alt="user img" /><span className="d-none d-md-flex">Username</span>
                                     </button>
                                     <ul className="dropdown-menu dropdown-menu-end dropdown-menu-md-start"
                                         aria-labelledby="userprofilemenu">
@@ -266,6 +289,8 @@ function VoiceLoader() {
             };
         }
     }, []);
+
+
 
     return (
         <div>

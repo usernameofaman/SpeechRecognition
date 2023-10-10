@@ -28,7 +28,7 @@ async function getQuestions(requestData) {
 }
 
 async function getAllQuestionsData(requestData) {
-    let url = process.env.REACT_APP_API_URI + "/api/AllQuestions"; 
+    let url = process.env.REACT_APP_API_URI + "/api/questions"; 
     return httpService(httpConstants.METHOD_TYPE.GET, getHeaders(),requestData, url)
         .then(
             response => {
