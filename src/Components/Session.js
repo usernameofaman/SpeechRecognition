@@ -12,7 +12,8 @@ export default function Session({ voice }) {
     // const [instructions, setInstructions] = useState("Try to be brief and factual. If you do not know exact age, does not matter, give appx number as the age. Example: I am 45 years old or Patient is about 34 years old.");
     const [instructions, setInstructions] = useState("");
     const [instructionWriter, setInstructionWriter] = useState(null);
-    const [apiData, setAPIDate] = useState({})
+    const [apiData, setAPIData] = useState({})
+    const [currentLot, setCurrentLot] = useState(0)
     const [answers, setAnswers] = useState(null)
     const [disorderCounts, setDisorderCounts] = useState(null)
     const [submitInProcess, setSubmitInProcess] = useState(false)
@@ -20,7 +21,8 @@ export default function Session({ voice }) {
     // ListernStates = [ "NOT_STARTED" , "STARTED" , "ENDED" ]
 
     //Timer Duration
-    const [timerDuration, setTimerDuration] = useState(5);
+    const [timerDuration, setTimerDuration] = useState(1);
+    const [midDelay , setMidDelay] = useState(1000)
 
     const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (timerDuration * 1000) });
     useEffect(async () => {
@@ -39,7 +41,7 @@ export default function Session({ voice }) {
         let timeTakenToSpeak = length / 2.83;
         speak({
             text: question.instructions || "",
-            onEnd: setTimeout(nowReadQuestion, 5000 + (timeTakenToSpeak * 1000))
+            onEnd: setTimeout(nowReadQuestion, (midDelay * 1000) + (timeTakenToSpeak * 1000))
             // time is inclusive of talking time of instructions
         })
 
@@ -78,12 +80,7 @@ export default function Session({ voice }) {
     }, [isTimerRunning])
 
 
-
-    const allowReanswer = () => {
-        nowReadQuestion()
-    }
-
-    const [patientAnswer, setPatientAnswer] = useState();
+    const [patientAnswer, setPatientAnswer] = useState("");
     const [patientAnswerBox, setPatientAnswerBox] = useState(false);
 
     const startListening = () => {
@@ -103,7 +100,7 @@ export default function Session({ voice }) {
             setQuestion(data.question.text);
             setInstructions(data.question.instructions);
             readInstructions(data.question)
-            setAPIDate(data)
+            setAPIData(data)
         }
         if (data.sessionId) {
             localStorage.setItem("sessionId", data.sessionId)
@@ -114,6 +111,7 @@ export default function Session({ voice }) {
         setSubmitInProcess(true)
         resetTranscript()
         if (patientAnswer === "") {
+            setPatientAnswer("sdf")
             setSubmitInProcess(false)
             return
         }
@@ -126,19 +124,19 @@ export default function Session({ voice }) {
             textResponse: patientAnswer,
             sessionId: sId,
             answers: answers,
-            disorderCounts: disorderCounts
+            disorderCounts: disorderCounts,
+            lot : currentLot
         }
         const data = await QuestionsService.getQuestions(reqData);
         if (data.question) {
             setPatientAnswer("")
             setQuestion(data.question.text);
             setInstructions(data.question.instructions);
-            setAPIDate(data)
+            setAPIData(data)
             setAnswers(data.answers)
             setDisorderCounts(data.disorderCounts)
             setSubmitInProcess(false)
-
-
+            setCurrentLot(data.lot)
             readInstructions(data.question)
         }
 
