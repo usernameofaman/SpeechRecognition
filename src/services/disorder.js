@@ -5,10 +5,23 @@ import { getAccessToken, getHeaders, getUserId } from "./baseFunctions";
 export default {
    addDisorder,
    deleteDisorder,
-   updateDisorder
+   updateDisorder,
+   getAllDisorderData
 };
 
-
+async function getAllDisorderData(requestData) {
+    let url = process.env.REACT_APP_API_URI + "/api/all-disorder"
+    return httpService(httpConstants.METHOD_TYPE.GET, getHeaders(),requestData, url)
+        .then(
+            response => {
+                if (!response)
+                    return Promise.reject(response);
+                return Promise.resolve(response);
+            }
+        ).catch(function (err) {
+            return Promise.reject(err);
+        });
+}
 
 async function addDisorder(requestData) {
     let url = process.env.REACT_APP_API_URI + `/api/add-disorder/`
@@ -23,6 +36,7 @@ async function addDisorder(requestData) {
             return Promise.reject(err);
         });
 }
+
 
 
 async function deleteDisorder(requestData) {
@@ -53,3 +67,4 @@ async function updateDisorder(requestData) {
             return Promise.reject(err);
         });
 }
+

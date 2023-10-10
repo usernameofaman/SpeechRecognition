@@ -136,7 +136,23 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
         ...modalDataDisorder.greenQuestions,
       ];
       updatedModalDataDisorder.greenQuestions[qIndex] = e.target.value;
+    } else if (category === "yellowQuestions") {
+      updatedModalDataDisorder.yellowQuestions = [
+        ...modalDataDisorder.yellowQuestions,
+      ];
+      updatedModalDataDisorder.yellowQuestions[qIndex] = e.target.value;
+    } else if (category === "violetQuestions") {
+      updatedModalDataDisorder.violetQuestions = [
+        ...modalDataDisorder.violetQuestions,
+      ];
+      updatedModalDataDisorder.violetQuestions[qIndex] = e.target.value;
+    } else if (category === "maroonQuestions") {
+      updatedModalDataDisorder.maroonQuestions = [
+        ...modalDataDisorder.maroonQuestions,
+      ];
+      updatedModalDataDisorder.maroonQuestions[qIndex] = e.target.value;
     }
+    
 
     setModalDataDisorder(updatedModalDataDisorder);
   };
@@ -170,33 +186,75 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     state.greenQuestions = answers;
     setModalDataDisorder(state);
   };
+  const addRowToDisorderYellowQuestions = () => {
+    let state = { ...modalDataDisorder };
+    let answers = state.yellowQuestions;
+    answers.push("");
+    state.yellowQuestions = answers;
+    setModalDataDisorder(state);
+  };
+  const addRowToDisorderVioletQuestions = () => {
+    let state = { ...modalDataDisorder };
+    let answers = state.violetQuestions;
+    answers.push("");
+    state.violetQuestions = answers;
+    setModalDataDisorder(state);
+  };
+  const addRowToDisorderMaroonQuestions = () => {
+    let state = { ...modalDataDisorder };
+    let answers = state.maroonQuestions;
+    answers.push("");
+    state.maroonQuestions = answers;
+    setModalDataDisorder(state);
+  };
   const removeRowToDisorderRedQuestions = (index) => {
     let state = { ...modalDataDisorder };
-    let answers = state.questions;
+    let answers = state.redQuestions;
     answers.splice(index, 1);
-    state.questions = answers;
+    state.redQuestions = answers;
     setModalDataDisorder(state);
   };
 
   const removeRowToDisorderBlackQuestions = (index) => {
     let state = { ...modalDataDisorder };
-    let answers = state.questions;
+    let answers = state.BlackQuestions;
     answers.splice(index, 1);
-    state.questions = answers;
+    state.BlackQuestions = answers;
     setModalDataDisorder(state);
   };
   const removeRowToDisorderBlueQuestions = (index) => {
     let state = { ...modalDataDisorder };
-    let answers = state.questions;
+    let answers = state.blueQuestions;
     answers.splice(index, 1);
-    state.questions = answers;
+    state.blueQuestions = answers;
     setModalDataDisorder(state);
   };
   const removeRowToDisorderGreenQuestions = (index) => {
     let state = { ...modalDataDisorder };
-    let answers = state.questions;
+    let answers = state.greenQuestions;
     answers.splice(index, 1);
-    state.questions = answers;
+    state.greenQuestions = answers;
+    setModalDataDisorder(state);
+  };
+  const removeRowToDisorderYellowQuestions = (index) => {
+    let state = { ...modalDataDisorder };
+    let answers = state.yellowQuestions;
+    answers.splice(index, 1);
+    state.yellowQuestions = answers;
+    setModalDataDisorder(state);
+  };
+  const removeRowToDisorderVioletQuestions = (index) => {
+    let state = { ...modalDataDisorder };
+    let answers = state.violetQuestions;
+    answers.splice(index, 1);
+    state.violetQuestions = answers;
+    setModalDataDisorder(state);
+  };
+  const removeRowToDisorderMaroonQuestions = (index) => {
+    let state = { ...modalDataDisorder };
+    let answers = state.maroonQuestions;
+    answers.splice(index, 1);
+    state.maroonQuestions = answers;
     setModalDataDisorder(state);
   };
   const handleDisorderChange = (e) => {
@@ -284,6 +342,9 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
       blueQuestions: [""],
       blackQuestions: [""],
       greenQuestions: [""],
+      yellowQuestions: [""],
+      violetQuestions: [""],
+      maroonQuestions: [""]
     });
     setCreateMode(true);
 
@@ -534,3 +595,4 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
 }
 
 export default DataTable;
+
