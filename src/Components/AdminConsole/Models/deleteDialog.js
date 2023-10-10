@@ -1,12 +1,20 @@
-import React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import React from "react";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
-export default function DeleteDialog({ openDeleteDialog, closeDeleteDialog, deleteQuestion }) {
+export default function DeleteDialog({
+  openDeleteDialog,
+  closeDeleteDialog,
+  deleteQuestion,
+  deleteLot,
+  deleteDisorder,
+  activeTab,
+}) {
+  console.log("activetab in dlt:", activeTab);
   return (
     <Dialog
       open={openDeleteDialog}
@@ -23,7 +31,15 @@ export default function DeleteDialog({ openDeleteDialog, closeDeleteDialog, dele
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={deleteQuestion}>Confirm Delete</Button>
+        {activeTab === "Question" && (
+          <Button onClick={deleteQuestion}>Confirm Delete</Button>
+        )}
+        {activeTab === "LOTS" && (
+          <Button onClick={deleteLot}>Confirm Delete</Button>
+        )}
+        {activeTab === "Disorder" && (
+          <Button onClick={deleteDisorder}>Confirm Delete</Button>
+        )}
         <Button onClick={closeDeleteDialog}>Cancel</Button>
       </DialogActions>
     </Dialog>
