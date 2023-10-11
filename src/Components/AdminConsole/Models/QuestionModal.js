@@ -11,22 +11,90 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
 import { FormControl, MenuItem, Select } from "@mui/material";
 import { InputLabel } from "@mui/material";
+import { QuestionsService } from "../../../services";
 
 export default function QuestionModal({
   isModalOpenQuestions,
   closeModal,
-  modalDataQuestions,
+  selectedQuestion,
   isEditable,
-  handleQuestionChange,
-  handleAddQuestion,
-  handleEditClickQuestion,
   createMode,
   closeAddQuestionModal,
-  addRowToPossibleAnswers,
-  removeRowToPossibleAnswers,
-  handlePossibleAnswers,
-  openModal,
+  setIsEditable,
+  setSelectedQuestion
 }) {
+
+  const handleAddQuestion = async () => {
+    let requestData = { ...selectedQuestion };
+    const response = await QuestionsService.addQuestion(requestData);
+    if (response._id) {
+      closeModal();
+      window.alert("Question Added")
+    } else {
+      window.alert("Error while adding question")
+    }
+  };
+
+
+  const handleQuestionChange = (e) => {
+    setSelectedQuestion({
+      ...selectedQuestion,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+
+
+  const handleEditClickQuestion = async () => {
+    if (isEditable) {
+      let requestData = { ...selectedQuestion };
+      const response = await QuestionsService.updateQuestion(requestData);
+      if (response._id) {
+        setIsEditable(false); // Disable edit mode after saving
+      } else {
+        window.alert("API Failed");
+      }
+    } else {
+      setIsEditable(true); // Enable edit mode
+    }
+  };
+
+
+
+  const addRowToPossibleAnswers = () => {
+    let state = { ...selectedQuestion };
+    let answers = state.possibleAnswers;
+    answers.push({ code: "", text: "" });
+    state.possibleAnswers = answers;
+    setSelectedQuestion(state);
+  };
+
+  const removeRowToPossibleAnswers = (index) => {
+    let state = { ...selectedQuestion };
+    let answers = state.possibleAnswers;
+    answers.splice(index, 1);
+    state.possibleAnswers = answers;
+    setSelectedQuestion(state);
+  };
+
+
+  const handlePossibleAnswers = (e, aIndex) => {
+    let state = { ...selectedQuestion };
+    let answers = state.possibleAnswers;
+    let currentAnswer = answers[aIndex];
+
+    if (e.target.name === "possibleAnswersCode") {
+      currentAnswer.code = e.target.value;
+    } else {
+      currentAnswer.text = e.target.value;
+    }
+
+    answers[aIndex] = currentAnswer;
+    state.possibleAnswers = answers;
+    setSelectedQuestion(state);
+  };
+
+
   return (
     <Modal
       BackdropProps={{
@@ -85,7 +153,7 @@ export default function QuestionModal({
           margin="normal"
           sx={{ mt: 2 }}
           name="text"
-          value={modalDataQuestions.text}
+          value={selectedQuestion.text}
           onChange={handleQuestionChange}
         />
 
@@ -98,7 +166,7 @@ export default function QuestionModal({
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
-          value={modalDataQuestions.code}
+          value={selectedQuestion.code}
         />
         <TextField
           label="Instructions"
@@ -109,20 +177,22 @@ export default function QuestionModal({
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
-          value={modalDataQuestions.instructions}
+          value={selectedQuestion.instructions}
         />
 
-        <TextField
-          label="Type"
-          variant="outlined"
-          disabled={!isEditable}
-          onChange={handleQuestionChange}
-          name="type"
-          fullWidth
-          margin="normal"
-          sx={{ mt: 2 }}
-          value={modalDataQuestions.type}
-        />
+        <FormControl fullWidth>
+          <InputLabel>Type</InputLabel>
+          <Select
+            name="type"
+            value={selectedQuestion.type}
+            label="Type"
+            onChange={handleQuestionChange}
+          >
+            <MenuItem value={"TEXT"}>TEXT</MenuItem>
+            <MenuItem value={"VIDEO"}>VIDEO</MenuItem>
+            <MenuItem value={"IMAGE"}>IMAGE</MenuItem>
+          </Select>
+        </FormControl>
 
         <TextField
           label="Media URL"
@@ -133,14 +203,14 @@ export default function QuestionModal({
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
-          value={modalDataQuestions.mediaUrl}
+          value={selectedQuestion.mediaUrl}
         />
 
         <FormControl fullWidth>
           <InputLabel>LLM Used</InputLabel>
           <Select
             name="llmUsed"
-            value={modalDataQuestions.llmUsed}
+            value={selectedQuestion.llmUsed}
             label="LLM Used"
             onChange={handleQuestionChange}
           >
@@ -158,7 +228,7 @@ export default function QuestionModal({
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
-          value={modalDataQuestions.alternateQuestion}
+          value={selectedQuestion.alternateQuestion}
         />
 
         <TextField
@@ -170,7 +240,7 @@ export default function QuestionModal({
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
-          value={modalDataQuestions.questionLogic}
+          value={selectedQuestion.questionLogic}
         />
 
         <TextField
@@ -182,14 +252,14 @@ export default function QuestionModal({
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
-          value={modalDataQuestions.summary}
+          value={selectedQuestion.summary}
         />
 
 
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">Timer</InputLabel>
           <Select
-            value={modalDataQuestions.timer}
+            value={selectedQuestion.timer}
             label="Timer"
             name="timer"
             onChange={handleQuestionChange}
@@ -205,14 +275,14 @@ export default function QuestionModal({
         </FormLabel>
         <RadioGroup
           name="hasCustomPrompt"
-          value={modalDataQuestions.hasCustomPrompt === "true" ? "true" : "false"}
+          value={selectedQuestion.hasCustomPrompt === "true" ? "true" : "false"}
           onChange={handleQuestionChange}
           disabled={!isEditable}
         >
           <FormControlLabel value="true" control={<Radio />} label="Yes" />
           <FormControlLabel value="false" control={<Radio />} label="No" />
         </RadioGroup>
-        {modalDataQuestions.hasCustomPrompt === "true" &&
+        {selectedQuestion.hasCustomPrompt === "true" &&
           <TextField
             label="CustomPrompt"
             variant="outlined"
@@ -222,11 +292,11 @@ export default function QuestionModal({
             fullWidth
             margin="normal"
             sx={{ mt: 2 }}
-            value={modalDataQuestions.customPrompt}
+            value={selectedQuestion.customPrompt}
           />}
         Note : Please remove any item that does not have a value
-        {modalDataQuestions.possibleAnswers &&
-          modalDataQuestions.possibleAnswers.map((answer, aIndex) => (
+        {selectedQuestion.possibleAnswers &&
+          selectedQuestion.possibleAnswers.map((answer, aIndex) => (
             <div style={{ display: "flex" }}>
               <TextField
                 style={{ marginRight: 4 }}

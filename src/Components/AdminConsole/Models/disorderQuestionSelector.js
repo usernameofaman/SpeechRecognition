@@ -17,7 +17,6 @@ export default function Asynchronous({
   data, // ye pata nahi kaha se arha hai! 
   possibleAnswers, // Isme getDisorder ka API Data arha h socha tha mapping mai use krke dekhunga.
   disabled,
-  onChange,
   name,
 }) {
 
@@ -52,11 +51,11 @@ export default function Asynchronous({
   }, [open]);
 
   const defaultValue = possibleAnswers.find((option) => {
-     
+
     return option.possibleAnswerCode === data
   }); // yaha pe red question ko data se compare karrha shayd jo data arha uske sath 
 
-   ; // value is "201"
+  ; // value is "201"
 
   const handleOnChange = (event, value) => {
     try {
@@ -68,12 +67,9 @@ export default function Asynchronous({
       setModalDataDisorder(state);
     }
     catch {
-       ;
+      ;
     }
   };
-
-
-
 
   return (
     <Autocomplete
@@ -101,6 +97,7 @@ export default function Asynchronous({
           {...params}
           label="Select Question"
           InputProps={{
+            style : { color: name === "yellow" ? "#d8d814" : name === "voilet" ? "violet" : name },
             ...params.InputProps,
             endAdornment: (
               <React.Fragment>

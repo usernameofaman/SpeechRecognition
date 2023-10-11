@@ -29,14 +29,14 @@ export default function DisorderModel({
   removeRowToDisorderGreenQuestions,
   addRowToDisorderYellowQuestions,
   removeRowToDisorderYellowQuestions,
-  addRowToDisorderVoiletQuestions,
-  removeRowToDisorderVoiletQuestions,
+  addRowToDisordervoiletQuestions,
+  removeRowToDisordervoiletQuestions,
   addRowToDisorderMaroonQuestions,
   removeRowToDisorderMaroonQuestions,
   setModalDataDisorder,
 }) {
-   ;
-   ;
+  ;
+  ;
 
   useEffect(() => {
     getAllQuestionsData()
@@ -62,11 +62,11 @@ export default function DisorderModel({
     // Apply the function to each question in the array
     const newArray = questionsAll.map(extractInfo);
     const mergedArray = [].concat(...newArray);
-     
+
     setPossibleAnswers(mergedArray)
   }
 
-   
+
 
   return (
     <Modal
@@ -93,10 +93,13 @@ export default function DisorderModel({
           textAlign: "center",
         }}
       >
-        <div style={{display:"flex" , width : "100%", justifyContent : "space-between" , borderBottom : "3px dotted cfcfcf"}}>
+        <div style={{ display: "flex", width: "100%", justifyContent: "space-between", borderBottom: "3px dotted cfcfcf" }}>
           <Typography id="modal-modal-title-disorder" variant="h6" component="h2">
             Disorder Modal
           </Typography>
+          <Button variant="contained" onClick={createMode ? handleAddDisorder : handleEditDisorder}>
+            {isEditable ? "Save" : "Edit"}
+          </Button>
           <Button
             edge="end"
             color="inherit"
@@ -289,7 +292,7 @@ export default function DisorderModel({
           ))}
 
         <TextField
-          label="Voilet Required"
+          label="voilet Required"
           variant="outlined"
           disabled={!isEditable}
           onChange={handleDisorderChange}
@@ -311,10 +314,10 @@ export default function DisorderModel({
                 setData={setModalDataDisorder}
                 name="voilet"
               />
-              <Button onClick={() => addRowToDisorderVoiletQuestions()}>
+              <Button onClick={() => addRowToDisordervoiletQuestions()}>
                 Add
               </Button>
-              <Button onClick={() => removeRowToDisorderVoiletQuestions(aIndex)}>
+              <Button onClick={() => removeRowToDisordervoiletQuestions(aIndex)}>
                 Remove
               </Button>
             </div>
@@ -456,9 +459,6 @@ export default function DisorderModel({
             </div>
           ))} */}
 
-        <Button onClick={createMode ? handleAddDisorder : handleEditDisorder}>
-          {isEditable ? "Save" : "Edit"}
-        </Button>
       </Box>
     </Modal>
   );

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -7,11 +6,7 @@ import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import Typography from "@mui/material/Typography";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CloseIcon from "@mui/icons-material/Close";
 import DisorderModel from "./Models/DisorderModel";
 import QuestionModal from "./Models/QuestionModal";
 import LotModal from "./Models/LotModal";
@@ -23,15 +18,11 @@ import { DisorderService } from "../../services";
 function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   // State for Questions
   const [isModalOpenQuestions, setIsModalOpenQuestions] = useState(false);
-  const [modalDataQuestions, setModalDataQuestions] = useState({});
+  const [selectedQuestion, setSelectedQuestion] = useState({});
   const [isEditable, setIsEditable] = useState(false);
   const [createMode, setCreateMode] = useState(false);
-  const [questionRadiovalue, setQuestionRadioValue] = React.useState(true);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedRowQuestion, setSelectedRowQuestion] = useState(null);
-
-   ;
-  
 
   // State for LOTS
   const [selectedRowLots, setSelectedRowLots] = useState(null);
@@ -45,7 +36,6 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
 
 
   const handleDeleteClick = (index) => {
-    
     setSelectedRowLots(allLots[index])
     setOpenDeleteDialog(true);
     setSelectedRowQuestion(allQuestionsData[index])
@@ -58,53 +48,11 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     setOpenDeleteDialog(false);
   };
 
-  const handleQuestionChange = (e) => {
-     ;
-    setQuestionRadioValue(e.target.value);
-    setModalDataQuestions({
-      ...modalDataQuestions,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   const handleLotChange = (e) => {
-     ;
     setModalDataLots({
       ...modalDataLots,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handlePossibleAnswers = (e, aIndex) => {
-    let state = { ...modalDataQuestions };
-    let answers = state.possibleAnswers;
-    let currentAnswer = answers[aIndex];
-
-    if (e.target.name === "possibleAnswersCode") {
-      currentAnswer.code = e.target.value;
-    } else {
-      currentAnswer.text = e.target.value;
-    }
-
-    answers[aIndex] = currentAnswer;
-    state.possibleAnswers = answers;
-    setModalDataQuestions(state);
-  };
-
-  const addRowToPossibleAnswers = () => {
-    let state = { ...modalDataQuestions };
-    let answers = state.possibleAnswers;
-    answers.push({ code: "", text: "" });
-    state.possibleAnswers = answers;
-    setModalDataQuestions(state);
-  };
-
-  const removeRowToPossibleAnswers = (index) => {
-    let state = { ...modalDataQuestions };
-    let answers = state.possibleAnswers;
-    answers.splice(index, 1);
-    state.possibleAnswers = answers;
-    setModalDataQuestions(state);
   };
 
   const addRowToLotQuestions = () => {
@@ -123,47 +71,65 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     setModalDataLots(state);
   };
 
+  //SEETHIS
+
+  // const handleDisorderQuestions = (e, qIndex, category) => {
+  //   const updatedModalDataDisorder = { ...modalDataDisorder };
+
+  //   if (category === "redQuestions") {
+  //     updatedModalDataDisorder.redQuestions = [
+  //       ...modalDataDisorder.redQuestions,
+  //     ];
+  //     updatedModalDataDisorder.redQuestions[qIndex] = e.target.value;
+  //   } else if (category === "blackQuestions") {
+  //     updatedModalDataDisorder.blackQuestions = [
+  //       ...modalDataDisorder.blackQuestions,
+  //     ];
+  //     updatedModalDataDisorder.blackQuestions[qIndex] = e.target.value;
+  //   } else if (category === "blueQuestions") {
+  //     updatedModalDataDisorder.blueQuestions = [
+  //       ...modalDataDisorder.blueQuestions,
+  //     ];
+  //     updatedModalDataDisorder.blueQuestions[qIndex] = e.target.value;
+  //   } else if (category === "greenQuestions") {
+  //     updatedModalDataDisorder.greenQuestions = [
+  //       ...modalDataDisorder.greenQuestions,
+  //     ];
+  //     updatedModalDataDisorder.greenQuestions[qIndex] = e.target.value;
+  //   } else if (category === "yellowQuestions") {
+  //     updatedModalDataDisorder.yellowQuestions = [
+  //       ...modalDataDisorder.yellowQuestions,
+  //     ];
+  //     updatedModalDataDisorder.yellowQuestions[qIndex] = e.target.value;
+  //   } else if (category === "voiletQuestions") {
+  //     updatedModalDataDisorder.voiletQuestions = [
+  //       ...modalDataDisorder.voiletQuestions,
+  //     ];
+  //     updatedModalDataDisorder.voiletQuestions[qIndex] = e.target.value;
+  //   } else if (category === "maroonQuestions") {
+  //     updatedModalDataDisorder.maroonQuestions = [
+  //       ...modalDataDisorder.maroonQuestions,
+  //     ];
+  //     updatedModalDataDisorder.maroonQuestions[qIndex] = e.target.value;
+  //   }
+
+
+  //   setModalDataDisorder(updatedModalDataDisorder);
+  // };
+
   const handleDisorderQuestions = (e, qIndex, category) => {
     const updatedModalDataDisorder = { ...modalDataDisorder };
-
-    if (category === "redQuestions") {
-      updatedModalDataDisorder.redQuestions = [
-        ...modalDataDisorder.redQuestions,
-      ];
-      updatedModalDataDisorder.redQuestions[qIndex] = e.target.value;
-    } else if (category === "blackQuestions") {
-      updatedModalDataDisorder.blackQuestions = [
-        ...modalDataDisorder.blackQuestions,
-      ];
-      updatedModalDataDisorder.blackQuestions[qIndex] = e.target.value;
-    } else if (category === "blueQuestions") {
-      updatedModalDataDisorder.blueQuestions = [
-        ...modalDataDisorder.blueQuestions,
-      ];
-      updatedModalDataDisorder.blueQuestions[qIndex] = e.target.value;
-    } else if (category === "greenQuestions") {
-      updatedModalDataDisorder.greenQuestions = [
-        ...modalDataDisorder.greenQuestions,
-      ];
-      updatedModalDataDisorder.greenQuestions[qIndex] = e.target.value;
-    } else if (category === "yellowQuestions") {
-      updatedModalDataDisorder.yellowQuestions = [
-        ...modalDataDisorder.yellowQuestions,
-      ];
-      updatedModalDataDisorder.yellowQuestions[qIndex] = e.target.value;
-    } else if (category === "violetQuestions") {
-      updatedModalDataDisorder.violetQuestions = [
-        ...modalDataDisorder.violetQuestions,
-      ];
-      updatedModalDataDisorder.violetQuestions[qIndex] = e.target.value;
-    } else if (category === "maroonQuestions") {
-      updatedModalDataDisorder.maroonQuestions = [
-        ...modalDataDisorder.maroonQuestions,
-      ];
-      updatedModalDataDisorder.maroonQuestions[qIndex] = e.target.value;
+  
+    // Ensure the category exists in modalDataDisorder
+    if (!updatedModalDataDisorder.hasOwnProperty(category)) {
+      console.error(`Invalid category: ${category}`);
+      return;
     }
-    
-
+    updatedModalDataDisorder[category] = [
+      ...updatedModalDataDisorder[category],
+    ];
+    updatedModalDataDisorder[category][qIndex] = e.target.value;
+  
     setModalDataDisorder(updatedModalDataDisorder);
   };
 
@@ -203,11 +169,11 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     state.yellowQuestions = answers;
     setModalDataDisorder(state);
   };
-  const addRowToDisorderVioletQuestions = () => {
+  const addRowToDisordervoiletQuestions = () => {
     let state = { ...modalDataDisorder };
-    let answers = state.violetQuestions;
+    let answers = state.voiletQuestions;
     answers.push("");
-    state.violetQuestions = answers;
+    state.voiletQuestions = answers;
     setModalDataDisorder(state);
   };
   const addRowToDisorderMaroonQuestions = () => {
@@ -253,11 +219,11 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     state.yellowQuestions = answers;
     setModalDataDisorder(state);
   };
-  const removeRowToDisorderVioletQuestions = (index) => {
+  const removeRowToDisordervoiletQuestions = (index) => {
     let state = { ...modalDataDisorder };
-    let answers = state.violetQuestions;
+    let answers = state.voiletQuestions;
     answers.splice(index, 1);
-    state.violetQuestions = answers;
+    state.voiletQuestions = answers;
     setModalDataDisorder(state);
   };
   const removeRowToDisorderMaroonQuestions = (index) => {
@@ -268,7 +234,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     setModalDataDisorder(state);
   };
   const handleDisorderChange = (e) => {
-     ;
+    ;
     setModalDataDisorder({
       ...modalDataDisorder,
       [e.target.name]: e.target.value,
@@ -309,28 +275,12 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
 
   };
 
-
-  const handleEditClickQuestion = async () => {
-    if (isEditable) {
-      let requestData = { ...modalDataQuestions };
-      const response = await QuestionsService.updateQuestion(requestData);
-
-      if (response._id) {
-        setIsEditable(false); // Disable edit mode after saving
-      } else {
-        window.alert("API Failed");
-      }
-    } else {
-      setIsEditable(true); // Enable edit mode
-    }
-  };
-
   const handleEditClickLot = async () => {
     if (isEditable) {
       let requestData = { ...modalDataLots };
-       ;
+      ;
       const response = await LotService.updateLot(requestData);
-       ;
+      ;
       if (response._id) {
         setIsEditable(false); // Disable edit mode after saving
       } else {
@@ -342,7 +292,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   };
 
   const startAddQuestion = () => {
-    setModalDataQuestions({  timer : "MEDIUM" ,possibleAnswers: [{ text: "", code: "" }] });
+    setSelectedQuestion({ timer: "MEDIUM", possibleAnswers: [{ text: "", code: "" }] });
     setCreateMode(true);
     setModalDataLots({ questions: [""] });
     setCreateMode(true);
@@ -388,16 +338,10 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     setIsModalOpenDisorder(false);
   };
 
-  const handleAddQuestion = async () => {
-    let requestData = { ...modalDataQuestions };
-    const response = await QuestionsService.addQuestion(requestData);
-     ;
-  };
-
   const handleAddDisorder = async () => {
     let requestData = { ...modalDataDisorder };
     const response = await DisorderService.addDisorder(requestData);
-     ;
+    ;
   };
 
   const handleEditDisorder = async () => {
@@ -418,17 +362,17 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   // Function to open the modal
   const openModal = (index) => {
     if (activeTab === "Questions") {
-       ;
-      setModalDataQuestions(allQuestionsData[index]);
+      ;
+      setSelectedQuestion(allQuestionsData[index]);
       setIsModalOpenQuestions(true);
     } else if (activeTab === "LOTS") {
-       ;
+      ;
       // setSelectedRowLots(index);
       setModalDataLots(allLots[index]);
       setIsModalOpenLots(true);
     } else if (activeTab === "Disorder") {
       // setSelectedRowDisorder(index);
-       
+
       let newObject = allDisorderData[index]
       const modifiedObject = Object.keys(newObject).reduce((acc, key) => {
         if (Array.isArray(newObject[key]) && newObject[key].length === 0) {
@@ -438,7 +382,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
         }
         return acc;
       }, {});
-  
+
       setModalDataDisorder(modifiedObject);
       setIsModalOpenDisorder(true);
     }
@@ -480,7 +424,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
                 <TableCell>Name</TableCell>
                 <TableCell>Red Required</TableCell>
                 <TableCell>Action</TableCell>
-              </TableRow> 
+              </TableRow>
             )}
           </TableHead>
           <TableBody>
@@ -549,7 +493,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
 
       {/* Disorder Modal */}
       <DisorderModel
-      setModalDataDisorder={setModalDataDisorder}
+        setModalDataDisorder={setModalDataDisorder}
         isModalOpenDisorder={isModalOpenDisorder}
         closeModal={closeModal}
         modalDataDisorder={modalDataDisorder}
@@ -572,20 +516,16 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
 
       {/* Question Modal */}
       <QuestionModal
+        setIsEditable={setIsEditable}
         isModalOpenQuestions={isModalOpenQuestions}
-        closeModal={closeModal}
-        modalDataQuestions={modalDataQuestions}
-        handleQuestionChange={handleQuestionChange}
+        closeModal={closeAddQuestionModal}
+        selectedQuestion={selectedQuestion}
         isEditable={isEditable}
-        handleAddQuestion={handleAddQuestion}
-        handleEditClickQuestion={handleEditClickQuestion}
         createMode={createMode}
         closeAddQuestionModal={closeAddQuestionModal}
         startAddQuestion={startAddQuestion}
         openModal={openModal}
-        addRowToPossibleAnswers={addRowToPossibleAnswers}
-        removeRowToPossibleAnswers={removeRowToPossibleAnswers}
-        handlePossibleAnswers={handlePossibleAnswers}
+        setSelectedQuestion={setSelectedQuestion}
       />
 
       {/* Lot Modal */}
