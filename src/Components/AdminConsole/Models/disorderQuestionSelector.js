@@ -12,10 +12,10 @@ function sleep(duration) {
 }
 
 export default function Asynchronous({
-  setModalDisorder, 
+  setModalDisorder,
   modalDataDisorder, //ModalDisorder which Contains all the Data 
   data, // ye pata nahi kaha se arha hai! 
-  questions, // Isme getDisorder ka API Data arha h socha tha mapping mai use krke dekhunga.
+  possibleAnswers, // Isme getDisorder ka API Data arha h socha tha mapping mai use krke dekhunga.
   disabled,
   onChange,
 }) {
@@ -23,37 +23,40 @@ export default function Asynchronous({
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const loading = open && options.length === 0;
-  
+
   React.useEffect(() => {
     let active = true;
-    
+
     if (!loading) {
       return undefined;
     }
-    
+
     (async () => {
       await sleep(1e3); // For demo purposes.
-      
+
       if (active) {
-        setOptions([...questions]);
+        setOptions([...possibleAnswers]);
       }
     })();
-    
+
     return () => {
       active = false;
     };
-  }, [loading, questions]);
-  
+  }, [loading, possibleAnswers]);
+
   React.useEffect(() => {
     if (!open) {
       setOptions([]);
     }
   }, [open]);
-  
-  const defaultValue = questions.find((option) => option.redQuestions === data); // yaha pe red question ko data se compare karrha shayd jo data arha uske sath 
 
-  console.log(data ,"=" , modalDataDisorder.redQuestions); // value is "201"
-  
+  const defaultValue = possibleAnswers.find((option) => {
+    console.log("Result" ,option.possibleAnswerCode === data , option.possibleAnswerCode , data )
+    return option.possibleAnswerCode === data
+  }); // yaha pe red question ko data se compare karrha shayd jo data arha uske sath 
+
+  console.log(defaultValue, data); // value is "201"
+
   const handleOnChange = (event, value) => {
     //TODO
     // try {
@@ -83,7 +86,7 @@ export default function Asynchronous({
         setOpen(false);
       }}
       isOptionEqualToValue={(option, value) => option.redQuestions === data}
-      getOptionLabel={(option) => `${option.code} ${option.text}`} // Display both redQuestions and name
+      getOptionLabel={(option) => `${option.possibleAnswerCode} ${option.possibleAnswerText} ${option.questionText}`} // Display both redQuestions and name
       options={options}
       loading={loading}
       onChange={handleOnChange}

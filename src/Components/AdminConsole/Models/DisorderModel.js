@@ -43,10 +43,27 @@ export default function DisorderModel({
   }, [])
 
 
-  const [questions, setQuestions] = useState([])
+  const [possibleAnswers, setPossibleAnswers] = useState([])
   const getAllQuestionsData = async () => {
     const questionsAll = await QuestionsService.getAllQuestionsData();
-    setQuestions(questionsAll)
+
+    const extractInfo = (question) => {
+      const { text: questionText, possibleAnswers } = question;
+
+      // Create a separate object for each possible answer
+      const extractedObjects = possibleAnswers.map((answer) => ({
+        questionText,
+        possibleAnswerCode: answer.code,
+        possibleAnswerText: answer.text,
+      }));
+
+      return extractedObjects;
+    };
+    // Apply the function to each question in the array
+    const newArray = questionsAll.map(extractInfo);
+    const mergedArray = [].concat(...newArray);
+    console.log("MAPPING", mergedArray)
+    setPossibleAnswers(mergedArray)
   }
 
   console.log("Current Disorder", modalDataDisorder)
@@ -128,7 +145,7 @@ export default function DisorderModel({
                 modalDataDisorder={modalDataDisorder}
                 data={answer}
                 disabled={!isEditable}
-                questions={questions}
+                possibleAnswers={possibleAnswers}
                 setData={setModalDataDisorder}
               />
               <Button onClick={() => addRowToDisorderRedQuestions()}>
@@ -139,6 +156,7 @@ export default function DisorderModel({
               </Button>
             </div>
           ))}
+{/*           
         <TextField
           label="Blue Required"
           variant="outlined"
@@ -293,7 +311,7 @@ export default function DisorderModel({
               </Button>
             </div>
           ))}
-                 <TextField
+        <TextField
           label="Black Required"
           variant="outlined"
           disabled={!isEditable}
@@ -323,7 +341,7 @@ export default function DisorderModel({
                 Remove
               </Button>
             </div>
-          ))}
+          ))} */}
 
         {/* {modalDataDisorder.redQuestions &&
           modalDataDisorder.redQuestions.map((answer, qIndex) => (
