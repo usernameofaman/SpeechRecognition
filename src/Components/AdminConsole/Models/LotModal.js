@@ -79,17 +79,20 @@ export default function LotModal({
           textAlign: "center",
         }}
       >
-        <Typography id="modal-modal-title-lots" variant="h6" component="h2">
-          LOTS Modal
-        </Typography>
-        <Button
-          edge="end"
-          color="inherit"
-          aria-label="close"
-          onClick={closeAddLotModal}
-        >
-          <CloseIcon />
-        </Button>
+        <div style={{ display: "flex", width: "100%", justifyContent: "space-between", borderBottom: "3px dotted cfcfcf" }}>
+
+          <Typography id="modal-modal-title-lots" variant="h6" component="h2">
+            LOTS Modal
+          </Typography>
+          <Button
+            edge="end"
+            color="inherit"
+            aria-label="close"
+            onClick={closeAddLotModal}
+          >
+            <CloseIcon />
+          </Button>
+        </div>
         <TextField
           label="Lot Number"
           variant="outlined"
@@ -115,7 +118,7 @@ export default function LotModal({
 
         {modalDataLots.questions &&
           modalDataLots.questions.map((answer, aIndex) => (
-            <div style={{ display: "flex" , width:"100%" }}>
+            <div style={{ display: "flex", width: "100%" }}>
               <AutoCompleteLot setModalDataLots={setModalDataLots} modalDataLots={modalDataLots} data={answer} disabled={!isEditable} questions={questions} setData={setModalDataLots} />
               <Button onClick={() => addRowToLotQuestions()}>Add</Button>
               <Button onClick={() => removeRowToLotQuestions(aIndex)}>

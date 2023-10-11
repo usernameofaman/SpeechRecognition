@@ -14,7 +14,7 @@ export default function DeleteDialog({
   deleteDisorder,
   activeTab,
 }) {
-  console.log("activetab in dlt:", activeTab);
+   ;
   return (
     <Dialog
       open={openDeleteDialog}
@@ -23,7 +23,7 @@ export default function DeleteDialog({
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">
-        {"Use Google's location service?"}
+        {"Delet Confirmation"}
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">

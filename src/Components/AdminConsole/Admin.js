@@ -66,7 +66,7 @@ export default function ResponsiveDrawer(props) {
         switch (activeTab) {
           case "Questions":
             setAllQuestionsData(data);
-            console.log(setAllQuestionsData, "hui set ke nahi");
+             ;
             break;
           case "LOTS":
             setAllLots(data); // Check if this function name is correct

@@ -30,7 +30,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedRowQuestion, setSelectedRowQuestion] = useState(null);
 
-  console.log("createMode", createMode, modalDataQuestions);
+   ;
   
 
   // State for LOTS
@@ -59,7 +59,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   };
 
   const handleQuestionChange = (e) => {
-    console.log(modalDataQuestions);
+     ;
     setQuestionRadioValue(e.target.value);
     setModalDataQuestions({
       ...modalDataQuestions,
@@ -68,7 +68,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   };
 
   const handleLotChange = (e) => {
-    console.log(modalDataLots);
+     ;
     setModalDataLots({
       ...modalDataLots,
       [e.target.name]: e.target.value,
@@ -268,7 +268,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     setModalDataDisorder(state);
   };
   const handleDisorderChange = (e) => {
-    console.log(modalDataDisorder);
+     ;
     setModalDataDisorder({
       ...modalDataDisorder,
       [e.target.name]: e.target.value,
@@ -328,9 +328,9 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   const handleEditClickLot = async () => {
     if (isEditable) {
       let requestData = { ...modalDataLots };
-      console.log("reqD :", requestData._id);
+       ;
       const response = await LotService.updateLot(requestData);
-      console.log("resD :", response);
+       ;
       if (response._id) {
         setIsEditable(false); // Disable edit mode after saving
       } else {
@@ -342,7 +342,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   };
 
   const startAddQuestion = () => {
-    setModalDataQuestions({ possibleAnswers: [{ text: "", code: "" }] });
+    setModalDataQuestions({  timer : "MEDIUM" ,possibleAnswers: [{ text: "", code: "" }] });
     setCreateMode(true);
     setModalDataLots({ questions: [""] });
     setCreateMode(true);
@@ -391,13 +391,13 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   const handleAddQuestion = async () => {
     let requestData = { ...modalDataQuestions };
     const response = await QuestionsService.addQuestion(requestData);
-    console.log(response);
+     ;
   };
 
   const handleAddDisorder = async () => {
     let requestData = { ...modalDataDisorder };
     const response = await DisorderService.addDisorder(requestData);
-    console.log(response);
+     ;
   };
 
   const handleEditDisorder = async () => {
@@ -418,17 +418,17 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   // Function to open the modal
   const openModal = (index) => {
     if (activeTab === "Questions") {
-      console.log(index, allQuestionsData[index]);
+       ;
       setModalDataQuestions(allQuestionsData[index]);
       setIsModalOpenQuestions(true);
     } else if (activeTab === "LOTS") {
-      console.log(index, allLots[index]);
+       ;
       // setSelectedRowLots(index);
       setModalDataLots(allLots[index]);
       setIsModalOpenLots(true);
     } else if (activeTab === "Disorder") {
       // setSelectedRowDisorder(index);
-      console.log("hellow",allDisorderData[index])
+       
       let newObject = allDisorderData[index]
       const modifiedObject = Object.keys(newObject).reduce((acc, key) => {
         if (Array.isArray(newObject[key]) && newObject[key].length === 0) {

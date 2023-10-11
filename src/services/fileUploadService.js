@@ -19,6 +19,6 @@ async function fileUpload(requestData) {
       });
       return response;
     } catch(error) {
-      console.log(error)
+       
     }
 }

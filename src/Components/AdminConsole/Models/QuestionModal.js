@@ -52,22 +52,30 @@ export default function QuestionModal({
           textAlign: "center",
         }}
       >
-        <Typography
-          id="modal-modal-title-questions"
-          variant="h6"
-          component="h2"
-        >
-          Questions Modal
-        </Typography>
+        <div style={{ display: "flex", width: "100%", justifyContent: "space-between", borderBottom: "3px dotted cfcfcf" }}>
 
-        <Button
-          edge="end"
-          color="inherit"
-          aria-label="close"
-          onClick={closeAddQuestionModal}
-        >
-          <CloseIcon />
-        </Button>
+          <Typography
+            id="modal-modal-title-questions"
+            variant="h6"
+            component="h2"
+          >
+            Questions Modal
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={createMode ? handleAddQuestion : handleEditClickQuestion}
+          >
+            {isEditable ? "Save" : "Edit"}
+          </Button>
+          <Button
+            edge="end"
+            color="inherit"
+            aria-label="close"
+            onClick={closeAddQuestionModal}
+          >
+            <CloseIcon />
+          </Button>
+        </div>
 
         <TextField
           label="Text"
@@ -92,19 +100,6 @@ export default function QuestionModal({
           sx={{ mt: 2 }}
           value={modalDataQuestions.code}
         />
-
-        <TextField
-          label="Color"
-          variant="outlined"
-          disabled={!isEditable}
-          onChange={handleQuestionChange}
-          name="color"
-          fullWidth
-          margin="normal"
-          sx={{ mt: 2 }}
-          value={modalDataQuestions.color}
-        />
-
         <TextField
           label="Instructions"
           variant="outlined"
@@ -190,43 +185,46 @@ export default function QuestionModal({
           value={modalDataQuestions.summary}
         />
 
-        <TextField
-          label="Timer"
-          variant="outlined"
-          disabled={!isEditable}
-          onChange={handleQuestionChange}
-          name="timer"
-          fullWidth
-          margin="normal"
-          sx={{ mt: 2 }}
-          value={modalDataQuestions.timer}
-        />
+
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Timer</InputLabel>
+          <Select
+            value={modalDataQuestions.timer}
+            label="Timer"
+            name="timer"
+            onChange={handleQuestionChange}
+          >
+            <MenuItem value={"LOW"}>Low</MenuItem>
+            <MenuItem value={"MEDIUM"}>Medium</MenuItem>
+            <MenuItem value={"HIGH"}>High</MenuItem>
+          </Select>
+        </FormControl>
 
         <FormLabel id="demo-controlled-radio-buttons-group">
-          hasCustomPrompt
+          Does this question require custom prompt ?
         </FormLabel>
         <RadioGroup
           name="hasCustomPrompt"
-          value={modalDataQuestions.hasCustomPrompt ? "true" : "false"}
+          value={modalDataQuestions.hasCustomPrompt === "true" ? "true" : "false"}
           onChange={handleQuestionChange}
           disabled={!isEditable}
         >
-          <FormControlLabel value="true" control={<Radio />} label="true" />
-          <FormControlLabel value="false" control={<Radio />} label="false" />
+          <FormControlLabel value="true" control={<Radio />} label="Yes" />
+          <FormControlLabel value="false" control={<Radio />} label="No" />
         </RadioGroup>
-
-        <TextField
-          label="CustomPrompt"
-          variant="outlined"
-          disabled={!isEditable}
-          onChange={handleQuestionChange}
-          name="customPrompt"
-          fullWidth
-          margin="normal"
-          sx={{ mt: 2 }}
-          value={modalDataQuestions.customPrompt}
-        />
-
+        {modalDataQuestions.hasCustomPrompt === "true" &&
+          <TextField
+            label="CustomPrompt"
+            variant="outlined"
+            disabled={!isEditable}
+            onChange={handleQuestionChange}
+            name="customPrompt"
+            fullWidth
+            margin="normal"
+            sx={{ mt: 2 }}
+            value={modalDataQuestions.customPrompt}
+          />}
+        Note : Please remove any item that does not have a value
         {modalDataQuestions.possibleAnswers &&
           modalDataQuestions.possibleAnswers.map((answer, aIndex) => (
             <div style={{ display: "flex" }}>
@@ -264,13 +262,6 @@ export default function QuestionModal({
               </Button>
             </div>
           ))}
-
-        <Button
-          onClick={createMode ? handleAddQuestion : handleEditClickQuestion}
-        >
-          {isEditable ? "Save" : "Edit"}
-        </Button>
-
         {/* <Button >
         Delete
       </Button> */}

@@ -33,7 +33,7 @@ export default function Asynchronous({
     }
 
     (async () => {
-      await sleep(1e3); // For demo purposes.
+      await sleep(1); // For demo purposes.
 
       if (active) {
         setOptions([...possibleAnswers]);
@@ -52,11 +52,11 @@ export default function Asynchronous({
   }, [open]);
 
   const defaultValue = possibleAnswers.find((option) => {
-    console.log("Result", option.possibleAnswerCode === data, option.possibleAnswerCode, data)
+     
     return option.possibleAnswerCode === data
   }); // yaha pe red question ko data se compare karrha shayd jo data arha uske sath 
 
-  console.log(defaultValue, data); // value is "201"
+   ; // value is "201"
 
   const handleOnChange = (event, value) => {
     try {
@@ -68,7 +68,7 @@ export default function Asynchronous({
       setModalDataDisorder(state);
     }
     catch {
-      console.log("invalid value");
+       ;
     }
   };
 

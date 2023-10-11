@@ -29,7 +29,7 @@ export default function Session({ voice }) {
         try {
             getQuestions();
         } catch {
-            console.log("Error")
+             
         }
     }, [])
 
@@ -64,7 +64,7 @@ export default function Session({ voice }) {
 
 
     const speak = ({ text, onEnd }) => {
-        console.log("Speaking", text)
+         
         const speakObj = new SpeechSynthesisUtterance()
         speakObj.text = text;
         speakObj.voice = voice;

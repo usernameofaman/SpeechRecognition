@@ -12,7 +12,7 @@ function sleep(duration) {
 }
 
 export default function Asynchronous({ setModalDataLots, modalDataLots, data, questions, disabled, onChange }) {
-    console.log(data) // value is "201"
+      // value is "201"
     const [open, setOpen] = React.useState(false);
     const [options, setOptions] = React.useState([]);
     const loading = open && options.length === 0;
@@ -25,7 +25,7 @@ export default function Asynchronous({ setModalDataLots, modalDataLots, data, qu
         }
 
         (async () => {
-            await sleep(1e3); // For demo purposes.
+            await sleep(1); // For demo purposes.
 
             if (active) {
                 setOptions([...questions]);
@@ -52,14 +52,14 @@ export default function Asynchronous({ setModalDataLots, modalDataLots, data, qu
         try{
             let state = { ...modalDataLots };
         let answers = state.questions;
-        console.log(answers)
+         
         let index = answers.indexOf(data);
         answers[index] = value.code
         state.questions = answers;
         setModalDataLots(state);
         }
         catch{
-            console.log("invalid value")
+             
         }
     };
 

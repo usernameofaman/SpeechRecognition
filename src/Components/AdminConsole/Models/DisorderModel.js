@@ -35,8 +35,8 @@ export default function DisorderModel({
   removeRowToDisorderMaroonQuestions,
   setModalDataDisorder,
 }) {
-  console.log(modalDataDisorder.questions, "modalDataDisorder.ques consolelog");
-  console.log(isEditable, "isEditable State||", createMode, "createMode");
+   ;
+   ;
 
   useEffect(() => {
     getAllQuestionsData()
@@ -62,11 +62,11 @@ export default function DisorderModel({
     // Apply the function to each question in the array
     const newArray = questionsAll.map(extractInfo);
     const mergedArray = [].concat(...newArray);
-    console.log("MAPPING", mergedArray)
+     
     setPossibleAnswers(mergedArray)
   }
 
-  console.log("Current Disorder", modalDataDisorder)
+   
 
   return (
     <Modal
@@ -93,17 +93,19 @@ export default function DisorderModel({
           textAlign: "center",
         }}
       >
-        <Typography id="modal-modal-title-disorder" variant="h6" component="h2">
-          Disorder Modal
-        </Typography>
-        <Button
-          edge="end"
-          color="inherit"
-          aria-label="close"
-          onClick={closeAddDisorderModal}
-        >
-          <CloseIcon />
-        </Button>
+        <div style={{display:"flex" , width : "100%", justifyContent : "space-between" , borderBottom : "3px dotted cfcfcf"}}>
+          <Typography id="modal-modal-title-disorder" variant="h6" component="h2">
+            Disorder Modal
+          </Typography>
+          <Button
+            edge="end"
+            color="inherit"
+            aria-label="close"
+            onClick={closeAddDisorderModal}
+          >
+            <CloseIcon />
+          </Button>
+        </div>
         <TextField
           label="Name"
           variant="outlined"
@@ -157,7 +159,7 @@ export default function DisorderModel({
               </Button>
             </div>
           ))}
-          
+
         <TextField
           label="Blue Required"
           variant="outlined"
