@@ -147,6 +147,7 @@ export default function DisorderModel({
                 disabled={!isEditable}
                 possibleAnswers={possibleAnswers}
                 setData={setModalDataDisorder}
+                name="red"
               />
               <Button onClick={() => addRowToDisorderRedQuestions()}>
                 Add
@@ -156,7 +157,7 @@ export default function DisorderModel({
               </Button>
             </div>
           ))}
-{/*           
+          
         <TextField
           label="Blue Required"
           variant="outlined"
@@ -166,7 +167,7 @@ export default function DisorderModel({
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
-          value={modalDataDisorder?.redRequired}
+          value={modalDataDisorder?.blueRequired}
         />
         {modalDataDisorder.blueQuestions &&
           modalDataDisorder.blueQuestions.map((answer, aIndex) => (
@@ -176,8 +177,9 @@ export default function DisorderModel({
                 modalDataDisorder={modalDataDisorder}
                 data={answer}
                 disabled={!isEditable}
-                questions={modalDataDisorder.blueQuestions}
+                possibleAnswers={possibleAnswers}
                 setData={setModalDataDisorder}
+                name="blue"
               />
               <Button onClick={() => addRowToDisorderBlueQuestions()}>
                 Add
@@ -197,7 +199,7 @@ export default function DisorderModel({
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
-          value={modalDataDisorder?.redRequired}
+          value={modalDataDisorder?.blackRequired}
         />
         {modalDataDisorder.blackQuestions &&
           modalDataDisorder.blackQuestions.map((answer, aIndex) => (
@@ -207,8 +209,9 @@ export default function DisorderModel({
                 modalDataDisorder={modalDataDisorder}
                 data={answer}
                 disabled={!isEditable}
-                questions={modalDataDisorder.blackQuestions}
+                possibleAnswers={possibleAnswers}
                 setData={setModalDataDisorder}
+                name="black"
               />
               <Button onClick={() => addRowToDisorderBlackQuestions()}>
                 Add
@@ -219,15 +222,15 @@ export default function DisorderModel({
             </div>
           ))}
         <TextField
-          label="Black Required"
+          label="Green Required"
           variant="outlined"
           disabled={!isEditable}
           onChange={handleDisorderChange}
-          name="blackRequired"
+          name="greenRequired"
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
-          value={modalDataDisorder?.redRequired}
+          value={modalDataDisorder?.greenRequired}
         />
 
         {modalDataDisorder.greenQuestions &&
@@ -238,8 +241,9 @@ export default function DisorderModel({
                 modalDataDisorder={modalDataDisorder}
                 data={answer}
                 disabled={!isEditable}
-                questions={modalDataDisorder.greenQuestions}
+                possibleAnswers={possibleAnswers}
                 setData={setModalDataDisorder}
+                name="green"
               />
               <Button onClick={() => addRowToDisorderGreenQuestions()}>
                 Add
@@ -250,15 +254,15 @@ export default function DisorderModel({
             </div>
           ))}
         <TextField
-          label="Black Required"
+          label="Yellow Required"
           variant="outlined"
           disabled={!isEditable}
           onChange={handleDisorderChange}
-          name="blackRequired"
+          name="yellowRequired"
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
-          value={modalDataDisorder?.redRequired}
+          value={modalDataDisorder?.yellowRequired}
         />
 
         {modalDataDisorder.yellowQuestions &&
@@ -269,8 +273,9 @@ export default function DisorderModel({
                 modalDataDisorder={modalDataDisorder}
                 data={answer}
                 disabled={!isEditable}
-                questions={modalDataDisorder.yellowQuestions}
+                possibleAnswers={possibleAnswers}
                 setData={setModalDataDisorder}
+                name="yellow"
               />
               <Button onClick={() => addRowToDisorderYellowQuestions()}>
                 Add
@@ -282,15 +287,15 @@ export default function DisorderModel({
           ))}
 
         <TextField
-          label="Black Required"
+          label="Voilet Required"
           variant="outlined"
           disabled={!isEditable}
           onChange={handleDisorderChange}
-          name="blackRequired"
+          name="voiletRequired"
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
-          value={modalDataDisorder?.redRequired}
+          value={modalDataDisorder?.voiletRequired}
         />
         {modalDataDisorder.voiletQuestions &&
           modalDataDisorder.voiletQuestions.map((answer, aIndex) => (
@@ -300,8 +305,9 @@ export default function DisorderModel({
                 modalDataDisorder={modalDataDisorder}
                 data={answer}
                 disabled={!isEditable}
-                questions={modalDataDisorder.redQuestions}
+                possibleAnswers={possibleAnswers}
                 setData={setModalDataDisorder}
+                name="voilet"
               />
               <Button onClick={() => addRowToDisorderVoiletQuestions()}>
                 Add
@@ -312,7 +318,7 @@ export default function DisorderModel({
             </div>
           ))}
         <TextField
-          label="Black Required"
+          label="Maroon Required"
           variant="outlined"
           disabled={!isEditable}
           onChange={handleDisorderChange}
@@ -320,7 +326,7 @@ export default function DisorderModel({
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
-          value={modalDataDisorder?.redRequired}
+          value={modalDataDisorder?.maroonRequired}
         />
 
         {modalDataDisorder.maroonQuestions &&
@@ -331,8 +337,9 @@ export default function DisorderModel({
                 modalDataDisorder={modalDataDisorder}
                 data={answer}
                 disabled={!isEditable}
-                questions={modalDataDisorder.maroonQuestions}
+                possibleAnswers={possibleAnswers}
                 setData={setModalDataDisorder}
+                name="maroon"
               />
               <Button onClick={() => addRowToDisorderMaroonQuestions()}>
                 Add
@@ -341,7 +348,7 @@ export default function DisorderModel({
                 Remove
               </Button>
             </div>
-          ))} */}
+          ))}
 
         {/* {modalDataDisorder.redQuestions &&
           modalDataDisorder.redQuestions.map((answer, qIndex) => (

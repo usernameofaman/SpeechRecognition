@@ -9,6 +9,8 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
+import { FormControl, MenuItem, Select } from "@mui/material";
+import { InputLabel } from "@mui/material";
 
 export default function QuestionModal({
   isModalOpenQuestions,
@@ -138,6 +140,19 @@ export default function QuestionModal({
           sx={{ mt: 2 }}
           value={modalDataQuestions.mediaUrl}
         />
+
+        <FormControl fullWidth>
+          <InputLabel>LLM Used</InputLabel>
+          <Select
+            name="llmUsed"
+            value={modalDataQuestions.llmUsed}
+            label="LLM Used"
+            onChange={handleQuestionChange}
+          >
+            <MenuItem value={"SMALL"}>Small</MenuItem>
+            <MenuItem value={"LARGE"}>Large</MenuItem>
+          </Select>
+        </FormControl>
 
         <TextField
           label="Alternative Question"

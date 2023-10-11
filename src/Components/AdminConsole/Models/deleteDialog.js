@@ -31,7 +31,7 @@ export default function DeleteDialog({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        {activeTab === "Question" && (
+        {activeTab === "Questions" && (
           <Button onClick={deleteQuestion}>Confirm Delete</Button>
         )}
         {activeTab === "LOTS" && (

@@ -12,12 +12,13 @@ function sleep(duration) {
 }
 
 export default function Asynchronous({
-  setModalDisorder,
+  setModalDataDisorder,
   modalDataDisorder, //ModalDisorder which Contains all the Data 
   data, // ye pata nahi kaha se arha hai! 
   possibleAnswers, // Isme getDisorder ka API Data arha h socha tha mapping mai use krke dekhunga.
   disabled,
   onChange,
+  name,
 }) {
 
   const [open, setOpen] = React.useState(false);
@@ -51,25 +52,27 @@ export default function Asynchronous({
   }, [open]);
 
   const defaultValue = possibleAnswers.find((option) => {
-    console.log("Result" ,option.possibleAnswerCode === data , option.possibleAnswerCode , data )
+    console.log("Result", option.possibleAnswerCode === data, option.possibleAnswerCode, data)
     return option.possibleAnswerCode === data
   }); // yaha pe red question ko data se compare karrha shayd jo data arha uske sath 
 
   console.log(defaultValue, data); // value is "201"
 
   const handleOnChange = (event, value) => {
-    //TODO
-    // try {
-    //   let state = { ...modalDataDisorder };
-    //   let answers = state.questions;
-    //   let index = answers.indexOf(data);
-    //   answers[index] = value.redQuestions;
-    //   state.questions = answers;
-    //   setModalDisorder(state);
-    // } catch {
-    //   console.log("invalid value");
-    // }
+    try {
+      let state = { ...modalDataDisorder };
+      let questions = state[`${name}Questions`];
+      let index = questions.indexOf(data);
+      questions[index] = value.possibleAnswerCode;
+      state[`${name}Questions`] = questions;
+      setModalDataDisorder(state);
+    }
+    catch {
+      console.log("invalid value");
+    }
   };
+
+
 
 
   return (

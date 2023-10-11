@@ -28,7 +28,10 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   const [createMode, setCreateMode] = useState(false);
   const [questionRadiovalue, setQuestionRadioValue] = React.useState(true);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [selectedRowQuestion, setSelectedRowQuestion] = useState(null);
+
   console.log("createMode", createMode, modalDataQuestions);
+  
 
   // State for LOTS
   const [selectedRowLots, setSelectedRowLots] = useState(null);
@@ -40,8 +43,15 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   const [isModalOpenDisorder, setIsModalOpenDisorder] = useState(false);
   const [modalDataDisorder, setModalDataDisorder] = useState({});
 
-  const handleDeleteClick = () => {
+
+  const handleDeleteClick = (index) => {
+    
+    setSelectedRowLots(allLots[index])
     setOpenDeleteDialog(true);
+    setSelectedRowQuestion(allQuestionsData[index])
+    setOpenDeleteDialog(true)
+    setSelectedRowDisorder(allDisorderData[index])
+    setOpenDeleteDialog(true)
   };
 
   const handleCloseDeleteDialog = () => {
@@ -266,38 +276,37 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   };
 
   const deleteQuestion = async () => {
-    let requestData = { ...modalDataQuestions };
-    console.log("reqD :", requestData._id);
-    const response = await QuestionsService.deleteQuestion(requestData);
-    console.log("resD :", response);
-
-    if (response._id) {
+    const response = await QuestionsService.deleteQuestion(selectedRowQuestion);
+    if (response.message === "Question deleted successfully") {
       window.alert("Successfully Deleted");
     } else {
       window.alert("API Failed");
     }
+    setOpenDeleteDialog(false);
   };
 
   const deleteLot = async () => {
-    let requestData = { ...modalDataQuestions };
-    const response = await LotService.deleteLot(requestData);
+    const response = await LotService.deleteLot(selectedRowLots);
 
-    if (response._id) {
+    if (response.message === "Lot deleted successfully") {
       window.alert("Successfully Deleted");
     } else {
       window.alert("API Failed");
     }
+    setOpenDeleteDialog(false);
+
   };
 
   const deleteDisorder = async () => {
-    let requestData = { ...modalDataQuestions };
-    const response = await DisorderService.deleteDisorder(requestData);
+    const response = await DisorderService.deleteDisorder(selectedRowDisorder);
 
-    if (response._id) {
+    if (response.message === "Disorder deleted successfully") {
       window.alert("Successfully Deleted");
     } else {
       window.alert("API Failed");
     }
+    setOpenDeleteDialog(false);
+
   };
 
 
@@ -343,7 +352,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
       blackQuestions: [""],
       greenQuestions: [""],
       yellowQuestions: [""],
-      violetQuestions: [""],
+      voiletQuestions: [""],
       maroonQuestions: [""]
     });
     setCreateMode(true);
@@ -419,7 +428,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
       setIsModalOpenLots(true);
     } else if (activeTab === "Disorder") {
       // setSelectedRowDisorder(index);
-      console.log(allDisorderData[index])
+      console.log("hellow",allDisorderData[index])
       let newObject = allDisorderData[index]
       const modifiedObject = Object.keys(newObject).reduce((acc, key) => {
         if (Array.isArray(newObject[key]) && newObject[key].length === 0) {
@@ -471,7 +480,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
                 <TableCell>Name</TableCell>
                 <TableCell>Red Required</TableCell>
                 <TableCell>Action</TableCell>
-              </TableRow>
+              </TableRow> 
             )}
           </TableHead>
           <TableBody>
@@ -540,6 +549,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
 
       {/* Disorder Modal */}
       <DisorderModel
+      setModalDataDisorder={setModalDataDisorder}
         isModalOpenDisorder={isModalOpenDisorder}
         closeModal={closeModal}
         modalDataDisorder={modalDataDisorder}
