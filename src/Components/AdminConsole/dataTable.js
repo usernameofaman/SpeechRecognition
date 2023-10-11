@@ -339,7 +339,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     setCreateMode(true);
     setModalDataDisorder({
       redQuestions: [""],
-      blueQuestions: [""],
+      blueQuestions: [" "],
       blackQuestions: [""],
       greenQuestions: [""],
       yellowQuestions: [""],
@@ -419,7 +419,18 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
       setIsModalOpenLots(true);
     } else if (activeTab === "Disorder") {
       // setSelectedRowDisorder(index);
-      setModalDataDisorder(allDisorderData[index]);
+      console.log(allDisorderData[index])
+      let newObject = allDisorderData[index]
+      const modifiedObject = Object.keys(newObject).reduce((acc, key) => {
+        if (Array.isArray(newObject[key]) && newObject[key].length === 0) {
+          acc[key] = [''];
+        } else {
+          acc[key] = newObject[key];
+        }
+        return acc;
+      }, {});
+  
+      setModalDataDisorder(modifiedObject);
       setIsModalOpenDisorder(true);
     }
   };

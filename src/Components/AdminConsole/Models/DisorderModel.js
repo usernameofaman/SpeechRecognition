@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
 import AutoCompleteLot from "./disorderQuestionSelector";
-import { DisorderService } from "../../../services";
+import { DisorderService, QuestionsService } from "../../../services";
 
 export default function DisorderModel({
   isModalOpenDisorder,
@@ -39,15 +39,17 @@ export default function DisorderModel({
   console.log(isEditable, "isEditable State||", createMode, "createMode");
 
   useEffect(() => {
-    getAllDisorderData()
+    getAllQuestionsData()
   }, [])
 
 
   const [questions, setQuestions] = useState([])
-  const getAllDisorderData = async () => {
-    const questionsAll = await DisorderService.getAllDisorderData();
+  const getAllQuestionsData = async () => {
+    const questionsAll = await QuestionsService.getAllQuestionsData();
     setQuestions(questionsAll)
   }
+
+  console.log("Current Disorder", modalDataDisorder)
 
   return (
     <Modal
@@ -137,7 +139,17 @@ export default function DisorderModel({
               </Button>
             </div>
           ))}
-
+        <TextField
+          label="Blue Required"
+          variant="outlined"
+          disabled={!isEditable}
+          onChange={handleDisorderChange}
+          name="blueRequired"
+          fullWidth
+          margin="normal"
+          sx={{ mt: 2 }}
+          value={modalDataDisorder?.redRequired}
+        />
         {modalDataDisorder.blueQuestions &&
           modalDataDisorder.blueQuestions.map((answer, aIndex) => (
             <div style={{ display: "flex", width: "100%" }}>
@@ -158,6 +170,17 @@ export default function DisorderModel({
             </div>
           ))}
 
+        <TextField
+          label="Black Required"
+          variant="outlined"
+          disabled={!isEditable}
+          onChange={handleDisorderChange}
+          name="blackRequired"
+          fullWidth
+          margin="normal"
+          sx={{ mt: 2 }}
+          value={modalDataDisorder?.redRequired}
+        />
         {modalDataDisorder.blackQuestions &&
           modalDataDisorder.blackQuestions.map((answer, aIndex) => (
             <div style={{ display: "flex", width: "100%" }}>
@@ -177,6 +200,17 @@ export default function DisorderModel({
               </Button>
             </div>
           ))}
+        <TextField
+          label="Black Required"
+          variant="outlined"
+          disabled={!isEditable}
+          onChange={handleDisorderChange}
+          name="blackRequired"
+          fullWidth
+          margin="normal"
+          sx={{ mt: 2 }}
+          value={modalDataDisorder?.redRequired}
+        />
 
         {modalDataDisorder.greenQuestions &&
           modalDataDisorder.greenQuestions.map((answer, aIndex) => (
@@ -197,6 +231,17 @@ export default function DisorderModel({
               </Button>
             </div>
           ))}
+        <TextField
+          label="Black Required"
+          variant="outlined"
+          disabled={!isEditable}
+          onChange={handleDisorderChange}
+          name="blackRequired"
+          fullWidth
+          margin="normal"
+          sx={{ mt: 2 }}
+          value={modalDataDisorder?.redRequired}
+        />
 
         {modalDataDisorder.yellowQuestions &&
           modalDataDisorder.yellowQuestions.map((answer, aIndex) => (
@@ -218,6 +263,17 @@ export default function DisorderModel({
             </div>
           ))}
 
+        <TextField
+          label="Black Required"
+          variant="outlined"
+          disabled={!isEditable}
+          onChange={handleDisorderChange}
+          name="blackRequired"
+          fullWidth
+          margin="normal"
+          sx={{ mt: 2 }}
+          value={modalDataDisorder?.redRequired}
+        />
         {modalDataDisorder.voiletQuestions &&
           modalDataDisorder.voiletQuestions.map((answer, aIndex) => (
             <div style={{ display: "flex", width: "100%" }}>
@@ -237,6 +293,17 @@ export default function DisorderModel({
               </Button>
             </div>
           ))}
+                 <TextField
+          label="Black Required"
+          variant="outlined"
+          disabled={!isEditable}
+          onChange={handleDisorderChange}
+          name="blackRequired"
+          fullWidth
+          margin="normal"
+          sx={{ mt: 2 }}
+          value={modalDataDisorder?.redRequired}
+        />
 
         {modalDataDisorder.maroonQuestions &&
           modalDataDisorder.maroonQuestions.map((answer, aIndex) => (

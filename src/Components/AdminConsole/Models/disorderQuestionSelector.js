@@ -19,6 +19,7 @@ export default function Asynchronous({
   disabled,
   onChange,
 }) {
+
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const loading = open && options.length === 0;
@@ -54,17 +55,19 @@ export default function Asynchronous({
   console.log(data ,"=" , modalDataDisorder.redQuestions); // value is "201"
   
   const handleOnChange = (event, value) => {
-    try {
-      let state = { ...modalDataDisorder };
-      let answers = state.questions;
-      let index = answers.indexOf(data);
-      answers[index] = value.redQuestions;
-      state.questions = answers;
-      setModalDisorder(state);
-    } catch {
-      console.log("invalid value");
-    }
+    //TODO
+    // try {
+    //   let state = { ...modalDataDisorder };
+    //   let answers = state.questions;
+    //   let index = answers.indexOf(data);
+    //   answers[index] = value.redQuestions;
+    //   state.questions = answers;
+    //   setModalDisorder(state);
+    // } catch {
+    //   console.log("invalid value");
+    // }
   };
+
 
   return (
     <Autocomplete
@@ -80,7 +83,7 @@ export default function Asynchronous({
         setOpen(false);
       }}
       isOptionEqualToValue={(option, value) => option.redQuestions === data}
-      getOptionLabel={(option) => `${option.redQuestions} ${option.name}`} // Display both redQuestions and name
+      getOptionLabel={(option) => `${option.code} ${option.text}`} // Display both redQuestions and name
       options={options}
       loading={loading}
       onChange={handleOnChange}
