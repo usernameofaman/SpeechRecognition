@@ -21,8 +21,8 @@ export default function Session({ voice , useLLM }) {
     // ListernStates = [ "NOT_STARTED" , "STARTED" , "ENDED" ]
 
     //Timer Duration
-    const [timerDuration, setTimerDuration] = useState(1);
-    const [midDelay , setMidDelay] = useState(1000)
+    const [timerDuration, setTimerDuration] = useState(5);
+    const [midDelay , setMidDelay] = useState(5000)
 
     const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (timerDuration * 1000) });
     useEffect(async () => {
