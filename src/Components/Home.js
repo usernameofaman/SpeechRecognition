@@ -26,6 +26,13 @@ const App = () => {
         }
     }
 
+    const toggleUseLLM = async (value) => {
+        const updateToggle = await SettingsService.updateSettings({ useLLM : value })
+        if(updateToggle && updateToggle.matchedCount){
+            getCurrentSetting()
+        }
+    }
+
     return (
         <>
             <header>
@@ -120,7 +127,7 @@ const App = () => {
                             <ul className="navbar-nav ms-0 ms-sm-3">
                                 <li className="nav-item">
                                     <FormGroup>
-                                        <FormControlLabel control={<Switch checked={useLLM} />} label="Use LLM" />
+                                        <FormControlLabel onChange={() => toggleUseLLM(!useLLM)} control={<Switch checked={useLLM} />} label="Use LLM" />
                                     </FormGroup>
                                 </li>
                             </ul>
@@ -184,7 +191,7 @@ const App = () => {
                         </div>
                     </div>
                 </div>
-            </div> : <VoiceLoader />}
+            </div> : <VoiceLoader useLLM={useLLM} />}
 
             <div className="modal fade show" id="launchModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1"
                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -275,7 +282,7 @@ const App = () => {
 export default App;
 
 
-function VoiceLoader() {
+function VoiceLoader({useLLM}) {
     const [voicesLoaded, setVoicesLoaded] = useState(false);
 
     useEffect(() => {
@@ -294,7 +301,7 @@ function VoiceLoader() {
 
     return (
         <div>
-            {voicesLoaded ? <Session voice={voicesLoaded} /> : <p>Loading voices...</p>}
+            {voicesLoaded ? <Session useLLM={useLLM} voice={voicesLoaded} /> : <p>Loading voices...</p>}
         </div>
     );
 }

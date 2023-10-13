@@ -6,7 +6,7 @@ import { useTimer } from 'react-timer-hook';
 import "../App.css"
 
 
-export default function Session({ voice }) {
+export default function Session({ voice , useLLM }) {
     const [questionWriter, setQuestionWriter] = useState(null);
     const [question, setQuestion] = useState("");
     // const [instructions, setInstructions] = useState("Try to be brief and factual. If you do not know exact age, does not matter, give appx number as the age. Example: I am 45 years old or Patient is about 34 years old.");
@@ -125,7 +125,8 @@ export default function Session({ voice }) {
             sessionId: sId,
             answers: answers,
             disorderCounts: disorderCounts,
-            lot : currentLot
+            lot : currentLot,
+            useLLM : useLLM
         }
         const data = await QuestionsService.getQuestions(reqData);
         if (data.question) {

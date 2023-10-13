@@ -5,7 +5,6 @@ export const httpService = (method, headers, data, url) => {
         method: method,
         headers: headers || {'Content-Type': 'application/json'}
     };
-    
     if (method !== httpConstants.METHOD_TYPE.GET)
     requestOptions.body = JSON.stringify(data);
     return fetch(url, requestOptions)
