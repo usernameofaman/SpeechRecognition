@@ -6,7 +6,18 @@ import { useTimer } from 'react-timer-hook';
 import "../App.css"
 
 
-export default function Session({ voice , useLLM }) {
+const dummyAnswers = {
+    "201": "The patient's name is Aman Sharma",
+    "008": "Patient's age is 26 Years",
+    "202": "he is male",
+    "203": "Yes I have someone with me",
+    "204": "He would not like to say his name. He is my friend",
+    "205": "Yes I can answer all of the answers",
+    "206": "I've been facing significant challenges lately, struggling with noticeable memory lapses, difficulty concentrating on tasks, and experiencing unusual shifts in my mood and personality. Additionally, there are moments of heightened energy and intense activity, followed by periods of deep sadness and hopelessness. These fluctuations are impacting my daily life, and I'm finding it hard to maintain a stable mood and cognitive function."
+}
+
+
+export default function Session({ voice, useLLM, inputMode }) {
     const [questionWriter, setQuestionWriter] = useState(null);
     const [question, setQuestion] = useState("");
     // const [instructions, setInstructions] = useState("Try to be brief and factual. If you do not know exact age, does not matter, give appx number as the age. Example: I am 45 years old or Patient is about 34 years old.");
@@ -22,15 +33,11 @@ export default function Session({ voice , useLLM }) {
 
     //Timer Duration
     const [timerDuration, setTimerDuration] = useState(5);
-    const [midDelay , setMidDelay] = useState(5000)
+    const [midDelay, setMidDelay] = useState(0)
 
     const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (timerDuration * 1000) });
     useEffect(async () => {
-        try {
-            getQuestions();
-        } catch {
-             
-        }
+        getQuestions();
     }, [])
 
 
@@ -42,13 +49,11 @@ export default function Session({ voice , useLLM }) {
         speak({
             text: question.instructions || "",
             onEnd: setTimeout(nowReadQuestion, (midDelay * 1000) + (timeTakenToSpeak * 1000))
-            // time is inclusive of talking time of instructions
         })
-
     }
 
     const nowReadQuestion = async () => {
-        await setQuestion((prev) => {
+        setQuestion((prev) => {
             speak({
                 text: prev,
                 onEnd: () => {
@@ -64,7 +69,7 @@ export default function Session({ voice , useLLM }) {
 
 
     const speak = ({ text, onEnd }) => {
-         
+
         const speakObj = new SpeechSynthesisUtterance()
         speakObj.text = text;
         speakObj.voice = voice;
@@ -111,7 +116,8 @@ export default function Session({ voice , useLLM }) {
         setSubmitInProcess(true)
         resetTranscript()
         if (patientAnswer === "") {
-            setPatientAnswer("sdf")
+            //Dummy answer mode
+            setPatientAnswer(dummyAnswers[apiData?.question?.code] || "No Dummy answer found")
             setSubmitInProcess(false)
             return
         }
@@ -125,8 +131,8 @@ export default function Session({ voice , useLLM }) {
             sessionId: sId,
             answers: answers,
             disorderCounts: disorderCounts,
-            lot : currentLot,
-            useLLM : useLLM
+            lot: currentLot,
+            useLLM: useLLM
         }
         const data = await QuestionsService.getQuestions(reqData);
         if (data.question) {
@@ -236,7 +242,7 @@ export default function Session({ voice , useLLM }) {
                                         </div>
                                         <div className="col-md-2">
                                             <h5 className="mb-2 text-dark">Timer</h5>
-                                            <div className="text-center shadow-sm pb-2 border-dark border rounded">
+                                            <div className="text-center shadow-sm pb-2 border-dark border rounded" style={{ minHeight: "96px" }}>
                                                 <div id="timer" className="fw-bold lead">{seconds}</div>
                                                 <div className="d-flex align-items-center justify-content-evenly pt-1">
                                                     <button id="startButton"

@@ -13,6 +13,7 @@ const App = () => {
     const [sessionStarted, setSessionStarted] = React.useState(false)
 
     const [useLLM, setUseLLM] = React.useState(false)
+    const [inputMode, setInputMode] = React.useState("VOICE")
 
     useEffect(() => {
         getCurrentSetting()
@@ -27,8 +28,8 @@ const App = () => {
     }
 
     const toggleUseLLM = async (value) => {
-        const updateToggle = await SettingsService.updateSettings({ useLLM : value })
-        if(updateToggle && updateToggle.matchedCount){
+        const updateToggle = await SettingsService.updateSettings({ useLLM: value })
+        if (updateToggle && updateToggle.matchedCount) {
             getCurrentSetting()
         }
     }
@@ -133,6 +134,13 @@ const App = () => {
                             </ul>
                             <ul className="navbar-nav ms-0 ms-sm-3">
                                 <li className="nav-item">
+                                    <FormGroup>
+                                        <FormControlLabel onChange={() => setInputMode(inputMode === "VOICE" ? "TYPE" : "VOICE")} control={<Switch checked={inputMode === "VOICE"} />} label={inputMode === "VOICE" ? "Speak" : "Type"} />
+                                    </FormGroup>
+                                </li>
+                            </ul>
+                            <ul className="navbar-nav ms-0 ms-sm-3">
+                                <li className="nav-item">
                                     <div className="p-2"><i className="fa-solid fa-wallet"></i>
                                         <span className="ms-1 priceing">$30.56</span>
                                     </div>
@@ -191,7 +199,7 @@ const App = () => {
                         </div>
                     </div>
                 </div>
-            </div> : <VoiceLoader useLLM={useLLM} />}
+            </div> : <VoiceLoader useLLM={useLLM} inputMode={inputMode} />}
 
             <div className="modal fade show" id="launchModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1"
                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -282,7 +290,7 @@ const App = () => {
 export default App;
 
 
-function VoiceLoader({useLLM}) {
+function VoiceLoader({ useLLM }) {
     const [voicesLoaded, setVoicesLoaded] = useState(false);
 
     useEffect(() => {
