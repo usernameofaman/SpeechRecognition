@@ -15,6 +15,7 @@ import { QuestionsService } from "../../services";
 import { LotService } from "../../services";
 import { DisorderService } from "../../services";
 
+
 function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   // State for Questions
   const [isModalOpenQuestions, setIsModalOpenQuestions] = useState(false);
@@ -70,6 +71,9 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     state.questions = answers;
     setModalDataLots(state);
   };
+
+
+
 
   //SEETHIS
 
@@ -395,6 +399,8 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     setIsModalOpenDisorder(false);
   };
 
+  allQuestionsData.sort((a, b) => (a.code > b.code ? 1 : -1));
+
   return (
     <div>
       <TableContainer>
@@ -408,7 +414,6 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
               <TableRow>
                 <TableCell>Text</TableCell>
                 <TableCell>Code</TableCell>
-                <TableCell>Color</TableCell>
                 <TableCell>Action</TableCell>
               </TableRow>
             )}
@@ -429,12 +434,12 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
           </TableHead>
           <TableBody>
             {/* Table rows */}
+            
             {activeTab === "Questions" &&
               allQuestionsData.map((item, index) => (
                 <TableRow key={item.id}>
                   <TableCell>{item?.text}</TableCell>
                   <TableCell>{item?.code}</TableCell>
-                  <TableCell>{item?.color}</TableCell>
                   <TableCell>
                     <Button onClick={() => openModal(index)}>Open Popup</Button>
                   </TableCell>
@@ -488,6 +493,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
                 </TableRow>
               ))}
           </TableBody>
+            
         </Table>
       </TableContainer>
 
