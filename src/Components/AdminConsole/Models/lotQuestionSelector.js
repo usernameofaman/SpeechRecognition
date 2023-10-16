@@ -46,6 +46,7 @@ export default function Asynchronous({ setModalDataLots, modalDataLots, data, qu
 
 
     const defaultValue = questions.find((option) => option.code === data);
+    questions.sort((a, b) => (a.code > b.code ? 1 : -1));
 
 
     const handleOnChange = (event, value) => {
