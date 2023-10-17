@@ -118,6 +118,7 @@ export default function QuestionModal({
           boxShadow: 24,
           p: 4,
           textAlign: "center",
+
         }}
       >
         <div style={{ display: "flex", width: "100%", justifyContent: "space-between", borderBottom: "3px dotted cfcfcf" }}>
@@ -229,6 +230,18 @@ export default function QuestionModal({
           margin="normal"
           sx={{ mt: 2 }}
           value={selectedQuestion.alternateQuestion}
+        />
+
+<TextField
+          label="Alternate Prompt"
+          variant="outlined"
+          disabled={!isEditable || !selectedQuestion.alternateQuestion }
+          onChange={handleQuestionChange}
+          name="alternatePrompt"
+          fullWidth
+          margin="normal"
+          sx={{ mt: 2 }}
+          value={selectedQuestion.alternatePrompt}
         />
 
         <TextField
