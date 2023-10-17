@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
@@ -7,99 +7,117 @@ import SaveIcon from '@mui/icons-material/Save';
 import SettingsService from '../../../services/settings';
 
 export default function QuestionAnswerForm() {
-  const [answersValue, setAnswersValue] = useState(['']);
-  const [questionValue, setQuestionValue] = useState(''); // State for the question
-  const [questionData, setQuestionData] = useState(null);
+  const [qaPairs, setQAPairs] = useState([{ question: '', answers: [''] }]);
+  const [questionsAns, setQuestionsAns] = useState([]);
 
-  const handleQuestionChange = (event) => {
-    setQuestionValue(event.target.value);
+  const handleAddRow = () => {
+    const newQAPairs = [...qaPairs];
+    newQAPairs.push({ question: '', answers: [''] });
+    setQAPairs(newQAPairs);
   };
 
-
-  const handleAnswersChange = (event) => {
-    // Split the input value by newline or any other separator you are using
-    const newAnswers = event.target.value.split('\n').map((answer) => answer.trim());
-    setAnswersValue(newAnswers);
+  const handleRemoveRow = (qaIndex) => {
+    const newQAPairs = [...qaPairs];
+    newQAPairs.splice(qaIndex, 1);
+    setQAPairs(newQAPairs);
   };
 
-  console.log("QuestionValue", questionValue);
-  console.log("answerValue", answersValue)
-
-  const addAnswerField = () => {
-    const newAnswerFields = [...answersValue, ''];
-    setAnswersValue(newAnswerFields);
+  const handleAddAnswer = (qaIndex) => {
+    const newQAPairs = [...qaPairs];
+    newQAPairs[qaIndex].answers.push('');
+    setQAPairs(newQAPairs);
   };
 
-  const removeAnswerField = (index) => {
-    const newAnswerFields = [...answersValue];
-    newAnswerFields.splice(index, 1);
-    setAnswersValue(newAnswerFields);
+  const handleRemoveAnswer = (qaIndex, answerIndex) => {
+    const newQAPairs = [...qaPairs];
+    newQAPairs[qaIndex].answers.splice(answerIndex, 1);
+    setQAPairs(newQAPairs);
   };
+
+  const [existingQuesAns, SetExistingQuesAns] = useState([])
+  const getQnA = async () => {
+    const questionsAnsaAll = await SettingsService.getQuestionAnswer();
+    
+    SetExistingQuesAns(existingQuesAns)
+    }
+  
+
+  useEffect(() => {
+getQnA()
+}, []);
+
+console.log("existingQuestionAns Data", existingQuesAns)
 
   const handleAddQuestion = async () => {
-    // Create the question data object
     const newQuestionData = {
       _id: {
         $oid: '6524aee1f523e3c3be4ba56f',
       },
       useLLM: false,
       questionAnswers: {
-        [questionValue.toString()]: answersValue,
+        ...existingQuesAns.questionAnswers, // Spread the existing questions and answers
+        [qaPairs[qaPairs.length - 1].question]: qaPairs[qaPairs.length - 1].answers,
       },
     };
- console.log(newQuestionData, "this is newRequestData")
+  
     try {
       const response = await SettingsService.addQuestionAnswer(newQuestionData);
       if (response.status === 200) {
         console.log('Question added successfully:', response.data);
         // Clear form fields or perform any other necessary actions
-        setQuestionValue('');
-        setAnswersValue(['']);
+        const newQAPairs = [...qaPairs];
+        newQAPairs[qaPairs.length - 1] = { question: '', answers: [''] };
+        setQAPairs(newQAPairs);
+        // Save the updated questionAnswers state
+        SetExistingQuesAns(newQuestionData.questionAnswers);
       } else {
         console.error('Failed to add the question');
       }
     } catch (error) {
       console.error('Error adding the question:', error);
     }
-
-    console.log(newQuestionData);
-
-    // Reset the form
-    setQuestionValue('');
   };
+  
+  
 
   return (
     <div>
-      <TextField
-        label="Question"
-        variant="outlined"
-        value={questionValue}
-        onChange={handleQuestionChange}
-      />
-      <div style={{ display: 'flex' }}>
-        {answersValue.map((answer, index) => (
-          <div key={index}>
-            <TextField
-              label="Answer"
-              variant="outlined"
-              value={answer}
-              onChange={(e) => {
-                const newAnswerFields = [...answersValue];
-                newAnswerFields[index] = e.target.value;
-                setAnswersValue(newAnswerFields);
-              }}
-            />
-            {index > 0 && (
-              <Button onClick={() => removeAnswerField(index)}>
+      {qaPairs.map((qaPair, qaIndex) => (
+        <div key={qaIndex}>
+          <TextField
+            label="Question"
+            variant="outlined"
+            value={qaPair.question}
+            onChange={(e) => {
+              const newQAPairs = [...qaPairs];
+              newQAPairs[qaIndex].question = e.target.value;
+              setQAPairs(newQAPairs);
+            }}
+          />
+          {qaPair.answers.map((answer, answerIndex) => (
+            <div key={answerIndex}>
+              <TextField
+                label="Answer"
+                variant="outlined"
+                value={answer}
+                onChange={(e) => {
+                  const newQAPairs = [...qaPairs];
+                  newQAPairs[qaIndex].answers[answerIndex] = e.target.value;
+                  setQAPairs(newQAPairs);
+                }}
+              />
+              <Button onClick={() => handleRemoveAnswer(qaIndex, answerIndex)}>
                 <RemoveIcon />
               </Button>
-            )}
-          </div>
-        ))}
-        <Button onClick={addAnswerField}>
-          <AddIcon />
-        </Button>
-      </div>
+            </div>
+          ))}
+          <Button onClick={() => handleAddAnswer(qaIndex)}>Add Answer</Button>
+          {qaPairs.length > 1 && (
+            <Button onClick={() => handleRemoveRow(qaIndex)}>Remove Row</Button>
+          )}
+        </div>
+      ))}
+      <Button onClick={() => handleAddRow()}>Add Row</Button>
       <Button onClick={handleAddQuestion}>
         <SaveIcon />
       </Button>
