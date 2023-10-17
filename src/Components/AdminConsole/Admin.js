@@ -16,7 +16,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import DataTable from "./dataTable"; 
-import DataGrid from "./dataGrid";
+import SetQuestions from "./SetQuestions/setQuestion";
 
 import {
   Table,
@@ -126,6 +126,17 @@ export default function ResponsiveDrawer(props) {
             <ListItemText primary="Disorder" />
           </ListItemButton>
         </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton
+            variant={activeTab === "SetQuestions" ? "contained" : "outlined"}
+            onClick={() => setActiveTab("SetQuestions")}
+          >
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary="SetQuestions" />
+          </ListItemButton>
+        </ListItem>
       </List>
     </div>
   );
@@ -208,12 +219,17 @@ export default function ResponsiveDrawer(props) {
       }}
     >
       <Toolbar />
-      <DataTable
-        activeTab={activeTab}
-        allQuestionsData={allQuestionsData}
-        allLots={allLots}
-        allDisorderData={allDisorderData}
-      />
+      {activeTab === "SetQuestions" ? (
+  <SetQuestions />
+) : (
+  <DataTable
+    activeTab={activeTab}
+    allQuestionsData={allQuestionsData}
+    allLots={allLots}
+    allDisorderData={allDisorderData}
+  />
+)}
+     
       {/* <DataGrid
        activeTab={activeTab}
        allQuestionsData={allQuestionsData}
@@ -224,3 +240,4 @@ export default function ResponsiveDrawer(props) {
   
   );
 }
+

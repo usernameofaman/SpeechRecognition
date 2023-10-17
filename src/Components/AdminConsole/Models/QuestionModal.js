@@ -12,6 +12,7 @@ import FormLabel from "@mui/material/FormLabel";
 import { FormControl, MenuItem, Select } from "@mui/material";
 import { InputLabel } from "@mui/material";
 import { QuestionsService } from "../../../services";
+import "../../../styles.css"
 
 export default function QuestionModal({
   isModalOpenQuestions,
@@ -118,7 +119,17 @@ export default function QuestionModal({
           boxShadow: 24,
           p: 4,
           textAlign: "center",
-
+          '&::-webkit-scrollbar': {
+            width: '12px', // Adjust as needed
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#000',
+            width: '8px', // Adjust as needed
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#555',
+            width: '8px', // Adjust as needed
+          },
         }}
       >
         <div style={{ display: "flex", width: "100%", justifyContent: "space-between", borderBottom: "3px dotted cfcfcf" }}>
