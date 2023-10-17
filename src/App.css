@@ -9,6 +9,28 @@
   border: none;
 }
 
+/* Width of the scrollbar */
+::-webkit-scrollbar {
+  width: 32px !important;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+
 .Blink {
   margin-left: 10px;
   animation: blinker 1.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;  

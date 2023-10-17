@@ -131,7 +131,7 @@ export default function DisorderModel({
           sx={{ mt: 2 }}
           value={modalDataDisorder?.ICDCode}
         />
-         <TextField
+        <TextField
           label="Which Lot it belongs to?"
           variant="outlined"
           disabled={!isEditable}
