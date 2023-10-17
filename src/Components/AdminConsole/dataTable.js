@@ -428,6 +428,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
               <TableRow>
                 <TableCell>Name</TableCell>
                 <TableCell>Red Required</TableCell>
+                <TableCell>LOT Belongs to</TableCell>
                 <TableCell>Action</TableCell>
               </TableRow>
             )}
@@ -478,6 +479,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
                 <TableRow key={item.id}>
                   <TableCell>{item?.name}</TableCell>
                   <TableCell>{item?.redRequired}</TableCell>
+                  <TableCell>{item?.lotId}</TableCell>
                   <TableCell>
                     <Button onClick={() => openModal(index)}>Open Popup</Button>
                   </TableCell>
