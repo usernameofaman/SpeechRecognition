@@ -8,6 +8,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import AutoCompleteLot from './lotQuestionSelector'
 import { LotService, QuestionsService } from "../../../services";
 
+
 export default function LotModal({
   isModalOpenLots,
   closeModal,
@@ -115,11 +116,11 @@ export default function LotModal({
           sx={{ mt: 2 }}
           value={modalDataLots?.name}
         />
-
         {modalDataLots.questions &&
-          modalDataLots.questions.map((answer, aIndex) => (
+          modalDataLots.questions.map((question, aIndex) => (
             <div style={{ display: "flex", width: "100%" }}>
-              <AutoCompleteLot setModalDataLots={setModalDataLots} modalDataLots={modalDataLots} data={answer} disabled={!isEditable} questions={questions} setData={setModalDataLots} />
+              <AutoCompleteLot setModalDataLots={setModalDataLots} modalDataLots={modalDataLots} data={question} disabled={!isEditable} questions={questions} setData={setModalDataLots} />
+
               <Button onClick={() => addRowToLotQuestions()}>Add</Button>
               <Button onClick={() => removeRowToLotQuestions(aIndex)}>
                 Remove
