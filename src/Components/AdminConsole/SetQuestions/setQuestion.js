@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
@@ -11,8 +11,28 @@ export default function QuestionAnswerForm() {
   const [questionValue, setQuestionValue] = useState(''); // State for the question
   const [questionData, setQuestionData] = useState(null);
 
-  const handleQuestionChange = (event) => {
-    setQuestionValue(event.target.value);
+  const [allQuestionsAnswers, setAllQuestionsAnswers] = useState([])
+
+
+  useEffect(() => {
+    getQuestionAnswer();
+  }, [])
+
+  const getQuestionAnswer = async () => {
+    const res = await SettingsService.getQuestionAnswer()
+    if (res && res[0] && res[0].questionAnswers) {
+      setAllQuestionsAnswers(res[0].questionAnswers)
+    }
+    console.log(res)
+  }
+
+
+  const handleQuestionChange = (item, e) => {
+    let allQA = { ...allQuestionsAnswers }
+    let values = allQA[item];
+    delete allQA[item]
+    allQA[e.target.value.replace("$","")] = values;
+    setAllQuestionsAnswers(allQA)
   };
 
 
@@ -22,12 +42,15 @@ export default function QuestionAnswerForm() {
     setAnswersValue(newAnswers);
   };
 
-  console.log("QuestionValue", questionValue);
-  console.log("answerValue", answersValue)
 
-  const addAnswerField = () => {
-    const newAnswerFields = [...answersValue, ''];
-    setAnswersValue(newAnswerFields);
+  const addAnswerField = (item) => {
+    let questionsAnswers = { ...allQuestionsAnswers };
+    console.log(questionsAnswers)
+    console.log(questionsAnswers[item])
+    let values = questionsAnswers[item]
+    values.push("")
+    questionsAnswers[item] = values;
+    setAllQuestionsAnswers(questionsAnswers)
   };
 
   const removeAnswerField = (index) => {
@@ -43,9 +66,7 @@ export default function QuestionAnswerForm() {
         $oid: '6524aee1f523e3c3be4ba56f',
       },
       useLLM: false,
-      questionAnswers: {
-        [questionValue.toString()]: answersValue,
-      },
+      questionAnswers: allQuestionsAnswers
     };
     console.log(newQuestionData, "this is newRequestData")
     try {
@@ -68,40 +89,71 @@ export default function QuestionAnswerForm() {
     setQuestionValue('');
   };
 
+
+  const handleAnswers = (e, item , index) => {
+    const allQA = {...allQuestionsAnswers};
+    let values = allQA[item];
+    values[index] = e.target.value;
+
+    allQA[item] = values
+    setAllQuestionsAnswers(allQA)
+  }
+
+
+  const addRemoveRow = (e, item) => {
+    if (e.target.name === "ADD") {
+      let questionsAnswers = { ...allQuestionsAnswers };
+      questionsAnswers["$"] = [""]
+      setAllQuestionsAnswers(questionsAnswers)
+    }
+    if (e.target.name === "REMOVE") {
+      let questionsAnswers = { ...allQuestionsAnswers };
+      delete questionsAnswers[item]
+      setAllQuestionsAnswers(questionsAnswers)
+    }
+  }
+
   return (
     <div>
-      <TextField
-        label="Question"
-        variant="outlined"
-        value={questionValue}
-        onChange={handleQuestionChange}
-      />
-      <div style={{ display: 'flex' }}>
-        {answersValue.map((answer, index) => (
-          <div key={index}>
-            <TextField
-              label="Answer"
-              variant="outlined"
-              value={answer}
-              onChange={(e) => {
-                const newAnswerFields = [...answersValue];
-                newAnswerFields[index] = e.target.value;
-                setAnswersValue(newAnswerFields);
-              }}
-            />
-            {index > 0 && (
-              <Button onClick={() => removeAnswerField(index)}>
-                <RemoveIcon />
-              </Button>
-            )}
+      {Object.keys(allQuestionsAnswers).map((item) => (
+        <div style={{ display: 'flex', marginTop: "10px"}}>
+
+          <TextField
+            label="Question"
+            variant="outlined"
+            value={item}
+            onChange={(e) => handleQuestionChange(item, e)}
+          />
+          {allQuestionsAnswers[item].map((answer, index) => (
+            <div style={{ display: 'flex', flexDirection: "column", alignItems: "center" }} key={index}>
+              <TextField
+                sx={{ ml: 1 }}
+                label="Answer"
+                variant="outlined"
+                value={answer}
+                onChange={(e) => {
+                  handleAnswers(e, item, index)
+                }}
+              />
+              {index > 0 && (
+                <Button variant='outlined' sx={{ mt: 1 }} onClick={() => removeAnswerField(index)}>
+                  <RemoveIcon />
+                </Button>
+              )}
+            </div>
+          ))}
+          <Button variant='outlined' sx={{ ml: 1 }} onClick={() => addAnswerField(item)}>
+            <AddIcon />
+          </Button>
+          <div style={{ marginLeft:"10px", display: 'flex', flexDirection: "column", alignItems: "center" }}>
+            <Button fullWidth size="small" variant='outlined' name="ADD" onClick={(e) => addRemoveRow(e, item)}>{`Add Row`}</Button>
+            <Button size="small" variant='outlined' name="REMOVE" onClick={(e) => addRemoveRow(e, item)}>Remove Row</Button>
           </div>
-        ))}
-        <Button onClick={addAnswerField}>
-          <AddIcon />
-        </Button>
-      </div>
-      <Button onClick={handleAddQuestion}>
-        <SaveIcon />
+        </div>
+      ))}
+
+      <Button sx={{ mt: 3 }} variant='contained' onClick={handleAddQuestion}>
+        Save <SaveIcon />
       </Button>
     </div>
   );

@@ -283,6 +283,22 @@ export default function QuestionModal({
           </Select>
         </FormControl>
 
+
+        <FormControl fullWidth>
+          <InputLabel>K3 K4 Logic</InputLabel>
+          <Select
+            sx={{mt:1}}
+            name="k3k4"
+            value={selectedQuestion.k3k4}
+            label="K3 K4?"
+            disabled={!isEditable}
+            onChange={handleQuestionChange}
+          >
+            <MenuItem value={"K3"}>K3</MenuItem>
+            <MenuItem value={"K4"}>K4</MenuItem>
+          </Select>
+        </FormControl>
+
         <TextField
           label="Alternative Question"
           variant="outlined"

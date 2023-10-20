@@ -126,7 +126,7 @@ export default function ResponsiveDrawer(props) {
             <ListItemText primary="Disorder" />
           </ListItemButton>
         </ListItem>
-        {/* <ListItem disablePadding>
+        <ListItem disablePadding>
           <ListItemButton
             variant={activeTab === "SetQuestions" ? "contained" : "outlined"}
             onClick={() => setActiveTab("SetQuestions")}
@@ -136,7 +136,7 @@ export default function ResponsiveDrawer(props) {
             </ListItemIcon>
             <ListItemText primary="SetQuestions" />
           </ListItemButton>
-        </ListItem> */}
+        </ListItem>
       </List>
     </div>
   );
