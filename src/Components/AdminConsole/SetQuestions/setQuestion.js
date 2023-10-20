@@ -7,12 +7,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import SettingsService from '../../../services/settings';
 
 export default function QuestionAnswerForm() {
-  const [answersValue, setAnswersValue] = useState(['']);
-  const [questionValue, setQuestionValue] = useState(''); // State for the question
-  const [questionData, setQuestionData] = useState(null);
-
-  const [allQuestionsAnswers, setAllQuestionsAnswers] = useState([])
-
+  const [questionsAnswers, setQuestionsAnswers] = useState([{ question: "", answers: [""] }]);
 
   useEffect(() => {
     getQuestionAnswer();
@@ -21,133 +16,106 @@ export default function QuestionAnswerForm() {
   const getQuestionAnswer = async () => {
     const res = await SettingsService.getQuestionAnswer()
     if (res && res[0] && res[0].questionAnswers) {
-      setAllQuestionsAnswers(res[0].questionAnswers)
+      setQuestionsAnswers(res[0].questionAnswers);
     }
     console.log(res)
   }
 
-
-  const handleQuestionChange = (item, e) => {
-    let allQA = { ...allQuestionsAnswers }
-    let values = allQA[item];
-    delete allQA[item]
-    allQA[e.target.value.replace("$","")] = values;
-    setAllQuestionsAnswers(allQA)
+  const handleQuestionChange = (index, e) => {
+    const updatedQuestionsAnswers = [...questionsAnswers];
+    updatedQuestionsAnswers[index].question = e.target.value.replace("$", "");
+    setQuestionsAnswers(updatedQuestionsAnswers);
   };
 
+  const handleAnswersChange = (event, index, answerIndex) => {
+    let tempQA = [...questionsAnswers]
+    const selectedIndex = tempQA[index];
+    const newAnswers = selectedIndex.answers;
+    newAnswers[answerIndex] = event.target.value;
 
-  const handleAnswersChange = (event) => {
-    // Split the input value by newline or any other separator you are using
-    const newAnswers = event.target.value.split('\n').map((answer) => answer.trim());
-    setAnswersValue(newAnswers);
+    selectedIndex.answers = newAnswers;
+    tempQA[index] = selectedIndex
+    setQuestionsAnswers(tempQA)
   };
 
-
-  const addAnswerField = (item) => {
-    let questionsAnswers = { ...allQuestionsAnswers };
-    console.log(questionsAnswers)
-    console.log(questionsAnswers[item])
-    let values = questionsAnswers[item]
-    values.push("")
-    questionsAnswers[item] = values;
-    setAllQuestionsAnswers(questionsAnswers)
+  const addAnswerField = (index) => {
+    const updatedQuestionsAnswers = [...questionsAnswers];
+    updatedQuestionsAnswers[index].answers.push("");
+    setQuestionsAnswers(updatedQuestionsAnswers);
   };
 
-  const removeAnswerField = (index) => {
-    const newAnswerFields = [...answersValue];
-    newAnswerFields.splice(index, 1);
-    setAnswersValue(newAnswerFields);
+  const removeAnswerField = (index, answerIndex) => {
+    const updatedQuestionsAnswers = [...questionsAnswers];
+    updatedQuestionsAnswers[index].answers.splice(answerIndex, 1);
+    setQuestionsAnswers(updatedQuestionsAnswers);
+  };
+
+  const addRemoveRow = (action, index) => {
+    if (action === "ADD") {
+      setQuestionsAnswers(prevState => [...prevState, { question: "", answers: [""] }]);
+    } else if (action === "REMOVE") {
+      const updatedQuestionsAnswers = [...questionsAnswers];
+      updatedQuestionsAnswers.splice(index, 1);
+      setQuestionsAnswers(updatedQuestionsAnswers);
+    }
   };
 
   const handleAddQuestion = async () => {
-    // Create the question data object
     const newQuestionData = {
       _id: {
         $oid: '6524aee1f523e3c3be4ba56f',
       },
       useLLM: false,
-      questionAnswers: allQuestionsAnswers
+      questionAnswers: questionsAnswers
     };
-    console.log(newQuestionData, "this is newRequestData")
     try {
       const response = await SettingsService.addQuestionAnswer(newQuestionData);
       if (response.status === 200) {
         console.log('Question added successfully:', response.data);
         // Clear form fields or perform any other necessary actions
-        setQuestionValue('');
-        setAnswersValue(['']);
+        setQuestionsAnswers([{ question: "", answers: [""] }]);
       } else {
         console.error('Failed to add the question');
       }
     } catch (error) {
       console.error('Error adding the question:', error);
     }
-
-    console.log(newQuestionData);
-
-    // Reset the form
-    setQuestionValue('');
   };
 
-
-  const handleAnswers = (e, item , index) => {
-    const allQA = {...allQuestionsAnswers};
-    let values = allQA[item];
-    values[index] = e.target.value;
-
-    allQA[item] = values
-    setAllQuestionsAnswers(allQA)
-  }
-
-
-  const addRemoveRow = (e, item) => {
-    if (e.target.name === "ADD") {
-      let questionsAnswers = { ...allQuestionsAnswers };
-      questionsAnswers["$"] = [""]
-      setAllQuestionsAnswers(questionsAnswers)
-    }
-    if (e.target.name === "REMOVE") {
-      let questionsAnswers = { ...allQuestionsAnswers };
-      delete questionsAnswers[item]
-      setAllQuestionsAnswers(questionsAnswers)
-    }
-  }
+  console.log(questionsAnswers);
 
   return (
     <div>
-      {Object.keys(allQuestionsAnswers).map((item) => (
-        <div style={{ display: 'flex', marginTop: "10px"}}>
-
+      {questionsAnswers.map((qa, index) => (
+        <div key={index} style={{ display: 'flex', marginTop: "10px" }}>
           <TextField
             label="Question"
             variant="outlined"
-            value={item}
-            onChange={(e) => handleQuestionChange(item, e)}
+            value={qa.question}
+            onChange={(e) => handleQuestionChange(index, e)}
           />
-          {allQuestionsAnswers[item].map((answer, index) => (
-            <div style={{ display: 'flex', flexDirection: "column", alignItems: "center" }} key={index}>
+          {qa.answers.map((answer, answerIndex) => (
+            <div key={answerIndex} style={{ display: 'flex', flexDirection: "column", alignItems: "center" }}>
               <TextField
                 sx={{ ml: 1 }}
                 label="Answer"
                 variant="outlined"
                 value={answer}
-                onChange={(e) => {
-                  handleAnswers(e, item, index)
-                }}
+                onChange={(e) => handleAnswersChange(e, index, answerIndex)}
               />
-              {index > 0 && (
-                <Button variant='outlined' sx={{ mt: 1 }} onClick={() => removeAnswerField(index)}>
+              {answerIndex > 0 && (
+                <Button variant='outlined' sx={{ mt: 1 }} onClick={() => removeAnswerField(index, answerIndex)}>
                   <RemoveIcon />
                 </Button>
               )}
             </div>
           ))}
-          <Button variant='outlined' sx={{ ml: 1 }} onClick={() => addAnswerField(item)}>
+          <Button variant='outlined' sx={{ ml: 1 }} onClick={() => addAnswerField(index)}>
             <AddIcon />
           </Button>
-          <div style={{ marginLeft:"10px", display: 'flex', flexDirection: "column", alignItems: "center" }}>
-            <Button fullWidth size="small" variant='outlined' name="ADD" onClick={(e) => addRemoveRow(e, item)}>{`Add Row`}</Button>
-            <Button size="small" variant='outlined' name="REMOVE" onClick={(e) => addRemoveRow(e, item)}>Remove Row</Button>
+          <div style={{ marginLeft: "10px", display: 'flex', flexDirection: "column", alignItems: "center" }}>
+            <Button fullWidth size="small" variant='outlined' onClick={() => addRemoveRow("ADD", index)}>{`Add Row`}</Button>
+            <Button size="small" variant='outlined' onClick={() => addRemoveRow("REMOVE", index)}>Remove Row</Button>
           </div>
         </div>
       ))}

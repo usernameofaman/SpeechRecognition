@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -27,6 +27,11 @@ export default function QuestionModal({
   setIsEditable,
   setSelectedQuestion
 }) {
+
+
+  useEffect(() => {
+    setSelectedQuestion({ ...selectedQuestion, hasCustomPrompt: "false" })
+  }, [])
 
   const handleAddQuestion = async () => {
     let requestData = { ...selectedQuestion };
@@ -287,7 +292,7 @@ export default function QuestionModal({
         <FormControl fullWidth>
           <InputLabel>K3 K4 Logic</InputLabel>
           <Select
-            sx={{mt:1}}
+            sx={{ mt: 1 }}
             name="k3k4"
             value={selectedQuestion.k3k4}
             label="K3 K4?"
@@ -407,6 +412,19 @@ export default function QuestionModal({
             <MenuItem value={"HIGH"}>High</MenuItem>
           </Select>
         </FormControl>
+        {selectedQuestion.hasCustomPrompt !== "true" &&
+          < TextField
+            label="Category"
+            variant="outlined"
+            disabled={!isEditable}
+            onChange={handleQuestionChange}
+            name="category"
+            fullWidth
+            margin="normal"
+            sx={{ mt: 2 }}
+            value={selectedQuestion.category}
+          />
+        }
 
         <FormLabel id="demo-controlled-radio-buttons-group">
           Does this question require custom prompt ?
