@@ -47,7 +47,7 @@ export default function QuestionAnswerForm() {
         [questionValue.toString()]: answersValue,
       },
     };
- console.log(newQuestionData, "this is newRequestData")
+    console.log(newQuestionData, "this is newRequestData")
     try {
       const response = await SettingsService.addQuestionAnswer(newQuestionData);
       if (response.status === 200) {
