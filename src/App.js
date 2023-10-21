@@ -3,10 +3,33 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './Components/Home'
 import Admin from './Components/AdminConsole/Admin';
 import './App.css'
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+
 
 
 // Parent component
 function App() {
+
+    const toast = () => {
+        return (
+          <ToastContainer
+            position="top-center"
+            autoClose={2500}
+            hideProgressBar
+            newestOnTop={true}
+            closeOnClick={true}
+            rtl={false}
+            pauseOnVisibilityChange={false}
+            draggable={false}
+            pauseOnHover={false}
+            theme="colored"
+            closeButton={null}
+          />
+        );
+      };
+
+
     return (
         <Router>
                 <Routes>
@@ -18,6 +41,7 @@ function App() {
 
                     <Route element={NotFound} />
                 </Routes>
+                {toast()}
         </Router>
     );
 }
