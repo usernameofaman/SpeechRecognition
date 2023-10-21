@@ -14,6 +14,7 @@ import DeleteDialog from "./Models/deleteDialog";
 import { QuestionsService } from "../../services";
 import { LotService } from "../../services";
 import { DisorderService } from "../../services";
+import { showErrorMessage, showSuccessMessage } from "../../managers/utility";
 
 
 function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
@@ -248,9 +249,9 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   const deleteQuestion = async () => {
     const response = await QuestionsService.deleteQuestion(selectedRowQuestion);
     if (response.message === "Question deleted successfully") {
-      window.alert("Successfully Deleted");
+      showSuccessMessage("Question Deleted Successfully")
     } else {
-      window.alert("API Failed");
+      showErrorMessage("Question Not Deleted.")
     }
     setOpenDeleteDialog(false);
   };
@@ -259,9 +260,10 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     const response = await LotService.deleteLot(selectedRowLots);
 
     if (response.message === "Lot deleted successfully") {
-      window.alert("Successfully Deleted");
+      showSuccessMessage("Lot Deleted Successfully")
     } else {
-      window.alert("API Failed");
+      showErrorMessage("Lot Not Deleted.")
+
     }
     setOpenDeleteDialog(false);
 
@@ -271,9 +273,11 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     const response = await DisorderService.deleteDisorder(selectedRowDisorder);
 
     if (response.message === "Disorder deleted successfully") {
-      window.alert("Successfully Deleted");
+      showSuccessMessage("Disorder Deleted Successfully")
+
     } else {
-      window.alert("API Failed");
+      showErrorMessage("Disorder Not Deleted.")
+
     }
     setOpenDeleteDialog(false);
 
@@ -287,8 +291,12 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
       ;
       if (response._id) {
         setIsEditable(false); // Disable edit mode after saving
+      showSuccessMessage("Lot Edit Successfully")
+
+        
       } else {
-        window.alert("API Failed");
+      showErrorMessage("API Failed")
+
       }
     } else {
       setIsEditable(true); // Enable edit mode
@@ -345,6 +353,11 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   const handleAddDisorder = async () => {
     let requestData = { ...modalDataDisorder };
     const response = await DisorderService.addDisorder(requestData);
+    if (response.name ) {
+      showSuccessMessage("Disorder Added Successfully")
+    } else {
+      showErrorMessage("Disorder Not Added")
+    }
     ;
   };
 
@@ -355,8 +368,10 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
 
       if (response._id) {
         setIsEditable(false); // Disable edit mode after saving
+      showSuccessMessage("Disorder Edit Successfully")
+
       } else {
-        window.alert("API Failed");
+        showErrorMessage("API Failed");
       }
     } else {
       setIsEditable(true); // Enable edit mode

@@ -16,6 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import SaveIcon from '@mui/icons-material/Save';
 import "../../../styles.css"
+import { showSuccessMessage, showErrorMessage } from "../../../managers/utility";
 
 export default function QuestionModal({
   isModalOpenQuestions,
@@ -37,10 +38,11 @@ export default function QuestionModal({
     let requestData = { ...selectedQuestion };
     const response = await QuestionsService.addQuestion(requestData);
     if (response._id) {
+      showSuccessMessage("Question Added Succesfully")
+      
       closeModal();
-      window.alert("Question Added")
     } else {
-      window.alert("Error while adding question")
+      showErrorMessage("Question Not Added.")
     }
   };
 
@@ -112,8 +114,9 @@ export default function QuestionModal({
       const response = await QuestionsService.updateQuestion(requestData);
       if (response._id) {
         setIsEditable(false); // Disable edit mode after saving
+        showSuccessMessage("Question Edited Succesfully")
       } else {
-        window.alert("API Failed");
+        showErrorMessage("API Failed");
       }
     } else {
       setIsEditable(true); // Enable edit mode
