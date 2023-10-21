@@ -142,6 +142,7 @@ export default function DisorderModel({
           sx={{ mt: 2 }}
           value={modalDataDisorder?.lotId}
         />
+        Note : Only Enter Lot Number e.g. 0 , 1 , 2 .....
         <TextField
           label="Red Required"
           variant="outlined"

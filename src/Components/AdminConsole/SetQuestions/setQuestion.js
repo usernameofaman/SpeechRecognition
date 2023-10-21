@@ -6,121 +6,139 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsService from '../../../services/settings';
 
+
 export default function QuestionAnswerForm() {
-  const [qaPairs, setQAPairs] = useState([{ question: '', answers: [''] }]);
-  const [questionsAns, setQuestionsAns] = useState([]);
+const [questionsAnswers, setQuestionsAnswers] = useState([{ question: "", answers: [""] }]);
 
-  const handleAddRow = () => {
-    const newQAPairs = [...qaPairs];
-    newQAPairs.push({ question: '', answers: [''] });
-    setQAPairs(newQAPairs);
-  };
 
-  const handleRemoveRow = (qaIndex) => {
-    const newQAPairs = [...qaPairs];
-    newQAPairs.splice(qaIndex, 1);
-    setQAPairs(newQAPairs);
-  };
+useEffect(() => {
+getQuestionAnswer();
+}, [])
 
-  const handleAddAnswer = (qaIndex) => {
-    const newQAPairs = [...qaPairs];
-    newQAPairs[qaIndex].answers.push('');
-    setQAPairs(newQAPairs);
-  };
 
-  const handleRemoveAnswer = (qaIndex, answerIndex) => {
-    const newQAPairs = [...qaPairs];
-    newQAPairs[qaIndex].answers.splice(answerIndex, 1);
-    setQAPairs(newQAPairs);
-  };
-
-  const [existingQuesAns, SetExistingQuesAns] = useState([])
-  const getQnA = async () => {
-    const questionsAnsaAll = await SettingsService.getQuestionAnswer();
-    
-    SetExistingQuesAns(existingQuesAns)
-    }
-  
-
-  useEffect(() => {
-getQnA()
-}, []);
-
-console.log("existingQuestionAns Data", existingQuesAns)
-
-  const handleAddQuestion = async () => {
-    const newQuestionData = {
-      _id: {
-        $oid: '6524aee1f523e3c3be4ba56f',
-      },
-      useLLM: false,
-      questionAnswers: {
-        ...existingQuesAns.questionAnswers, // Spread the existing questions and answers
-        [qaPairs[qaPairs.length - 1].question]: qaPairs[qaPairs.length - 1].answers,
-      },
-    };
-  
-    try {
-      const response = await SettingsService.addQuestionAnswer(newQuestionData);
-      if (response.status === 200) {
-        console.log('Question added successfully:', response.data);
-        // Clear form fields or perform any other necessary actions
-        const newQAPairs = [...qaPairs];
-        newQAPairs[qaPairs.length - 1] = { question: '', answers: [''] };
-        setQAPairs(newQAPairs);
-        // Save the updated questionAnswers state
-        SetExistingQuesAns(newQuestionData.questionAnswers);
-      } else {
-        console.error('Failed to add the question');
-      }
-    } catch (error) {
-      console.error('Error adding the question:', error);
-    }
-  };
-  
-  
-
-  return (
-    <div>
-      {qaPairs.map((qaPair, qaIndex) => (
-        <div key={qaIndex}>
-          <TextField
-            label="Question"
-            variant="outlined"
-            value={qaPair.question}
-            onChange={(e) => {
-              const newQAPairs = [...qaPairs];
-              newQAPairs[qaIndex].question = e.target.value;
-              setQAPairs(newQAPairs);
-            }}
-          />
-          {qaPair.answers.map((answer, answerIndex) => (
-            <div key={answerIndex}>
-              <TextField
-                label="Answer"
-                variant="outlined"
-                value={answer}
-                onChange={(e) => {
-                  const newQAPairs = [...qaPairs];
-                  newQAPairs[qaIndex].answers[answerIndex] = e.target.value;
-                  setQAPairs(newQAPairs);
-                }}
-              />
-              <Button onClick={() => handleRemoveAnswer(qaIndex, answerIndex)}>
-                <RemoveIcon />
-              </Button>
-            </div>
-          ))}
-          <Button onClick={() => handleAddAnswer(qaIndex)}>Add Answer</Button>
-          {qaPairs.length > 1 && (
-            <Button onClick={() => handleRemoveRow(qaIndex)}>Remove Row</Button>
-          )}
-        </div>
-      ))}
-      <Button onClick={() => handleAddRow()}>Add Row</Button>
-      <Button onClick={handleAddQuestion}>
-        <SaveIcon />
-      </Button>
-    </div>
-  );
+const getQuestionAnswer = async () => {
+const res = await SettingsService.getQuestionAnswer()
+if (res && res[0] && res[0].questionAnswers) {
+setQuestionsAnswers(res[0].questionAnswers);
 }
+console.log(res)
+}
+
+
+const handleQuestionChange = (index, e) => {
+const updatedQuestionsAnswers = [...questionsAnswers];
+updatedQuestionsAnswers[index].question = e.target.value.replace("$", "");
+setQuestionsAnswers(updatedQuestionsAnswers);
+};
+
+
+const handleAnswersChange = (event, index, answerIndex) => {
+let tempQA = [...questionsAnswers]
+const selectedIndex = tempQA[index];
+const newAnswers = selectedIndex.answers;
+newAnswers[answerIndex] = event.target.value;
+
+
+selectedIndex.answers = newAnswers;
+tempQA[index] = selectedIndex
+setQuestionsAnswers(tempQA)
+};
+
+
+const addAnswerField = (index) => {
+const updatedQuestionsAnswers = [...questionsAnswers];
+updatedQuestionsAnswers[index].answers.push("");
+setQuestionsAnswers(updatedQuestionsAnswers);
+};
+
+
+const removeAnswerField = (index, answerIndex) => {
+const updatedQuestionsAnswers = [...questionsAnswers];
+updatedQuestionsAnswers[index].answers.splice(answerIndex, 1);
+setQuestionsAnswers(updatedQuestionsAnswers);
+};
+
+
+const addRemoveRow = (action, index) => {
+if (action === "ADD") {
+setQuestionsAnswers(prevState => [...prevState, { question: "", answers: [""] }]);
+} else if (action === "REMOVE") {
+const updatedQuestionsAnswers = [...questionsAnswers];
+updatedQuestionsAnswers.splice(index, 1);
+setQuestionsAnswers(updatedQuestionsAnswers);
+}
+};
+
+
+const handleAddQuestion = async () => {
+const newQuestionData = {
+_id: {
+$oid: '6524aee1f523e3c3be4ba56f',
+},
+useLLM: false,
+questionAnswers: questionsAnswers
+};
+try {
+const response = await SettingsService.addQuestionAnswer(newQuestionData);
+if (response._id) {
+window.alert("Saved")
+console.log('Question added successfully:', response.data);
+// Clear form fields or perform any other necessary actions
+} else {
+console.error('Failed to add the question');
+}
+} catch (error) {
+console.error('Error adding the question:', error);
+}
+};
+
+
+console.log(questionsAnswers);
+
+
+return (
+<div>
+{questionsAnswers.map((qa, index) => (
+<div key={index} style={{ display: 'flex', marginTop: "10px" }}>
+<TextField
+label="Question"
+variant="outlined"
+value={qa.question}
+onChange={(e) => handleQuestionChange(index, e)}
+/>
+{qa.answers.map((answer, answerIndex) => (
+<div key={answerIndex} style={{ display: 'flex', flexDirection: "column", alignItems: "center" }}>
+<TextField
+sx={{ ml: 1 }}
+label="Answer"
+variant="outlined"
+value={answer}
+onChange={(e) => handleAnswersChange(e, index, answerIndex)}
+/>
+{answerIndex > 0 && (
+<Button variant='outlined' sx={{ mt: 1 }} onClick={() => removeAnswerField(index, answerIndex)}>
+<RemoveIcon />
+</Button>
+)}
+</div>
+))}
+<Button variant='outlined' sx={{ ml: 1 }} onClick={() => addAnswerField(index)}>
+<AddIcon />
+</Button>
+<div style={{ marginLeft: "10px", display: 'flex', flexDirection: "column", alignItems: "center" }}>
+<Button fullWidth size="small" variant='outlined' onClick={() => addRemoveRow("ADD", index)}>{`Add Row`}</Button>
+<Button size="small" variant='outlined' onClick={() => addRemoveRow("REMOVE", index)}>Remove Row</Button>
+</div>
+</div>
+))}
+
+
+<Button sx={{ mt: 3 }} variant='contained' onClick={handleAddQuestion}>
+Save <SaveIcon />
+</Button>
+</div>
+);
+}
+
+
+

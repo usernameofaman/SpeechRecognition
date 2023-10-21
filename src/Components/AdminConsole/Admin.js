@@ -15,7 +15,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import DataTable from "./dataTable"; 
+import DataTable from "./dataTable";
 import SetQuestions from "./SetQuestions/setQuestion";
 
 import {
@@ -66,7 +66,7 @@ export default function ResponsiveDrawer(props) {
         switch (activeTab) {
           case "Questions":
             setAllQuestionsData(data);
-             ;
+            ;
             break;
           case "LOTS":
             setAllLots(data); // Check if this function name is correct
@@ -143,101 +143,103 @@ export default function ResponsiveDrawer(props) {
 
   return (
     <Box sx={{ display: "flex" }}>
-    <CssBaseline />
-    <AppBar
-      position="fixed"
-      sx={{
-        width: { sm: `calc(100% - ${drawerWidth}px)` },
-        ml: { sm: `${drawerWidth}px` },
-      }}
-    >
-    <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                // onClick={handleDrawerToggle}
-                sx={{ mr: 2, display: { sm: "none" } }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" noWrap component="div">
-                Admin Portal
-              </Typography>
-            </Toolbar>
-    </AppBar>
-    <Box
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            // onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">
+            Admin Portal
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
-       <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
-      >
-        <Drawer
-          // container={container}
-          variant="temporary"
-          open={mobileOpen}
-          // onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
+        <Box
+          component="nav"
+          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+          aria-label="mailbox folders"
         >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: "none", sm: "block" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
+          <Drawer
+            // container={container}
+            variant="temporary"
+            open={mobileOpen}
+            // onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            sx={{
+              display: { xs: "block", sm: "none" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+              },
+            }}
+          >
+            {drawer}
+          </Drawer>
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: "none", sm: "block" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+              },
+            }}
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Box>
+
       </Box>
-    
-    </Box>
-    <Box
-      component="main"
-      sx={{
-        flexGrow: 1,
-        p: 3,
-        width: { sm: `calc(100% - ${drawerWidth}px)` },
-      }}
-    >
-      <Toolbar />
-      {activeTab === "SetQuestions" ? (
-  <SetQuestions />
-) : (
-  <DataTable
-    activeTab={activeTab}
-    allQuestionsData={allQuestionsData}
-    allLots={allLots}
-    allDisorderData={allDisorderData}
-  />
-)}
-     
-      {/* <DataGrid
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
+      >
+        <Toolbar />
+        {activeTab === "SetQuestions" ? (
+          <>
+          <SetQuestions />
+          </>
+        ) : (
+          <DataTable
+            activeTab={activeTab}
+            allQuestionsData={allQuestionsData}
+            allLots={allLots}
+            allDisorderData={allDisorderData}
+          />
+        )}
+
+        {/* <DataGrid
        activeTab={activeTab}
        allQuestionsData={allQuestionsData}
        allLots={allLots}
        allDisorderData={allDisorderData}/> */}
+      </Box>
     </Box>
-    </Box>
-  
+
   );
 }
 

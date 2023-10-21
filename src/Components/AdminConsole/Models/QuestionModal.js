@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -12,6 +12,9 @@ import FormLabel from "@mui/material/FormLabel";
 import { FormControl, MenuItem, Select } from "@mui/material";
 import { InputLabel } from "@mui/material";
 import { QuestionsService } from "../../../services";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import SaveIcon from '@mui/icons-material/Save';
 import "../../../styles.css"
 
 export default function QuestionModal({
@@ -25,6 +28,11 @@ export default function QuestionModal({
   setSelectedQuestion
 }) {
 
+
+  useEffect(() => {
+    setSelectedQuestion({ ...selectedQuestion, hasCustomPrompt: "false" })
+  }, [])
+
   const handleAddQuestion = async () => {
     let requestData = { ...selectedQuestion };
     const response = await QuestionsService.addQuestion(requestData);
@@ -37,12 +45,64 @@ export default function QuestionModal({
   };
 
 
+  // const handleQuestionChange = (e) => {
+  //   let value = e.target.value;
+  //   if (value === "true" || value === "false") {
+  //     console.log(e.target.name, e.target.value)
+  //     value = JSON.parse(value);
+  //   }
+
+  //   let updatedQuestion = {
+  //     ...selectedQuestion,
+  //     [e.target.name]: value,
+  //   };
+
+  //   if (e.target.name === "hasLogic" && value === "true") {
+  //     updatedQuestion.logicQuestion = {
+  //       logicAnswer: "",
+  //       answers: [""]
+  //     };
+  //   }
+
+  //   setSelectedQuestion(updatedQuestion);
+  // };
+
+
   const handleQuestionChange = (e) => {
-    setSelectedQuestion({
-      ...selectedQuestion,
-      [e.target.name]: e.target.value,
-    });
+    let value = e.target.value;
+    if (value === "true" || value === "false") {
+      console.log(e.target.name, e.target.value)
+      value = JSON.parse(value);
+    }
+
+
+    if (e.target.name === "hasLogic") {
+      console.log(e.target.value, e.target.checked)
+      if (e.target.value === "true") {
+        setSelectedQuestion({
+          ...selectedQuestion,
+          [e.target.name]: e.target.value,
+          logicQuestion: {
+            logicAnswer: "",
+            answers: [""]
+          }
+        })
+      }
+      else {
+        setSelectedQuestion({
+          ...selectedQuestion,
+          [e.target.name]: e.target.value,
+        })
+      }
+
+    } else {
+      setSelectedQuestion({
+        ...selectedQuestion,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
+
 
 
 
@@ -94,6 +154,30 @@ export default function QuestionModal({
     state.possibleAnswers = answers;
     setSelectedQuestion(state);
   };
+
+
+  const handleLogicAnswers = (e, index) => {
+    console.log(e.target.value, e.target.name)
+
+    let state = { ...selectedQuestion };
+    let logicQuestion = state.logicQuestion;
+    let answers = logicQuestion.answers;
+    if (e.target.name === "answer") {
+      answers[index] = e.target.value
+    } else if (e.target.name === "logicAnswer") {
+      logicQuestion["logicAnswer"] = e.target.value
+    }
+    else if (e.target.name === "ADD")
+      answers.push("")
+    else {
+      answers.splice(index, 1)
+    }
+
+    logicQuestion.answers = answers;
+    state.logicQuestion = logicQuestion
+
+    setSelectedQuestion(state);
+  }
 
 
   return (
@@ -198,6 +282,7 @@ export default function QuestionModal({
             name="type"
             value={selectedQuestion.type}
             label="Type"
+            disabled={!isEditable}
             onChange={handleQuestionChange}
           >
             <MenuItem value={"TEXT"}>TEXT</MenuItem>
@@ -224,10 +309,27 @@ export default function QuestionModal({
             name="llmUsed"
             value={selectedQuestion.llmUsed}
             label="LLM Used"
+            disabled={!isEditable}
             onChange={handleQuestionChange}
           >
             <MenuItem value={"SMALL"}>Small</MenuItem>
             <MenuItem value={"LARGE"}>Large</MenuItem>
+          </Select>
+        </FormControl>
+
+
+        <FormControl fullWidth>
+          <InputLabel>K3 K4 Logic</InputLabel>
+          <Select
+            sx={{ mt: 1 }}
+            name="k3k4"
+            value={selectedQuestion.k3k4}
+            label="K3 K4?"
+            disabled={!isEditable}
+            onChange={handleQuestionChange}
+          >
+            <MenuItem value={"K3"}>K3</MenuItem>
+            <MenuItem value={"K4"}>K4</MenuItem>
           </Select>
         </FormControl>
 
@@ -243,10 +345,10 @@ export default function QuestionModal({
           value={selectedQuestion.alternateQuestion}
         />
 
-<TextField
+        <TextField
           label="Alternate Prompt"
           variant="outlined"
-          disabled={!isEditable || !selectedQuestion.alternateQuestion }
+          disabled={!isEditable || !selectedQuestion.alternateQuestion}
           onChange={handleQuestionChange}
           name="alternatePrompt"
           fullWidth
@@ -255,17 +357,62 @@ export default function QuestionModal({
           value={selectedQuestion.alternatePrompt}
         />
 
-        <TextField
-          label="Question Logic"
-          variant="outlined"
-          disabled={!isEditable}
-          onChange={handleQuestionChange}
-          name="questionLogic"
-          fullWidth
-          margin="normal"
-          sx={{ mt: 2 }}
-          value={selectedQuestion.questionLogic}
-        />
+        <div style={{ border: "1px dashed grey" }}>
+
+          <FormLabel id="demo-controlled-radio-buttons-group">
+            Does this question require logic ?
+          </FormLabel>
+          <RadioGroup
+            name="hasLogic"
+            value={selectedQuestion.hasLogic}
+            onChange={handleQuestionChange}
+            disabled={!isEditable}
+          >
+            <div style={{ display: "flex" }}>
+              <FormControlLabel disabled={!isEditable} value={true} control={<Radio />} label="Yes" />
+              <FormControlLabel disabled={!isEditable} value={false} control={<Radio />} label="No" />
+            </div>
+          </RadioGroup>
+          {
+            selectedQuestion.hasLogic &&
+            <TextField
+              label="Logic Answer"
+              variant="outlined"
+              disabled={!isEditable}
+              onChange={(e) => handleLogicAnswers(e)}
+              name="logicAnswer"
+              fullWidth
+              margin="normal"
+              sx={{ mt: 2 }}
+              value={selectedQuestion?.logicQuestion?.logicAnswer}
+            />
+          }
+
+          {selectedQuestion.hasLogic && selectedQuestion?.logicQuestion?.answers.map((item, index) => (
+            <div style={{ display: "flex" }}>
+
+              <TextField
+                label="+ Answer"
+                variant="outlined"
+                disabled={!isEditable}
+                onChange={(e) => handleLogicAnswers(e, index)}
+                name="answer"
+                fullWidth
+                margin="normal"
+                sx={{ mt: 2, ml: 2 }}
+                value={item}
+              />
+              <Button name="REMOVE" onClick={(e) => handleLogicAnswers(e, index)}>
+                <RemoveIcon sx={{ pointerEvents: "none" }} />
+              </Button>
+              <Button name="ADD" onClick={(e) => handleLogicAnswers(e, index)}>
+                <AddIcon sx={{ pointerEvents: "none" }} />
+              </Button>
+            </div>
+          ))
+          }
+        </div>
+
 
         <TextField
           label="Summary"
@@ -285,6 +432,7 @@ export default function QuestionModal({
           <Select
             value={selectedQuestion.timer}
             label="Timer"
+            disabled={!isEditable}
             name="timer"
             onChange={handleQuestionChange}
           >
@@ -293,20 +441,35 @@ export default function QuestionModal({
             <MenuItem value={"HIGH"}>High</MenuItem>
           </Select>
         </FormControl>
-
+        {!selectedQuestion.hasCustomPrompt &&
+          < TextField
+            label="Category"
+            variant="outlined"
+            disabled={!isEditable}
+            onChange={handleQuestionChange}
+            name="category"
+            fullWidth
+            margin="normal"
+            sx={{ mt: 2 }}
+            value={selectedQuestion.category}
+          />
+        }
         <FormLabel id="demo-controlled-radio-buttons-group">
           Does this question require custom prompt ?
         </FormLabel>
         <RadioGroup
           name="hasCustomPrompt"
-          value={selectedQuestion.hasCustomPrompt === "true" ? "true" : "false"}
+          value={selectedQuestion.hasCustomPrompt}
           onChange={handleQuestionChange}
           disabled={!isEditable}
         >
-          <FormControlLabel value="true" control={<Radio />} label="Yes" />
-          <FormControlLabel value="false" control={<Radio />} label="No" />
+          <div style={{ display: "flex" }}>
+            <FormControlLabel disabled={!isEditable} value={true} control={<Radio />} label="Yes" />
+            <FormControlLabel disabled={!isEditable} value={false} control={<Radio />} label="No" />
+          </div>
         </RadioGroup>
-        {selectedQuestion.hasCustomPrompt === "true" &&
+
+        {selectedQuestion.hasCustomPrompt &&
           <TextField
             label="CustomPrompt"
             variant="outlined"
@@ -318,7 +481,7 @@ export default function QuestionModal({
             sx={{ mt: 2 }}
             value={selectedQuestion.customPrompt}
           />}
-        Note : Please remove any item that does not have a value
+
         {selectedQuestion.possibleAnswers &&
           selectedQuestion.possibleAnswers.map((answer, aIndex) => (
             <div style={{ display: "flex" }}>
@@ -356,10 +519,15 @@ export default function QuestionModal({
               </Button>
             </div>
           ))}
+
+        <div>
+          Note : Please remove any item that does not have a value
+        </div>
         {/* <Button >
+
         Delete
       </Button> */}
       </Box>
-    </Modal>
+    </Modal >
   );
 }
