@@ -70,10 +70,10 @@ export default function QuestionAnswerForm() {
     };
     try {
       const response = await SettingsService.addQuestionAnswer(newQuestionData);
-      if (response.status === 200) {
+      if (response._id) {
+        window.alert("Saved")
         console.log('Question added successfully:', response.data);
         // Clear form fields or perform any other necessary actions
-        setQuestionsAnswers([{ question: "", answers: [""] }]);
       } else {
         console.error('Failed to add the question');
       }

@@ -45,8 +45,36 @@ export default function QuestionModal({
   };
 
 
+  // const handleQuestionChange = (e) => {
+  //   let value = e.target.value;
+  //   if (value === "true" || value === "false") {
+  //     console.log(e.target.name, e.target.value)
+  //     value = JSON.parse(value);
+  //   }
+
+  //   let updatedQuestion = {
+  //     ...selectedQuestion,
+  //     [e.target.name]: value,
+  //   };
+
+  //   if (e.target.name === "hasLogic" && value === "true") {
+  //     updatedQuestion.logicQuestion = {
+  //       logicAnswer: "",
+  //       answers: [""]
+  //     };
+  //   }
+
+  //   setSelectedQuestion(updatedQuestion);
+  // };
+
+
   const handleQuestionChange = (e) => {
-    console.log(selectedQuestion)
+    let value = e.target.value;
+    if (value === "true" || value === "false") {
+      console.log(e.target.name, e.target.value)
+      value = JSON.parse(value);
+    }
+
 
     if (e.target.name === "hasLogic") {
       console.log(e.target.value, e.target.checked)
@@ -74,6 +102,7 @@ export default function QuestionModal({
       });
     }
   };
+
 
 
 
@@ -335,17 +364,17 @@ export default function QuestionModal({
           </FormLabel>
           <RadioGroup
             name="hasLogic"
-            value={selectedQuestion.hasLogic === "true" ? "true" : "false"}
+            value={selectedQuestion.hasLogic}
             onChange={handleQuestionChange}
             disabled={!isEditable}
           >
             <div style={{ display: "flex" }}>
-              <FormControlLabel disabled={!isEditable} value="true" control={<Radio />} label="Yes" />
-              <FormControlLabel disabled={!isEditable} value="false" control={<Radio />} label="No" />
+              <FormControlLabel disabled={!isEditable} value={true} control={<Radio />} label="Yes" />
+              <FormControlLabel disabled={!isEditable} value={false} control={<Radio />} label="No" />
             </div>
           </RadioGroup>
           {
-            selectedQuestion.hasLogic === "true" &&
+            selectedQuestion.hasLogic &&
             <TextField
               label="Logic Answer"
               variant="outlined"
@@ -359,7 +388,7 @@ export default function QuestionModal({
             />
           }
 
-          {selectedQuestion.hasLogic === "true" && selectedQuestion?.logicQuestion?.answers.map((item, index) => (
+          {selectedQuestion.hasLogic && selectedQuestion?.logicQuestion?.answers.map((item, index) => (
             <div style={{ display: "flex" }}>
 
               <TextField
@@ -412,7 +441,7 @@ export default function QuestionModal({
             <MenuItem value={"HIGH"}>High</MenuItem>
           </Select>
         </FormControl>
-        {selectedQuestion.hasCustomPrompt !== "true" &&
+        {!selectedQuestion.hasCustomPrompt &&
           < TextField
             label="Category"
             variant="outlined"
@@ -425,23 +454,22 @@ export default function QuestionModal({
             value={selectedQuestion.category}
           />
         }
-
         <FormLabel id="demo-controlled-radio-buttons-group">
           Does this question require custom prompt ?
         </FormLabel>
         <RadioGroup
           name="hasCustomPrompt"
-          value={selectedQuestion.hasCustomPrompt === "true" ? "true" : "false"}
+          value={selectedQuestion.hasCustomPrompt}
           onChange={handleQuestionChange}
           disabled={!isEditable}
         >
           <div style={{ display: "flex" }}>
-            <FormControlLabel disabled={!isEditable} value="true" control={<Radio />} label="Yes" />
-            <FormControlLabel disabled={!isEditable} value="false" control={<Radio />} label="No" />
+            <FormControlLabel disabled={!isEditable} value={true} control={<Radio />} label="Yes" />
+            <FormControlLabel disabled={!isEditable} value={false} control={<Radio />} label="No" />
           </div>
         </RadioGroup>
 
-        {selectedQuestion.hasCustomPrompt === "true" &&
+        {selectedQuestion.hasCustomPrompt &&
           <TextField
             label="CustomPrompt"
             variant="outlined"
