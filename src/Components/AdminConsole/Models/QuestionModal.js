@@ -81,7 +81,7 @@ export default function QuestionModal({
       if (e.target.value === "true") {
         setSelectedQuestion({
           ...selectedQuestion,
-          [e.target.name]: e.target.value,
+          [e.target.name]: value,
           logicQuestion: {
             logicAnswer: "",
             answers: [""]
@@ -91,14 +91,14 @@ export default function QuestionModal({
       else {
         setSelectedQuestion({
           ...selectedQuestion,
-          [e.target.name]: e.target.value,
+          [e.target.name]: value,
         })
       }
 
     } else {
       setSelectedQuestion({
         ...selectedQuestion,
-        [e.target.name]: e.target.value,
+        [e.target.name]: value,
       });
     }
   };
@@ -441,6 +441,7 @@ export default function QuestionModal({
             <MenuItem value={"HIGH"}>High</MenuItem>
           </Select>
         </FormControl>
+        {console.log("CHECKING HERE",selectedQuestion.hasCustomPrompt)}
         {!selectedQuestion.hasCustomPrompt &&
           < TextField
             label="Category"
