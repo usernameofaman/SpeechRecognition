@@ -16,7 +16,6 @@ const dummyAnswers = {
     "206": "I've been facing significant challenges lately, struggling with noticeable memory lapses, difficulty concentrating on tasks, and experiencing unusual shifts in my mood and personality. Additionally, there are moments of heightened energy and intense activity, followed by periods of deep sadness and hopelessness. These fluctuations are impacting my daily life, and I'm finding it hard to maintain a stable mood and cognitive function."
 }
 
-
 export default function Session({ voice, useLLM, inputMode }) {
     const [questionWriter, setQuestionWriter] = useState(null);
     const [question, setQuestion] = useState("");
@@ -29,35 +28,43 @@ export default function Session({ voice, useLLM, inputMode }) {
     const [disorderCounts, setDisorderCounts] = useState(null)
     const [submitInProcess, setSubmitInProcess] = useState(false)
     const [listenerState, setListenerState] = useState("NOT_STARTED")
-    // ListernStates = [ "NOT_STARTED" , "STARTED" , "ENDED" ]
 
     //Timer Duration
     const [timerDuration, setTimerDuration] = useState(5);
-    const [midDelay, setMidDelay] = useState(0)
+    const [midDelay, setMidDelay] = useState(5)
 
-    const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (timerDuration * 1000) });
-    useEffect(async () => {
+    console.log("listenerState", listenerState, "submitInProcess", submitInProcess, "disorderCounts", disorderCounts, "answers", answers, "currentLot", currentLot, "instructions", instructions)
+
+    const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (0 * 1000) });
+    useEffect(() => {
         getQuestions();
     }, [])
 
 
 
     const readInstructions = async (question) => {
-        let text = question.text;
+        let text = question.instructions;
         let length = text.split(" ").length;
         let timeTakenToSpeak = length / 2.83;
+
+        console.log(length, timeTakenToSpeak)
+        let restartDuration = Date.now() + ((midDelay * 1000) + (timeTakenToSpeak * 1000))
+        restart(process.env.REACT_APP_ALLOW_TIMER === true ? restartDuration : 0)
+        setTimeout(nowReadQuestion, (midDelay * 1000) + (timeTakenToSpeak * 1000))
         speak({
             text: question.instructions || "",
-            onEnd: setTimeout(nowReadQuestion, (midDelay * 1000) + (timeTakenToSpeak * 1000))
+            onEnd: () => { console.log("Done Reading Instruction") }
         })
     }
 
     const nowReadQuestion = async () => {
         setQuestion((prev) => {
+            console.log(prev)
             speak({
                 text: prev,
                 onEnd: () => {
-                    restart(Date.now() + (timerDuration * 1000))
+                    let restartDuration = Date.now() + (timerDuration * 1000)
+                    restart(process.env.REACT_APP_ALLOW_TIMER === true ? restartDuration : 0)
                     startListening();
                 }
             })
@@ -68,14 +75,42 @@ export default function Session({ voice, useLLM, inputMode }) {
 
 
 
-    const speak = ({ text, onEnd }) => {
+    // const speak = ({ text, onEnd }) => {
 
-        const speakObj = new SpeechSynthesisUtterance()
+    //     const speakObj = new SpeechSynthesisUtterance()
+    //     speakObj.text = text;
+    //     speakObj.voice = voice;
+    //     speakObj.onend = onEnd
+    //     window.speechSynthesis.speak(speakObj)
+    // }
+
+    const speak = ({ text, onEnd }) => {
+        const speakObj = new SpeechSynthesisUtterance();
         speakObj.text = text;
         speakObj.voice = voice;
-        speakObj.onend = onEnd
-        window.speechSynthesis.speak(speakObj)
-    }
+        speakObj.onend = () => {
+            if (onEnd) {
+                console.log("On End Check", onEnd)
+                onEnd();
+            }
+            clearInterval(resumeInterval);
+        };
+
+        // Start/resume the speech
+        if (process.env.REACT_APP_ALLOW_READING === true)
+            window.speechSynthesis.speak(speakObj);
+
+        // Set up an interval to periodically pause and resume
+        const resumeInterval = setInterval(() => {
+            if (!window.speechSynthesis.speaking) {
+                clearInterval(resumeInterval);
+            } else {
+                window.speechSynthesis.pause();
+                window.speechSynthesis.resume();
+            }
+        }, 14000);
+    };
+
 
     useEffect(() => {
         if (!isTimerRunning && listenerState === "STARTED") {
@@ -148,7 +183,7 @@ export default function Session({ voice, useLLM, inputMode }) {
         }
 
         if (data.message === "All Lots are completed") {
-            speak({ text: "Thank you for answering all of the questions." })
+            speak({ text: "Thank you for answering all of the questions.", onEnd: () => console.log("Done with all questions") })
         }
     };
 
