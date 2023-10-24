@@ -49,7 +49,7 @@ export default function Session({ voice, useLLM, inputMode }) {
 
         console.log(length, timeTakenToSpeak)
         let restartDuration = Date.now() + ((midDelay * 1000) + (timeTakenToSpeak * 1000))
-        restart(process.env.REACT_APP_ALLOW_TIMER === true ? restartDuration : 0)
+        restart(process.env.REACT_APP_ALLOW_TIMER === true ? restartDuration : Date.now())
         setTimeout(nowReadQuestion, (midDelay * 1000) + (timeTakenToSpeak * 1000))
         speak({
             text: question.instructions || "",
@@ -64,7 +64,7 @@ export default function Session({ voice, useLLM, inputMode }) {
                 text: prev,
                 onEnd: () => {
                     let restartDuration = Date.now() + (timerDuration * 1000)
-                    restart(process.env.REACT_APP_ALLOW_TIMER === true ? restartDuration : 0)
+                    restart(process.env.REACT_APP_ALLOW_TIMER === true ? restartDuration : Date.now())
                     startListening();
                 }
             })
@@ -202,22 +202,25 @@ export default function Session({ voice, useLLM, inputMode }) {
                         <div className="col-md-12">
                             <div className="card shadow-sm ">
                                 <div className="card-body p-4" id="submit-form">
-                                    <div className="">
-                                        <h5 className="mb-2 text-info">Instruction</h5>
-                                        <p className="border border-info p-2 rounded" id="chat1">
-                                            <Typewriter
-                                                onInit={(typewriter) => {
-                                                    setInstructionWriter(typewriter)
-                                                    typewriter.typeString(instructions)
-                                                        .start()
-                                                }}
-                                                key={instructions}
-                                                options={{
-                                                    delay: 8,
-                                                    cursor: ""
-                                                }}
-                                            />
-                                        </p>
+                                    <div className="" style={{ minHeight: "76px" }}>
+                                        {instructions === "NULL" ? "" : <>
+                                            <h5 className="mb-2 text-info">Instruction</h5>
+                                            <p className="border border-info p-2 rounded" id="chat1">
+                                                <Typewriter
+                                                    onInit={(typewriter) => {
+                                                        setInstructionWriter(typewriter)
+                                                        typewriter.typeString(instructions)
+                                                            .start()
+                                                    }}
+                                                    key={instructions}
+                                                    options={{
+                                                        delay: 8,
+                                                        cursor: ""
+                                                    }}
+                                                />
+                                            </p>
+                                        </>}
+
                                     </div>
                                     <div className="">
                                         <h5 className="mb-2 text-warning">Question</h5>
