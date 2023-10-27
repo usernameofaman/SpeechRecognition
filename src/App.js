@@ -5,6 +5,7 @@ import Admin from './Components/AdminConsole/Admin';
 import './App.css'
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import GoogleTranslate from './Components/GoogleTranslate/GoogleTranslate';
 
 
 
@@ -38,6 +39,8 @@ function App() {
                     <Route path="/about" element={About} />
                     <Route path="/contact" element={Contact} />
                     <Route path="/admin" element={<Admin/>} />
+                    <Route path="/translate" element={<GoogleTranslate/>} />
+
 
                     <Route element={NotFound} />
                 </Routes>
