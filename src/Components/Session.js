@@ -32,7 +32,8 @@ export default function Session({ voice, useLLM, inputMode }) {
     const [answers, setAnswers] = useState(null)
     const [disorderCounts, setDisorderCounts] = useState(null)
     const [submitInProcess, setSubmitInProcess] = useState(false)
-    const [listenerState, setListenerState] = useState("NOT_STARTED")
+    const [listenerState, setListenerState] = useState("NOT_STARTED");
+    const [final, setFinal] = useState([])
 
     //Timer Duration
     const [timerDuration, setTimerDuration] = useState(5);
@@ -77,17 +78,6 @@ export default function Session({ voice, useLLM, inputMode }) {
         })
     }
 
-
-
-
-    // const speak = ({ text, onEnd }) => {
-
-    //     const speakObj = new SpeechSynthesisUtterance()
-    //     speakObj.text = text;
-    //     speakObj.voice = voice;
-    //     speakObj.onend = onEnd
-    //     window.speechSynthesis.speak(speakObj)
-    // }
 
     const speak = ({ text, onEnd }) => {
         const speakObj = new SpeechSynthesisUtterance();
@@ -175,7 +165,7 @@ export default function Session({ voice, useLLM, inputMode }) {
         }
         let sId = localStorage.getItem('sessionId');
         if (!sId) {
-            window.alert("No Id Found");
+
         }
         const reqData = {
             currentQuestionCode: apiData.question?.code,
@@ -203,6 +193,9 @@ export default function Session({ voice, useLLM, inputMode }) {
             }
         }
         else {
+            if (data.final) {
+                setFinal(data.final)
+            }
             if (data.message)
                 showErrorMessage(data.message)
         }
@@ -344,54 +337,25 @@ export default function Session({ voice, useLLM, inputMode }) {
                                             </div>
                                             <div
                                                 className="row gx-1 text-center text-white flex-nowrap overflow-auto pb-2  issuebox">
-                                                <div className="col">
+                                                {final.map((disorder) => (
+                                                    <div className="col">
+                                                        <div className="card bg-success">
+                                                            <div className="card-body">
+                                                                <h6 className="card-subtitle" style={{color:"white", fontWeight:600, fontSize:"20px"}}>{disorder}</h6>
+                                                                <p className="card-text">&nbsp;</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+
+                                                {/* <div className="col">
                                                     <div className="card bg-success">
                                                         <div className="card-body">
                                                             <h6 className="card-subtitle">Dementia</h6>
                                                             <p className="card-text">&nbsp;</p>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="col">
-                                                    <div className="card bg-primary">
-                                                        <div className="card-body">
-                                                            <h6 className="card-subtitle">Anxiety</h6>
-                                                            <p className="card-text">&nbsp;</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col">
-                                                    <div className="card bg-secondary">
-                                                        <div className="card-body">
-                                                            <h6 className="card-subtitle">Depression</h6>
-                                                            <p className="card-text">&nbsp;</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col">
-                                                    <div className="card bg-secondary">
-                                                        <div className="card-body">
-                                                            <h6 className="card-subtitle">Psychotic</h6>
-                                                            <p className="card-text">&nbsp;</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col">
-                                                    <div className="card bg-secondary">
-                                                        <div className="card-body">
-                                                            <h6 className="card-subtitle">Lorem</h6>
-                                                            <p className="card-text">&nbsp;</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col">
-                                                    <div className="card bg-secondary">
-                                                        <div className="card-body">
-                                                            <h6 className="card-subtitle">Attention</h6>
-                                                            <p className="card-text">&nbsp;</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                     </div>

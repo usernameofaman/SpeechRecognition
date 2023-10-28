@@ -6,7 +6,7 @@ import '../custom.css'
 import Session from './Session';
 import React, { useEffect } from 'react';
 import { SettingsService } from '../services';
-import { FormControlLabel, FormGroup, Switch } from '@mui/material';
+import { FormControlLabel, FormGroup, Switch, Button } from '@mui/material';
 
 const App = () => {
 
@@ -130,6 +130,16 @@ const App = () => {
                                     <FormGroup>
                                         <FormControlLabel onChange={() => toggleUseLLM(!useLLM)} control={<Switch checked={useLLM} />} label="Use LLM" />
                                     </FormGroup>
+                                </li>
+                            </ul>
+                            <ul className="navbar-nav ms-0 ms-sm-3">
+                                <li className="nav-item">
+                                    <Button onClick={() => {
+                                        localStorage.removeItem("sessionId");
+                                        window.location.reload()
+                                    }}>
+                                        Reset
+                                    </Button>
                                 </li>
                             </ul>
                             <ul className="navbar-nav ms-0 ms-sm-3">
