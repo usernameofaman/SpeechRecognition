@@ -104,7 +104,7 @@ export default function Asynchronous({
         setOpen(false);
       }}
       isOptionEqualToValue={(option, value) => option.redQuestions === data}
-      getOptionLabel={(option) => `${option.possibleAnswerCode} ${option.possibleAnswerText} ${option.questionText}`} // Display both redQuestions and name
+      getOptionLabel={(option) => `${option.possibleAnswerCode} - ${option.possibleAnswerText} ${option.possibleAnswerCode !== "0000" ?  option.questionText:""}`} // Display both redQuestions and name
       options={options}
       loading={loading}
       onChange={handleOnChange}
