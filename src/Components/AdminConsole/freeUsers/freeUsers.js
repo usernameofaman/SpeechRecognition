@@ -101,7 +101,7 @@ export default function FreeUsers() {
             >
               <TextField
                 sx={{ ml: 1 }}
-                label="Answer"
+                label="LotNumber"
                 variant="outlined"
                 value={answer}
                 onChange={(e) => handleLotChange(e, index, lotIndex)}
