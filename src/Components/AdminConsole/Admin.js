@@ -17,6 +17,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import DataTable from "./dataTable";
 import SetQuestions from "./SetQuestions/setQuestion";
+import FreeUsers from "./freeUsers/freeUsers";
 
 import {
   Table,
@@ -137,6 +138,17 @@ export default function ResponsiveDrawer(props) {
             <ListItemText primary="SetQuestions" />
           </ListItemButton>
         </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton
+            variant={activeTab === "FreeUsers" ? "contained" : "outlined"}
+            onClick={() => setActiveTab("FreeUsers")}
+          >
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary="FreeUsers" />
+          </ListItemButton>
+        </ListItem>
       </List>
     </div>
   );
@@ -223,6 +235,8 @@ export default function ResponsiveDrawer(props) {
           <>
           <SetQuestions />
           </>
+        ) : activeTab === "FreeUsers" ? (
+          <FreeUsers />
         ) : (
           <DataTable
             activeTab={activeTab}
