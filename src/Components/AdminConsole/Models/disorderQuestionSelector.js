@@ -35,7 +35,9 @@ export default function Asynchronous({
       await sleep(1); // For demo purposes.
 
       if (active) {
-        setOptions([...possibleAnswers]);
+        console.log("IS this Good PLace ", possibleAnswers)
+        const uniqueAnswers = getUniqueAnswerCodes(possibleAnswers);
+        setOptions([...uniqueAnswers]);
       }
     })();
 
@@ -43,6 +45,23 @@ export default function Asynchronous({
       active = false;
     };
   }, [loading, possibleAnswers]);
+
+  function getUniqueAnswerCodes(answers) {
+    const seenCodes = new Set();
+    const uniqueAnswers = [];
+  
+    for (const answer of answers) {
+      const code = answer.possibleAnswerCode;
+  
+      if (!seenCodes.has(code)) {
+        // Code is not seen before, add to the new array
+        uniqueAnswers.push(answer);
+        seenCodes.add(code);
+      }
+    }
+  
+    return uniqueAnswers;
+  }
 
   React.useEffect(() => {
     if (!open) {

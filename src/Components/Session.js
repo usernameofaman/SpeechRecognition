@@ -3,7 +3,12 @@ import Typewriter from 'typewriter-effect';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { QuestionsService } from '../services';
 import { useTimer } from 'react-timer-hook';
+import { showErrorMessage } from '../managers/utility'
 import "../App.css"
+
+
+console.log("REACT_APP_ALLOW_READING", process.env.REACT_APP_ALLOW_READING)
+console.log("REACT_APP_ALLOW_TIMER", process.env.REACT_APP_ALLOW_TIMER)
 
 
 const dummyAnswers = {
@@ -49,7 +54,7 @@ export default function Session({ voice, useLLM, inputMode }) {
 
         console.log(length, timeTakenToSpeak)
         let restartDuration = Date.now() + ((midDelay * 1000) + (timeTakenToSpeak * 1000))
-        restart(process.env.REACT_APP_ALLOW_TIMER === true ? restartDuration : Date.now())
+        restart(process.env.REACT_APP_ALLOW_TIMER === "true" ? restartDuration : Date.now())
         setTimeout(nowReadQuestion, (midDelay * 1000) + (timeTakenToSpeak * 1000))
         speak({
             text: question.instructions || "",
@@ -64,7 +69,7 @@ export default function Session({ voice, useLLM, inputMode }) {
                 text: prev,
                 onEnd: () => {
                     let restartDuration = Date.now() + (timerDuration * 1000)
-                    restart(process.env.REACT_APP_ALLOW_TIMER === true ? restartDuration : Date.now())
+                    restart(process.env.REACT_APP_ALLOW_TIMER === "true" ? restartDuration : Date.now())
                     startListening();
                 }
             })
@@ -97,7 +102,7 @@ export default function Session({ voice, useLLM, inputMode }) {
         };
 
         // Start/resume the speech
-        if (process.env.REACT_APP_ALLOW_READING === true)
+        if (process.env.REACT_APP_ALLOW_READING === "true")
             window.speechSynthesis.speak(speakObj);
 
         // Set up an interval to periodically pause and resume
@@ -129,18 +134,28 @@ export default function Session({ voice, useLLM, inputMode }) {
     }
 
     const { transcript, browserSupportsSpeechRecognition, listening, resetTranscript } = useSpeechRecognition();
+    console.log("Here is transcript", transcript)
 
     useEffect(() => {
         setPatientAnswer(transcript)
     }, [transcript])
 
     const getQuestions = async () => {
-        const data = await QuestionsService.getQuestions();
+        let sId = localStorage.getItem('sessionId');
+
+        const data = await QuestionsService.getQuestions({ sessionId: sId, refetch: true });
         if (data.question) {
             setQuestion(data.question.text);
             setInstructions(data.question.instructions);
             readInstructions(data.question)
             setAPIData(data)
+            console.log("I CALLED", process.env.REACT_APP_TEST_MODE)
+            if (process.env.REACT_APP_TEST_MODE === "true") {
+                submitQuestion()
+            }
+        } else {
+            if (data.message)
+                showErrorMessage(data.message)
         }
         if (data.sessionId) {
             localStorage.setItem("sessionId", data.sessionId)
@@ -154,14 +169,16 @@ export default function Session({ voice, useLLM, inputMode }) {
             //Dummy answer mode
             setPatientAnswer(dummyAnswers[apiData?.question?.code] || "No Dummy answer found")
             setSubmitInProcess(false)
-            return
+            // if (process.env.REACT_APP_TEST_MODE === "true")
+            //     submitQuestion()
+            // return
         }
         let sId = localStorage.getItem('sessionId');
         if (!sId) {
             window.alert("No Id Found");
         }
         const reqData = {
-            currentQuestionCode: apiData.question.code,
+            currentQuestionCode: apiData.question?.code,
             textResponse: patientAnswer,
             sessionId: sId,
             answers: answers,
@@ -180,6 +197,14 @@ export default function Session({ voice, useLLM, inputMode }) {
             setSubmitInProcess(false)
             setCurrentLot(data.lot)
             readInstructions(data.question)
+            console.log("I CALLED", process.env.REACT_APP_TEST_MODE)
+            if (process.env.REACT_APP_TEST_MODE === "true") {
+                submitQuestion()
+            }
+        }
+        else {
+            if (data.message)
+                showErrorMessage(data.message)
         }
 
         if (data.message === "All Lots are completed") {
