@@ -37,7 +37,7 @@ export default function Session({ voice, useLLM, inputMode }) {
     const [progressBar, setProgressBar] = useState({
         percentage: 3,
         countPerLot: 0,
-        prevLot : currentLot
+        prevLot: currentLot
     })
 
     //Timer Duration
@@ -53,7 +53,7 @@ export default function Session({ voice, useLLM, inputMode }) {
     useEffect(() => {
         setProgressBar((prev) => {
             console.log("PERRR", prev.percentage)
-            let newPercentage = (100 / 11) * parseInt(currentLot);
+            let newPercentage = (100 / 11) * (parseInt(currentLot) + 1);
             console.log("PERRR NEW PER", newPercentage)
             if (prev.countPerLot > 4) newPercentage += (100 / 22)
             console.log("PERRR NEW PER", newPercentage)
@@ -71,13 +71,12 @@ export default function Session({ voice, useLLM, inputMode }) {
         let text = question.instructions;
         let length = text.split(" ").length;
         let timeTakenToSpeak = length / 2.83;
-
-        console.log(length, timeTakenToSpeak)
         let restartDuration = Date.now() + ((midDelay * 1000) + (timeTakenToSpeak * 1000))
-        restart(process.env.REACT_APP_ALLOW_TIMER === "true" ? restartDuration : Date.now())
-        setTimeout(nowReadQuestion, (midDelay * 1000) + (timeTakenToSpeak * 1000))
+        if (question.instructions && question.instructions !== "NULL")
+            restart(process.env.REACT_APP_ALLOW_TIMER === "true" ? restartDuration : Date.now())
+        setTimeout(nowReadQuestion, (((question.instructions && question.instructions !== "NULL") ? midDelay : 0) * 1000) + (timeTakenToSpeak * 1000))
         speak({
-            text: question.instructions || "",
+            text: (question.instructions && question.instructions !== "NULL") ? question.instructions : "",
             onEnd: () => { console.log("Done Reading Instruction") }
         })
     }
@@ -178,9 +177,6 @@ export default function Session({ voice, useLLM, inputMode }) {
             //Dummy answer mode
             setPatientAnswer(dummyAnswers[apiData?.question?.code] || "No Dummy answer found")
             setSubmitInProcess(false)
-            // if (process.env.REACT_APP_TEST_MODE === "true")
-            //     submitQuestion()
-            // return
         }
         let sId = localStorage.getItem('sessionId');
         if (!sId) {
@@ -214,6 +210,7 @@ export default function Session({ voice, useLLM, inputMode }) {
         else {
             if (data.final) {
                 setFinal(data.final)
+                setSubmitInProcess(false)
             }
             if (data.message)
                 showErrorMessage(data.message)
@@ -293,7 +290,9 @@ export default function Session({ voice, useLLM, inputMode }) {
                                                 {/* Todo - Text area */}
                                                 <div style={{ minHeight: "50px" }} className="form-control border-primary p-2 rounded mb-0 bg-white"
                                                     id="chat3" readOnly>
-                                                    <textarea onChange={(e) => setPatientAnswer(e.target.value)} disabled={!patientAnswerBox} cols="120" style={{ maxWidth: "100%" }} rows={3} className='patient-answer-box' value={patientAnswer} />
+                                                    <textarea onChange={(e) => setPatientAnswer(e.target.value)}
+                                                        disabled={inputMode === "VOICE" && !patientAnswerBox}
+                                                        cols="120" style={{ maxWidth: "100%" }} rows={3} className='patient-answer-box' value={patientAnswer} />
                                                 </div>
                                                 <div className="py-2 text-end">
                                                     {submitInProcess ?

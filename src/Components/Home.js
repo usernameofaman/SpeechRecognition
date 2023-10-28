@@ -300,7 +300,7 @@ const App = () => {
 export default App;
 
 
-function VoiceLoader({ useLLM }) {
+function VoiceLoader({ useLLM , inputMode }) {
     const [voicesLoaded, setVoicesLoaded] = useState(false);
 
     useEffect(() => {
@@ -319,7 +319,7 @@ function VoiceLoader({ useLLM }) {
 
     return (
         <div>
-            {voicesLoaded ? <Session useLLM={useLLM} voice={voicesLoaded} /> : <p>Loading voices...</p>}
+            {voicesLoaded ? <Session useLLM={useLLM} voice={voicesLoaded} inputMode={inputMode} /> : <p>Loading voices...</p>}
         </div>
     );
 }
