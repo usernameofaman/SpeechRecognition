@@ -34,6 +34,11 @@ export default function Session({ voice, useLLM, inputMode }) {
     const [submitInProcess, setSubmitInProcess] = useState(false)
     const [listenerState, setListenerState] = useState("NOT_STARTED");
     const [final, setFinal] = useState([])
+    const [progressBar, setProgressBar] = useState({
+        percentage: 3,
+        countPerLot: 0,
+        prevLot : currentLot
+    })
 
     //Timer Duration
     const [timerDuration, setTimerDuration] = useState(5);
@@ -45,6 +50,20 @@ export default function Session({ voice, useLLM, inputMode }) {
     useEffect(() => {
         getQuestions();
     }, [])
+    useEffect(() => {
+        setProgressBar((prev) => {
+            console.log("PERRR", prev.percentage)
+            let newPercentage = (100 / 11) * parseInt(currentLot);
+            console.log("PERRR NEW PER", newPercentage)
+            if (prev.countPerLot > 4) newPercentage += (100 / 22)
+            console.log("PERRR NEW PER", newPercentage)
+            return {
+                prevLot: currentLot,
+                percentage: newPercentage,
+                countPerLot: prev.currentLot === currentLot ? prev.countPerLot + 1 : 0
+            }
+        })
+    }, [currentLot])
 
 
 
@@ -331,7 +350,8 @@ export default function Session({ voice, useLLM, inputMode }) {
                                                     <div className="progress" style={{ height: "4px" }}>
                                                         <div className="progress-bar progress-bar-striped progress-bar-animated"
                                                             role="progressbar" aria-valuenow="16" aria-valuemin="0"
-                                                            aria-valuemax="100" style={{ width: "16%" }}></div>
+                                                            aria-valuemax="100" style={{ width: `${progressBar.percentage}%` }}></div>
+                                                        {console.log(progressBar.percentage)}
                                                     </div>
                                                 </div>
                                             </div>
@@ -341,7 +361,7 @@ export default function Session({ voice, useLLM, inputMode }) {
                                                     <div className="col">
                                                         <div className="card bg-success">
                                                             <div className="card-body">
-                                                                <h6 className="card-subtitle" style={{color:"white", fontWeight:600, fontSize:"20px"}}>{disorder}</h6>
+                                                                <h6 className="card-subtitle" style={{ color: "white", fontWeight: 600, fontSize: "20px" }}>{disorder}</h6>
                                                                 <p className="card-text">&nbsp;</p>
                                                             </div>
                                                         </div>
