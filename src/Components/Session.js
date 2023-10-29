@@ -18,7 +18,8 @@ const dummyAnswers = {
     "203": "Yes I have someone with me",
     "204": "He would not like to say his name. He is my friend",
     "205": "Yes I can answer all of the answers",
-    "206": "I've been facing significant challenges lately, struggling with noticeable memory lapses, difficulty concentrating on tasks, and experiencing unusual shifts in my mood and personality. Additionally, there are moments of heightened energy and intense activity, followed by periods of deep sadness and hopelessness. These fluctuations are impacting my daily life, and I'm finding it hard to maintain a stable mood and cognitive function."
+    // "206": "I've been facing significant challenges lately, struggling with noticeable memory lapses, difficulty concentrating on tasks, and experiencing unusual shifts in my mood and personality. Additionally, there are moments of heightened energy and intense activity, followed by periods of deep sadness and hopelessness. These fluctuations are impacting my daily life, and I'm finding it hard to maintain a stable mood and cognitive function."
+    "206": "I often experience sudden and overwhelming feelings of fear, as if something terrible is about to happen. My heart races, I struggle to catch my breath, and my body trembles uncontrollably. It feels like I'm losing control, even in situations where there's no apparent danger."
 }
 
 export default function Session({ voice, useLLM, inputMode }) {
@@ -175,7 +176,7 @@ export default function Session({ voice, useLLM, inputMode }) {
         resetTranscript()
         if (patientAnswer === "") {
             //Dummy answer mode
-            setPatientAnswer(dummyAnswers[apiData?.question?.code] || "No Dummy answer found")
+            setPatientAnswer(dummyAnswers[apiData?.question?.code] || "I often experience sudden and overwhelming feelings of fear, as if something terrible is about to happen. My heart races, I struggle to catch my breath, and my body trembles uncontrollably. It feels like I'm losing control, even in situations where there's no apparent danger.")
             setSubmitInProcess(false)
         }
         let sId = localStorage.getItem('sessionId');
