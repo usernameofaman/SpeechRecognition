@@ -6,6 +6,22 @@ import { useTimer } from 'react-timer-hook';
 import { showErrorMessage } from '../managers/utility'
 import "../App.css"
 
+
+console.log("REACT_APP_ALLOW_READING", process.env.REACT_APP_ALLOW_READING)
+console.log("REACT_APP_ALLOW_TIMER", process.env.REACT_APP_ALLOW_TIMER)
+
+
+const dummyAnswers = {
+    "201": "The patient's name is Aman Sharma",
+    "008": "Patient's age is 26 Years",
+    "202": "he is male",
+    "203": "Yes I have someone with me",
+    "204": "He would not like to say his name. He is my friend",
+    "205": "Yes I can answer all of the answers",
+    // "206": "I've been facing significant challenges lately, struggling with noticeable memory lapses, difficulty concentrating on tasks, and experiencing unusual shifts in my mood and personality. Additionally, there are moments of heightened energy and intense activity, followed by periods of deep sadness and hopelessness. These fluctuations are impacting my daily life, and I'm finding it hard to maintain a stable mood and cognitive function."
+    "206": "I often experience sudden and overwhelming feelings of fear, as if something terrible is about to happen. My heart races, I struggle to catch my breath, and my body trembles uncontrollably. It feels like I'm losing control, even in situations where there's no apparent danger."
+}
+
 export default function Session({ voice, useLLM, inputMode }) {
     const [questionWriter, setQuestionWriter] = useState(null);
     const [question, setQuestion] = useState("");
@@ -17,6 +33,9 @@ export default function Session({ voice, useLLM, inputMode }) {
     const [answers, setAnswers] = useState(null)
     const [disorderCounts, setDisorderCounts] = useState(null)
     const [submitInProcess, setSubmitInProcess] = useState(false)
+    const [lotCount, setLotCount] = useState(11)
+
+    const [logs, setLogs] = React.useState("")
     const [listenerState, setListenerState] = useState("NOT_STARTED");
     const [final, setFinal] = useState([])
     const [progressBar, setProgressBar] = useState({
@@ -38,9 +57,9 @@ export default function Session({ voice, useLLM, inputMode }) {
     useEffect(() => {
         setProgressBar((prev) => {
             console.log("PERRR", prev.percentage)
-            let newPercentage = (100 / 11) * (parseInt(currentLot) + 1);
+            let newPercentage = (100 / lotCount) * (parseInt(currentLot) + 1);
             console.log("PERRR NEW PER", newPercentage)
-            if (prev.countPerLot > 4) newPercentage += (100 / 22)
+            if (prev.countPerLot > 4) newPercentage += (100 / (lotCount * 2))
             console.log("PERRR NEW PER", newPercentage)
             return {
                 prevLot: currentLot,
@@ -56,9 +75,8 @@ export default function Session({ voice, useLLM, inputMode }) {
         let text = question.instructions;
         let length = text.split(" ").length;
         let timeTakenToSpeak = length / 2.83;
-        let restartDuration = Date.now() + ((midDelay * 1000) + (timeTakenToSpeak * 1000))
         if (question.instructions && question.instructions !== "NULL")
-            restart(restartDuration)
+            restart(Date.now())
         setTimeout(nowReadQuestion, (((question.instructions && question.instructions !== "NULL") ? midDelay : 0) * 1000) + (timeTakenToSpeak * 1000))
         speak({
             text: (question.instructions && question.instructions !== "NULL") ? question.instructions : "",
@@ -72,8 +90,7 @@ export default function Session({ voice, useLLM, inputMode }) {
             speak({
                 text: prev,
                 onEnd: () => {
-                    let restartDuration = Date.now() + (timerDuration * 1000)
-                    restart(restartDuration)
+                    restart(Date.now())
                     startListening();
                 }
             })
@@ -95,7 +112,6 @@ export default function Session({ voice, useLLM, inputMode }) {
         };
 
         // Start/resume the speech
-        window.speechSynthesis.speak(speakObj);
 
         // Set up an interval to periodically pause and resume
         const resumeInterval = setInterval(() => {
@@ -141,7 +157,7 @@ export default function Session({ voice, useLLM, inputMode }) {
             setInstructions(data.question.instructions);
             readInstructions(data.question)
             setAPIData(data)
-
+            setLogs(data.log)
         } else {
             if (data.message)
                 showErrorMessage(data.message)
@@ -155,9 +171,9 @@ export default function Session({ voice, useLLM, inputMode }) {
         setSubmitInProcess(true)
         resetTranscript()
         if (patientAnswer === "") {
-            showErrorMessage("Answer Is Required")
+            //Dummy answer mode
+            setPatientAnswer(dummyAnswers[apiData?.question?.code])
             setSubmitInProcess(false)
-            return
         }
         let sId = localStorage.getItem('sessionId');
         if (!sId) {
@@ -183,6 +199,12 @@ export default function Session({ voice, useLLM, inputMode }) {
             setSubmitInProcess(false)
             setCurrentLot(data.lot)
             readInstructions(data.question)
+            setLogs(data.log)
+            setLotCount(data.lotCount || 11)
+            console.log("I CALLED", process.env.REACT_APP_TEST_MODE)
+            if (process.env.REACT_APP_TEST_MODE === "true") {
+                submitQuestion()
+            }
         }
         else {
             if (data.final) {
@@ -194,6 +216,8 @@ export default function Session({ voice, useLLM, inputMode }) {
         }
 
         if (data.message === "All Lots are completed") {
+            setQuestion("")
+            setInstructions("")
             speak({ text: "Thank you for answering all of the questions.", onEnd: () => console.log("Done with all questions") })
         }
     };
@@ -359,6 +383,10 @@ export default function Session({ voice, useLLM, inputMode }) {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div style={{ whiteSpace: 'pre-line' }}>
+                    {logs}
+
                 </div>
             </div>
             {/* <MyTimer expiryTimestamp={Date.now() + 10000} /> */}

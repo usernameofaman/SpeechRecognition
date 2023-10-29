@@ -29,6 +29,7 @@ import {
   Button,
 } from "@mui/material";
 import { QuestionsService } from "../../services";
+import ChiefComplaint from "./Models/ChiefComplaint";
 
 const drawerWidth = 240;
 
@@ -137,6 +138,17 @@ export default function ResponsiveDrawer(props) {
             <ListItemText primary="SetQuestions" />
           </ListItemButton>
         </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton
+            variant={activeTab === "Chief Complaint" ? "contained" : "outlined"}
+            onClick={() => setActiveTab("Chief Complaint")}
+          >
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary="Chief Complaint" />
+          </ListItemButton>
+        </ListItem>
       </List>
     </div>
   );
@@ -221,16 +233,20 @@ export default function ResponsiveDrawer(props) {
         <Toolbar />
         {activeTab === "SetQuestions" ? (
           <>
-          <SetQuestions />
+            <SetQuestions />
           </>
-        ) : (
-          <DataTable
-            activeTab={activeTab}
-            allQuestionsData={allQuestionsData}
-            allLots={allLots}
-            allDisorderData={allDisorderData}
-          />
-        )}
+        ) : activeTab === "Chief Complaint" ?
+          <ChiefComplaint />
+          : (
+            <DataTable
+              activeTab={activeTab}
+              allQuestionsData={allQuestionsData}
+              allLots={allLots}
+              allDisorderData={allDisorderData}
+            />
+          )}
+
+
 
         {/* <DataGrid
        activeTab={activeTab}
