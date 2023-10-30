@@ -5,10 +5,27 @@ const DetectAndTranslate = () => {
   const [text, setText] = useState('');
   const [detectedLanguage, setDetectedLanguage] = useState('');
   const [translatedText, setTranslatedText] = useState('');
-  const [languages, setLanguages] = useState([]);
+  const [languages, setLanguages] = useState([
+    { language: "hi" }, // Hindi
+    { language: "en" }, // English
+    { language: "bn" }, // Bengali
+    { language: "te" }, // Telugu
+    { language: "mr" }, // Marathi
+    { language: "ta" }, // Tamil
+    { language: "ur" }, // Urdu
+    { language: "gu" }, // Gujarati
+    { language: "ml" }, // Malayalam
+    { language: "kn" }, // Kannada
+    { language: "or" }, // Odia
+    { language: "pa" }, // Punjabi
+    { language: "as" }, // Assamese
+    { language: "mai" }, // Maithili
+    { language: "sat" }, // Santali
+    { language: "ne" }, // Nepali
+  ]);
   const [selectedLanguage, setSelectedLanguage] = useState('en'); // Default language code
 
-console.log(selectedLanguage, "SL")
+  console.log(selectedLanguage, "SL")
   const translationApiKey = 'AIzaSyBH0M47tuBYEhawRx3elTKjHNuw4eEuBNg';
 
   const handleTextChange = (event) => {
@@ -21,16 +38,8 @@ console.log(selectedLanguage, "SL")
     setSelectedLanguage(event.target.value);
   };
 
-  useEffect(() => {
-    axios
-      .get(`https://translation.googleapis.com/language/translate/v2/languages?key=${translationApiKey}`)
-      .then((response) => {
-        setLanguages(response.data.data.languages);
-      })
-      .catch((error) => console.error('Error fetching languages:', error));
-  }, []);
 
-
+  console.log(languages)
 
   const detectLanguage = (inputText) => {
     axios
@@ -42,6 +51,7 @@ console.log(selectedLanguage, "SL")
       )
       .then((response) => {
         const language = response.data.data.detections[0][0].language;
+        console.log(response)
         setDetectedLanguage(language);
       })
       .catch((error) => console.error('Error detecting language:', error));
@@ -53,7 +63,7 @@ console.log(selectedLanguage, "SL")
         `https://translation.googleapis.com/language/translate/v2?key=${translationApiKey}`,
         {
           q: text,
-          target: selectedLanguage, 
+          target: selectedLanguage,
         }
       )
       .then((response) => {
@@ -75,16 +85,16 @@ console.log(selectedLanguage, "SL")
       ></textarea>
       <br />
       <select
-       value={selectedLanguage} onChange={handleLanguageChange}>
+        value={selectedLanguage} onChange={handleLanguageChange}>
         {languages.map((language) => (
-          <option  key={language.language} value={language.language}>
+          <option key={language.language} value={language.language}>
             {language.language}
           </option>
         ))}
       </select>
       <button onClick={translateText}>Translate</button>
       <p>Detected Language: {detectedLanguage}</p>
-      <p>Translated Text: {translatedText}</p>
+      <div dangerouslySetInnerHTML={{ __html: translatedText }} />
     </div>
   );
 };
