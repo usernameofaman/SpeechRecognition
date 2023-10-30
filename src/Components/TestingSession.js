@@ -201,10 +201,7 @@ export default function Session({ voice, useLLM, inputMode }) {
             readInstructions(data.question)
             setLogs(data.log)
             setLotCount(data.lotCount || 11)
-            console.log("I CALLED", process.env.REACT_APP_TEST_MODE)
-            if (process.env.REACT_APP_TEST_MODE === "true") {
-                submitQuestion()
-            }
+            submitQuestion()
         }
         else {
             if (data.final) {

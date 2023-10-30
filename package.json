@@ -14,6 +14,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.3.2",
+    "dotenv": "^16.3.1",
     "i": "^0.3.7",
     "js-cookie": "^3.0.5",
     "npm": "^10.1.0",
@@ -33,6 +34,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "start:dev": "cross-env NODE_ENV=development react-scripts start",
+    "build:prod": "dotenv -e .env react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -53,5 +56,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }
