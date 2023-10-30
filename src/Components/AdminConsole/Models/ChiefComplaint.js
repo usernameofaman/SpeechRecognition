@@ -10,12 +10,14 @@ export default function ChiefComplaint() {
 
     useEffect(() => {
         getData()
-    })
+    },[])
 
 
     const getData = async () => {
-        const response = await SettingsService.getComplaint()
-        console.log(response)
+        const response = await SettingsService.getComplaint();
+        if(response && response.chiefComplaint){
+            setComplaint(response.chiefComplaint)
+        }
     }
 
     const setData = async () => {
