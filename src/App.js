@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './Components/Home'
 import Admin from './Components/AdminConsole/Admin';
+import Testing from './Components/TesingHome';
 import './App.css'
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
@@ -14,37 +15,37 @@ function App() {
 
     const toast = () => {
         return (
-          <ToastContainer
-            position="top-center"
-            autoClose={2500}
-            hideProgressBar
-            newestOnTop={true}
-            closeOnClick={true}
-            rtl={false}
-            pauseOnVisibilityChange={false}
-            draggable={false}
-            pauseOnHover={false}
-            theme="colored"
-            closeButton={null}
-          />
+            <ToastContainer
+                position="top-center"
+                autoClose={2500}
+                hideProgressBar
+                newestOnTop={true}
+                closeOnClick={true}
+                rtl={false}
+                pauseOnVisibilityChange={false}
+                draggable={false}
+                pauseOnHover={false}
+                theme="colored"
+                closeButton={null}
+            />
         );
-      };
+    };
 
 
     return (
         <Router>
-                <Routes>
-                    <Route path="/" element={<Home/>} />
+            <Routes>
+                <Route path="/" element={<Home />} />
 
-                    <Route path="/about" element={About} />
-                    <Route path="/contact" element={Contact} />
-                    <Route path="/admin" element={<Admin/>} />
-                    <Route path="/translate" element={<GoogleTranslate/>} />
+                <Route path="/about" element={About} />
+                <Route path="/contact" element={Contact} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/translate" element={<GoogleTranslate />} />
+                <Route path="/testing" element={<Testing />} />
 
-
-                    <Route element={NotFound} />
-                </Routes>
-                {toast()}
+                <Route element={NotFound} />
+            </Routes>
+            {toast()}
         </Router>
     );
 }
