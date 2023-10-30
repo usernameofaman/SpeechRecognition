@@ -186,7 +186,7 @@ export default function Session({ voice, useLLM, inputMode }) {
             answers: answers,
             disorderCounts: disorderCounts,
             lot: currentLot,
-            useLLM: useLLM
+            useLLM: false
         }
         const data = await QuestionsService.getQuestions(reqData);
         if (data.question) {
