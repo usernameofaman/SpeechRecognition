@@ -381,9 +381,12 @@ export default function Session({ voice, useLLM, inputMode }) {
                         </div>
                     </div>
                 </div>
-                <div style={{ whiteSpace: 'pre-line' }}>
+                <div style={{
+                    whiteSpace: 'pre-line',
+                    padding: "30px",
+                    lineHeight: "40px"
+                }}>
                     {logs}
-
                 </div>
             </div>
             {/* <MyTimer expiryTimestamp={Date.now() + 10000} /> */}
