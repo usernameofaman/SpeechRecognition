@@ -26,7 +26,6 @@ const DetectAndTranslate = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('en'); // Default language code
 
   console.log(selectedLanguage, "SL")
-  const translationApiKey = 'AIzaSyBH0M47tuBYEhawRx3elTKjHNuw4eEuBNg';
 
   const handleTextChange = (event) => {
     const newText = event.target.value;
@@ -44,7 +43,7 @@ const DetectAndTranslate = () => {
   const detectLanguage = (inputText) => {
     axios
       .post(
-        `https://translation.googleapis.com/language/translate/v2/detect?key=${translationApiKey}`,
+        `https://translation.googleapis.com/language/translate/v2/detect?key=`,
         {
           q: inputText,
         }
@@ -61,7 +60,7 @@ const DetectAndTranslate = () => {
 
   const translateText = () => {
     axios.post(
-      `${corsProxyUrl}${apiUrl}`,
+      `${apiUrl}`,
       {
         "contents": [
           "kem chho"
