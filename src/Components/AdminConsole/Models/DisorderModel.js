@@ -339,7 +339,7 @@ export default function DisorderModel({
           variant="outlined"
           disabled={!isEditable}
           onChange={handleDisorderChange}
-          name="blackRequired"
+          name="maroonRequired"
           fullWidth
           margin="normal"
           sx={{ mt: 2 }}
