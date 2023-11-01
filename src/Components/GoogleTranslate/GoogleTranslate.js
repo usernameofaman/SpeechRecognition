@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { TranslationService } from '../../services';
 
 const DetectAndTranslate = () => {
   const [text, setText] = useState('');
@@ -39,7 +40,24 @@ const DetectAndTranslate = () => {
 
 
   console.log(languages)
+  const getTranslateToken = async () => {
+    try {
+      // Call the service to obtain the token
+      const response = await TranslationService.getToken();
+  
+      // Store the response data (token) in localStorage
+      localStorage.setItem('translationToken', response.data.token);
+    } catch (error) {
+      console.error('Error obtaining translation token:', error);
+    }
+  };
 
+  
+  useEffect(() => {
+    // Call the getTranslateToken function when the component mounts
+    getTranslateToken();
+  }, []);
+  
   const detectLanguage = (inputText) => {
     axios
       .post(
@@ -62,11 +80,9 @@ const DetectAndTranslate = () => {
     axios.post(
       `${apiUrl}`,
       {
-        "contents": [
-          "kem chho"
-        ],
-        "sourceLanguageCode": "gu",
-        "targetLanguageCode": "en",
+        "contents": [text],
+        "sourceLanguageCode": detectLanguage,
+        "targetLanguageCode": selectedLanguage,
         "transliterationConfig": {
           "enableTransliteration": true
         },
@@ -75,7 +91,7 @@ const DetectAndTranslate = () => {
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ya29.c.c0AY_VpZg_HKm_sT4Mlk1Sy7TQHiwPRVAnBh7b6fG3DU9JNhYdjtw37w9KagCoRaJG1DksNtYxk0rpztavAjlfDM4XxE_cvothmAVZT9tHvDQyRifCK5DLt09BGkv145mbIxplJCRinx6HdP1dyvXPhKHSYQN2qoYBJ8AxrOt3FgE96Tuix0FDiWnqVWDo1tdZSpUolbdNSnREeO6Exbt5xUYnitl9Og1lOvS8-OzYi5FcvjmTfrXO9SjhJoqmm2WK0Ux0QuYKsWrK0ycLBLBnsGLiut5gKB-LYI7nRHyc_URE3IwnxrmJHB_nEuNT5VfD4DnMBXa_4j4qZSMs5-e0VR4udRTDtJIUeBqREXfTfGaCpiphi_n13xuGYSHtS2pAvuRSqQE399AaS2SV-30WJ9aWMpvhXlXwYImZVpmgXYJ6dZixdpeQo5WvQydvYJ0qs-BOecajYFwgygeFziwiWMspcQWQtvjycMV0ZjcqF48W0mI6i6nYM40zk-xq3qe3cebwRik3vxSwSJ08si651kmknQbyMQJcegXQ-Y8o_bfQb7hBaIqtkXv0vXXY0hwmY0Zxg5yJ90nIiMR19c3pjd6BBrBw6Qk3Rt9Ylte7UJSkOtqsMUuOef97l63g53g2d93MnJZ7Q7u5pZaMnav2h5_qUlSXd-g1ZeQeni0rz32sUktpXaBwjxugRUs2wzceJe8Ri27va00dFRS35quJqXJrYiYc5RkphIxoXzoi9d2qprXR0zjygqn4Sdpjbrf34OmhV_4_f3n0RrqgkkIMtxcFMp4k_IZcfuZszjmXzh9FYkIek3gaviIuhWy4tUSdJgjJ8ZMjqz8x96fz-vInnQ7B9smwzZa9VYS5q8zx9BF29QBknVoqIlcon7JW-64Ou9Qp3RckUzUbOWaV348Ul1bxzpsRoS-4S8lUdaaRybd7pXZo_Othh1bZ9SmQXXaM6Mp22ffeinrmqY4v9W7QUvn8_VQRyeBoMtqeWiXXyoS_qF25Mvd2wmk`
+          'Authorization': `${localStorage.getItem('translationToken')}`
         }
       }
     )
@@ -85,6 +101,30 @@ const DetectAndTranslate = () => {
       })
       .catch((error) => console.error('Error translating text:', error));
   };
+
+  // const translateText = async () => {
+  //   try {
+  //     const requestData = {
+  //       contents: [text], // Assuming 'text' is defined elsewhere
+  //       sourceLanguageCode: detectedLanguage, // Assuming 'detectedLanguage' is defined elsewhere
+  //       targetLanguageCode: selectedLanguage, // Assuming 'selectedLanguage' is defined elsewhere
+  //       transliterationConfig: {
+  //         enableTransliteration: true,
+  //       },
+  //       mimeType: "text/plain",
+  //     };
+  
+  //     // Call the translateAPI function to make the translation request
+  //     const response = await TranslationService.translateAPI(requestData);
+  
+  //     // Handle the response as needed
+  //     console.log('Translation Response:', response);
+  //   } catch (error) {
+  //     console.error('Error in translateText:', error.message);
+  //     // Handle the error as needed
+  //   }
+  // };
+  
 
   return (
     <div>
