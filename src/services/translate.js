@@ -4,9 +4,27 @@ import { getAccessToken, getHeaders, getUserId } from "./baseFunctions";
 
 export default {
     getToken,
-    translateAPI
-  
+    // translateAPI
 };
+
+
+async function getToken(requestData) {
+    let url = process.env.REACT_APP_API_URI + `/api/translate `
+    return httpService(httpConstants.METHOD_TYPE.POST, getHeaders(), requestData, url)
+        .then(
+            response => {
+                if (!response)
+                    return Promise.reject(response);
+                return Promise.resolve(response);
+            }
+        ).catch(function (err) {
+            return Promise.reject(err);
+        });
+}
+
+// CHECK THIS  
+
+
 // function getTranslationHeaders() {
 //     const accessToken = localStorage.getItem('translationToken'); // Modify the key as per your storage key
   
@@ -29,34 +47,21 @@ export default {
 //     }
 //   }
 
-function getTranslationHeaders(requestData) {
-    return { "Content-Type": httpConstants.CONTENT_TYPE.APPLICATION_JSON, skip: true, "Access-Control-Allow-Origin": "*", Authorization: `Bearer ${localStorage.getItem('translationToken', requestData.token)()}` };
-  }
+// function getTranslationHeaders() {
+//     const accessToken = localStorage.getItem('translationToken');
+//     return { "Content-Type": httpConstants.CONTENT_TYPE.APPLICATION_JSON, skip: true, "Access-Control-Allow-Origin": "*", Authorization: `Bearer ${accessToken}`}
+//   }
 
-async function getToken(requestData) {
-    let url = process.env.REACT_APP_API_URI + `/api/translate `
-    return httpService(httpConstants.METHOD_TYPE.POST, getHeaders(), requestData, url)
-        .then(
-            response => {
-                if (!response)
-                    return Promise.reject(response);
-                return Promise.resolve(response);
-            }
-        ).catch(function (err) {
-            return Promise.reject(err);
-        });
-}
-
-async function translateAPI(requestData) {
-    let url = 'https://translate.googleapis.com/v3/projects/prj-bootstrap-grnarsoft1:translateText'
-    return httpService(httpConstants.METHOD_TYPE.POST, getTranslationHeaders(), requestData, url)
-        .then(
-            response => {
-                if (!response)
-                    return Promise.reject(response);
-                return Promise.resolve(response);
-            }
-        ).catch(function (err) {
-            return Promise.reject(err);
-        });
-}
+// async function translateAPI(requestData) {
+//     let url = 'https://translate.googleapis.com/v3/projects/prj-bootstrap-grnarsoft1:translateText'
+//     return httpService(httpConstants.METHOD_TYPE.POST, getTranslationHeaders(), requestData, url)
+//         .then(
+//             response => {
+//                 if (!response)
+//                     return Promise.reject(response);
+//                 return Promise.resolve(response);
+//             }
+//         ).catch(function (err) {
+//             return Promise.reject(err);
+//         });
+// }
