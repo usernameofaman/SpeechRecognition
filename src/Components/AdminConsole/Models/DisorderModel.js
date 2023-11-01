@@ -29,8 +29,8 @@ export default function DisorderModel({
   removeRowToDisorderGreenQuestions,
   addRowToDisorderYellowQuestions,
   removeRowToDisorderYellowQuestions,
-  addRowToDisordervoiletQuestions,
-  removeRowToDisordervoiletQuestions,
+  addRowToDisorderVoiletQuestions,
+  removeRowToDisorderVoiletQuestions,
   addRowToDisorderMaroonQuestions,
   removeRowToDisorderMaroonQuestions,
   setModalDataDisorder,
@@ -326,10 +326,10 @@ export default function DisorderModel({
                 setData={setModalDataDisorder}
                 name="voilet"
               />
-              <Button onClick={() => addRowToDisordervoiletQuestions()}>
+              <Button onClick={() => addRowToDisorderVoiletQuestions()}>
                 Add
               </Button>
-              <Button onClick={() => removeRowToDisordervoiletQuestions(aIndex)}>
+              <Button onClick={() => removeRowToDisorderVoiletQuestions(aIndex)}>
                 Remove
               </Button>
             </div>

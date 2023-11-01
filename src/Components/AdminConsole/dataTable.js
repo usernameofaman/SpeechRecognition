@@ -174,7 +174,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     state.yellowQuestions = answers;
     setModalDataDisorder(state);
   };
-  const addRowToDisordervoiletQuestions = () => {
+  const addRowToDisorderVoiletQuestions = () => {
     let state = { ...modalDataDisorder };
     let answers = state.voiletQuestions;
     answers.push("");
@@ -224,7 +224,7 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     state.yellowQuestions = answers;
     setModalDataDisorder(state);
   };
-  const removeRowToDisordervoiletQuestions = (index) => {
+  const removeRowToDisorderVoiletQuestions = (index) => {
     let state = { ...modalDataDisorder };
     let answers = state.voiletQuestions;
     answers.splice(index, 1);
@@ -535,6 +535,12 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
         removeRowToDisorderBlackQuestions={removeRowToDisorderBlackQuestions}
         addRowToDisorderGreenQuestions={addRowToDisorderGreenQuestions}
         removeRowToDisorderGreenQuestions={removeRowToDisorderGreenQuestions}
+        addRowToDisorderYellowQuestions={addRowToDisorderYellowQuestions}
+        removeRowToDisorderYellowQuestions={removeRowToDisorderYellowQuestions}
+        addRowToDisorderMaroonQuestions={addRowToDisorderMaroonQuestions}
+        removeRowToDisorderMaroonQuestions={removeRowToDisorderMaroonQuestions}
+        addRowToDisorderVoiletQuestions={addRowToDisorderVoiletQuestions}
+        removeRowToDisorderVoiletQuestions={removeRowToDisorderVoiletQuestions}
       />
 
       {/* Question Modal */}
