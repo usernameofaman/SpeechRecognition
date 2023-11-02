@@ -210,6 +210,9 @@ export default function Session({ voice, useLLM, inputMode }) {
             }
             if (data.message)
                 showErrorMessage(data.message)
+            if (data.message === "All Lots are completed") {
+                localStorage.removeItem('sessionId')
+            }
         }
 
         if (data.message === "All Lots are completed") {
