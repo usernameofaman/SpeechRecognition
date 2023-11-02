@@ -7,10 +7,7 @@ export function getHeaders() {
 }
 
 export function getAccessToken() {
-
-  akjs;dflkjas;lfkjasd'lfksadnf'lasdkmf'lasdkfnas'kjfnasd'fjndas'olfknasd'
-  fiknadjs
-  pfdos]
+  return ""
 }
 export function getUserId() {
   return sessionManager.getDataFromCookies(cookiesConstants.USER_ID);
