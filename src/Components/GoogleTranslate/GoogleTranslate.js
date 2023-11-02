@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { TranslationService } from '../../services';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { TranslationService } from "../../services";
 
 const DetectAndTranslate = () => {
-  const [text, setText] = useState('');
-  const [detectedLanguage, setDetectedLanguage] = useState('');
-  const [translatedText, setTranslatedText] = useState('');
-
+  const [text, setText] = useState("");
+  const [detectedLanguage, setDetectedLanguage] = useState("");
+  const [translatedText, setTranslatedText] = useState("");
 
   const [languages, setLanguages] = useState([
     { language: "hi" }, // Hindi
@@ -26,100 +25,91 @@ const DetectAndTranslate = () => {
     { language: "sat" }, // Santali
     { language: "ne" }, // Nepali
   ]);
-  const [selectedLanguage, setSelectedLanguage] = useState('en'); // Default language code
+  const [selectedLanguage, setSelectedLanguage] = useState("en"); // Default language code
 
-  console.log(selectedLanguage, "SL")
+  console.log(selectedLanguage, "SL");
 
   const handleTextChange = (event) => {
     const newText = event.target.value;
     setText(newText);
-    // detectLanguage(newText);
+    detectLanguage(newText);
   };
 
   const handleLanguageChange = (event) => {
     setSelectedLanguage(event.target.value);
   };
 
-
-  console.log(languages)
+  console.log(languages);
   const getTranslateToken = async () => {
     try {
       // Call the service to obtain the token
       const response = await TranslationService.getToken();
       // Store the response data (token) in localStorage
-      localStorage.setItem('translationToken', response.Token);
+      localStorage.setItem("translationToken", response.Token);
     } catch (error) {
-      console.error('Error obtaining translation token:', error);
+      console.error("Error obtaining translation token:", error);
     }
   };
 
-  
   useEffect(() => {
-    // Call the getTranslateToken function when the component mounts
     getTranslateToken();
   }, []);
 
+  const detectLanguage = (inputText) => {
+    const accessToken = localStorage.getItem("translationToken");
 
-  // WILL SEE THIS MATTER ON 2nd NOV. TOMORROW @Sarthak 
-
-  // const detectLanguage = (inputText) => {
-  //   const accessToken = localStorage.getItem('translationToken');
-
-  //   axios
-  //     .post(
-  //       `https://translation.googleapis.com/v3/projects/prj-bootstrap-grnarsoft1:translateText/locations/global:detectLanguage`,
-  //       {
-  //         q: inputText,
-  //       },
-  //       {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Authorization': `Bearer ${accessToken}`
-  //         }
-  //       }
-  //     )
-  //     .then((response) => {
-  //       const language = response.data.data.detections[0][0].language;
-  //       console.log(response)
-  //       setDetectedLanguage(language);
-  //     })
-  //     .catch((error) => console.error('Error detecting language:', error));
-  // };
-
-
-  const corsProxyUrl = 'https://cors-anywhere.herokuapp.com/'; 
-  const apiUrl = 'https://translate.googleapis.com/v3/projects/prj-bootstrap-grnarsoft1:translateText';
-
-  const translateText = () => {
-
-    const accessToken = localStorage.getItem('translationToken');
-
-    axios.post(
-      `${apiUrl}`,
-      {
-        "contents": [text],
-        "sourceLanguageCode": 'hi',
-        "targetLanguageCode": selectedLanguage,
-        "transliterationConfig": {
-          "enableTransliteration": true
+    axios
+      .post(
+        `https://translation.googleapis.com/v3/projects/prj-bootstrap-grnarsoft1/locations/global:detectLanguage`,
+        {
+          content: inputText,
         },
-        "mimeType": "text/plain"
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
-      }
-    )
+      )
       .then((response) => {
-        console.log(response)
-        setTranslatedText(response.data.translations[0].translatedText);
+        const language = response.data.languages[0].languageCode;
+        setDetectedLanguage(language);
       })
-      .catch((error) => console.error('Error translating text:', error));
+      .catch((error) => console.error("Error detecting language:", error));
   };
 
+  const corsProxyUrl = "https://cors-anywhere.herokuapp.com/";
+  const apiUrl =
+    "https://translate.googleapis.com/v3/projects/prj-bootstrap-grnarsoft1:translateText";
 
+  const translateText = () => {
+    const accessToken = localStorage.getItem("translationToken");
+
+    axios
+      .post(
+        `${apiUrl}`,
+        {
+          contents: [text],
+          sourceLanguageCode: "hi",
+          targetLanguageCode: selectedLanguage,
+          transliterationConfig: {
+            enableTransliteration: true,
+          },
+          mimeType: "text/plain",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        setTranslatedText(response.data.translations[0].translatedText);
+      })
+      .catch((error) => console.error("Error translating text:", error));
+  };
 
   // API CALLING FUNCTION FOR TRANSLATE
 
@@ -134,10 +124,10 @@ const DetectAndTranslate = () => {
   //       },
   //       mimeType: "text/plain",
   //     };
-  
+
   //     // Call the translateAPI function to make the translation request
   //     const response = await TranslationService.translateAPI(requestData);
-  
+
   //     // Handle the response as needed
   //     console.log('Translation Response:', response);
   //   } catch (error) {
@@ -145,7 +135,6 @@ const DetectAndTranslate = () => {
   //     // Handle the error as needed
   //   }
   // };
-  
 
   return (
     <div>
@@ -158,8 +147,7 @@ const DetectAndTranslate = () => {
         onChange={handleTextChange}
       ></textarea>
       <br />
-      <select
-        value={selectedLanguage} onChange={handleLanguageChange}>
+      <select value={selectedLanguage} onChange={handleLanguageChange}>
         {languages.map((language) => (
           <option key={language.language} value={language.language}>
             {language.language}
@@ -167,7 +155,7 @@ const DetectAndTranslate = () => {
         ))}
       </select>
       <button onClick={translateText}>Translate</button>
-      {/* <p>Detected Language: {detectedLanguage}</p> */}
+      <p>Detected Language: {detectedLanguage}</p>
       <div dangerouslySetInnerHTML={{ __html: translatedText }} />
     </div>
   );
