@@ -7,7 +7,7 @@ export function getHeaders() {
 }
 
 export function getAccessToken() {
-
+  return 
 }
 export function getUserId() {
   return sessionManager.getDataFromCookies(cookiesConstants.USER_ID);
