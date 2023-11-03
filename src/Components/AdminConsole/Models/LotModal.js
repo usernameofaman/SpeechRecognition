@@ -121,7 +121,7 @@ export default function LotModal({
             <div style={{ display: "flex", width: "100%" }}>
               <AutoCompleteLot setModalDataLots={setModalDataLots} modalDataLots={modalDataLots} data={question} disabled={!isEditable} questions={questions} setData={setModalDataLots} />
 
-              <Button onClick={() => addRowToLotQuestions()}>Add</Button>
+              <Button onClick={() => addRowToLotQuestions(question)}>Add</Button>
               <Button onClick={() => removeRowToLotQuestions(aIndex)}>
                 Remove
               </Button>

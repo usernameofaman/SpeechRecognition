@@ -57,12 +57,17 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
     });
   };
 
-  const addRowToLotQuestions = () => {
+  const addRowToLotQuestions = (buttonId) => {
     let state = { ...modalDataLots };
     let answers = state.questions;
-    answers.push("");
-    state.questions = answers;
-    setModalDataLots(state);
+    
+    const buttonIndex = answers.findIndex(question => question === buttonId);
+    
+    if (buttonIndex !== -1) {
+      answers.splice(buttonIndex + 1, 0, "");
+      state.questions = answers;
+      setModalDataLots(state);
+    }
   };
 
   const removeRowToLotQuestions = (index) => {
