@@ -4,6 +4,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import { QuestionsService } from '../services';
 import { useTimer } from 'react-timer-hook';
 import { showErrorMessage } from '../managers/utility'
+import { detectLanguage , translateToEnglish } from './GoogleTranslate/GoogleTranslate';
 import "../App.css"
 
 export default function Session({ voice, useLLM, inputMode }) {
@@ -130,6 +131,9 @@ export default function Session({ voice, useLLM, inputMode }) {
 
     useEffect(() => {
         setPatientAnswer(transcript)
+        detectLanguage(transcript)
+        // TRANSLATE - Here user's voice input as text comes in transcript
+        // 5 Words tak hi API CALL hogi, if More than 5 words
     }, [transcript])
 
     const getQuestions = async () => {
@@ -163,6 +167,10 @@ export default function Session({ voice, useLLM, inputMode }) {
         if (!sId) {
 
         }
+
+        // TEXTRESPONSE Should always be English
+        // If detected language is not english
+        // Call translate response
         const reqData = {
             currentQuestionCode: apiData.question?.code,
             textResponse: patientAnswer,
