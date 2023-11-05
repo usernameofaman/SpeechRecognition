@@ -100,28 +100,28 @@ export default function Session({ voice, useLLM, inputMode }) {
 
 
     const speak = ({ text, onEnd }) => {
-        const speakObj = new SpeechSynthesisUtterance();
-        speakObj.text = text;
-        speakObj.voice = voice;
-        speakObj.onend = () => {
-            if (onEnd) {
-                console.log("On End Check", onEnd)
-                onEnd();
-            }
-            clearInterval(resumeInterval);
-        };
+        // const speakObj = new SpeechSynthesisUtterance();
+        // speakObj.text = text;
+        // speakObj.voice = voice;
+        // speakObj.onend = () => {
+        //     if (onEnd) {
+        //         console.log("On End Check", onEnd)
+        //         onEnd();
+        //     }
+        //     clearInterval(resumeInterval);
+        // };
 
-        // Start/resume the speech
+        // // Start/resume the speech
 
-        // Set up an interval to periodically pause and resume
-        const resumeInterval = setInterval(() => {
-            if (!window.speechSynthesis.speaking) {
-                clearInterval(resumeInterval);
-            } else {
-                window.speechSynthesis.pause();
-                window.speechSynthesis.resume();
-            }
-        }, 14000);
+        // // Set up an interval to periodically pause and resume
+        // const resumeInterval = setInterval(() => {
+        //     if (!window.speechSynthesis.speaking) {
+        //         clearInterval(resumeInterval);
+        //     } else {
+        //         window.speechSynthesis.pause();
+        //         window.speechSynthesis.resume();
+        //     }
+        // }, 14000);
     };
 
 
