@@ -136,9 +136,11 @@ export default function QuestionModal({
   const removeRowToPossibleAnswers = (index) => {
     let state = { ...selectedQuestion };
     let answers = state.possibleAnswers;
-    answers.splice(index, 1);
-    state.possibleAnswers = answers;
-    setSelectedQuestion(state);
+    if (answers.length > 1) {
+      answers.splice(index, 1);
+      state.possibleAnswers = answers;
+      setSelectedQuestion(state);
+    }
   };
 
 

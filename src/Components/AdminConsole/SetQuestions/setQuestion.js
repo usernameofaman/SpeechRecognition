@@ -53,18 +53,37 @@ export default function QuestionAnswerForm() {
     setQuestionsAnswers(updatedQuestionsAnswers);
   };
 
+  // const addRemoveRow = (action, index) => {
+  //   if (action === "ADD") {
+  //     setQuestionsAnswers((prevState) => [
+  //       ...prevState,
+  //       { question: "", answers: [""] },
+  //     ]);
+  //   } else if (action === "REMOVE") {
+  //     const updatedQuestionsAnswers = [...questionsAnswers];
+  //     updatedQuestionsAnswers.splice(index, 1);
+  //     setQuestionsAnswers(updatedQuestionsAnswers);
+  //   }
+  // };
+
   const addRemoveRow = (action, index) => {
     if (action === "ADD") {
-      setQuestionsAnswers((prevState) => [
-        ...prevState,
-        { question: "", answers: [""] },
-      ]);
+      setQuestionsAnswers((prevState) => {
+        const updatedQuestionsAnswers = [...prevState];
+        updatedQuestionsAnswers.splice(index + 1, 0, { question: "", answers: [""] });
+        return updatedQuestionsAnswers;
+      });
     } else if (action === "REMOVE") {
-      const updatedQuestionsAnswers = [...questionsAnswers];
-      updatedQuestionsAnswers.splice(index, 1);
-      setQuestionsAnswers(updatedQuestionsAnswers);
+      if (questionsAnswers.length > 1) {
+        setQuestionsAnswers((prevState) => {
+          const updatedQuestionsAnswers = [...prevState];
+          updatedQuestionsAnswers.splice(index, 1);
+          return updatedQuestionsAnswers;
+        });
+      }
     }
   };
+  
 
   const handleAddQuestion = async () => {
     const newQuestionData = {

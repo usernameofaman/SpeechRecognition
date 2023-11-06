@@ -73,13 +73,13 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   const removeRowToLotQuestions = (index) => {
     let state = { ...modalDataLots };
     let answers = state.questions;
-    answers.splice(index, 1);
-    state.questions = answers;
-    setModalDataLots(state);
+  
+    if (answers.length > 1) {
+      answers.splice(index, 1);
+      state.questions = answers;
+      setModalDataLots(state);
+    }
   };
-
-
-
 
   //SEETHIS
 
@@ -196,52 +196,66 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   const removeRowToDisorderRedQuestions = (index) => {
     let state = { ...modalDataDisorder };
     let answers = state.redQuestions;
+    if (answers.length > 1) {
     answers.splice(index, 1);
     state.redQuestions = answers;
     setModalDataDisorder(state);
+    }
   };
 
   const removeRowToDisorderBlackQuestions = (index) => {
     let state = { ...modalDataDisorder };
-    let answers = state.BlackQuestions;
-    answers.splice(index, 1);
-    state.BlackQuestions = answers;
-    setModalDataDisorder(state);
+    let answers = state.blackQuestions;
+    if (answers.length > 1) {
+      answers.splice(index, 1);
+      state.blackQuestions = answers;
+      setModalDataDisorder(state);
+      }
   };
   const removeRowToDisorderBlueQuestions = (index) => {
     let state = { ...modalDataDisorder };
     let answers = state.blueQuestions;
-    answers.splice(index, 1);
-    state.blueQuestions = answers;
-    setModalDataDisorder(state);
+    if (answers.length > 1) {
+      answers.splice(index, 1);
+      state.blueQuestions = answers;
+      setModalDataDisorder(state);
+      }
   };
   const removeRowToDisorderGreenQuestions = (index) => {
     let state = { ...modalDataDisorder };
     let answers = state.greenQuestions;
-    answers.splice(index, 1);
-    state.greenQuestions = answers;
-    setModalDataDisorder(state);
+    if (answers.length > 1) {
+      answers.splice(index, 1);
+      state.greenQuestions = answers;
+      setModalDataDisorder(state);
+      }
   };
   const removeRowToDisorderYellowQuestions = (index) => {
     let state = { ...modalDataDisorder };
     let answers = state.yellowQuestions;
-    answers.splice(index, 1);
-    state.yellowQuestions = answers;
-    setModalDataDisorder(state);
+    if (answers.length > 1) {
+      answers.splice(index, 1);
+      state.yellowQuestions = answers;
+      setModalDataDisorder(state);
+      }
   };
   const removeRowToDisorderVoiletQuestions = (index) => {
     let state = { ...modalDataDisorder };
     let answers = state.voiletQuestions;
-    answers.splice(index, 1);
-    state.voiletQuestions = answers;
-    setModalDataDisorder(state);
+    if (answers.length > 1) {
+      answers.splice(index, 1);
+      state.voiletQuestions = answers;
+      setModalDataDisorder(state);
+      }
   };
   const removeRowToDisorderMaroonQuestions = (index) => {
     let state = { ...modalDataDisorder };
     let answers = state.maroonQuestions;
-    answers.splice(index, 1);
-    state.maroonQuestions = answers;
-    setModalDataDisorder(state);
+    if (answers.length > 1) {
+      answers.splice(index, 1);
+      state.maroonQuestions = answers;
+      setModalDataDisorder(state);
+      }
   };
   const handleDisorderChange = (e) => {
     ;
