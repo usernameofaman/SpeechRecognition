@@ -74,7 +74,8 @@ export default function ResponsiveDrawer(props) {
             setAllLots(data); // Check if this function name is correct
             break;
           case "Disorder":
-            setAllDisorderData(data);
+            let newData = data.sort((a , b) => a.lotId - b.lotId)
+            setAllDisorderData(newData);
             break;
           default:
             break;
