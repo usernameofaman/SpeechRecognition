@@ -299,18 +299,18 @@ export default App;
 
 
 function VoiceLoader({ useLLM , inputMode }) {
-    const [voicesLoaded, setVoicesLoaded] = useState(false);
+    const [voicesLoaded, setVoicesLoaded] = useState(true);
 
     useEffect(() => {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.onvoiceschanged = function () {
-                let voices = window.speechSynthesis.getVoices();
-                let voice = voices.filter(function (voice) {
-                    return voice.name == "Google हिन्दी"
-                })[0];
-                setVoicesLoaded(voice)
-            };
-        }
+        // if ('speechSynthesis' in window) {
+        //     window.speechSynthesis.onvoiceschanged = function () {
+        //         let voices = window.speechSynthesis.getVoices();
+        //         let voice = voices.filter(function (voice) {
+        //             return voice.name == "Google हिन्दी"
+        //         })[0];
+        //         setVoicesLoaded(voice)
+        //     };
+        // }
     }, []);
 
 
