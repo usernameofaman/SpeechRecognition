@@ -175,8 +175,8 @@ export default function Session({ voice, useLLM, inputMode }) {
 
   useEffect(() => {
     const words = transcript.split(" ");
-    if (words.length <= 5 && transcript.trim() !== "") {
-      setPatientAnswer(transcript);
+    setPatientAnswer(transcript);
+    if (words.length <= 5 && transcript !== "") {
       detectLanguage(transcript);
     }
   }, [transcript]);
@@ -214,29 +214,24 @@ export default function Session({ voice, useLLM, inputMode }) {
     }
 
     const detectedLanguage = detectLanguage(patientAnswer); // Implement the detectLanguage function
-
+    let translatedText
     if (detectedLanguage !== "en") {
       // If the detected language is not English, translate to English
       try {
-        const translatedText = await translateToEnglish(patientAnswer);
+        translatedText = await translateToEnglish(patientAnswer);
         if (translatedText) {
-          setPatientAnswer(translatedText);
         } else {
           showErrorMessage("Translation to English failed");
-          setSubmitInProcess(false);
-          return;
         }
       } catch (error) {
         console.error("Translation error: ", error);
         showErrorMessage("Translation to English failed");
-        setSubmitInProcess(false);
-        return;
       }
     }
 
     const reqData = {
       currentQuestionCode: apiData.question?.code,
-      textResponse: patientAnswer,
+      textResponse: translatedText ? translatedText :patientAnswer,
       sessionId: sId,
       answers: answers,
       disorderCounts: disorderCounts,
