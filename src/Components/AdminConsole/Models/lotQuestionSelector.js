@@ -50,8 +50,9 @@ export default function Asynchronous({ setModalDataLots, modalDataLots, data, qu
     const defaultValue = questions.find((option) => option.code === data?.code);
     questions.sort((a, b) => (a.code > b.code ? 1 : -1));
 
-
     const handleOnChange = (event, value) => {
+        console.log(options)
+        console.log(modalDataLots)
         try {
             let state = { ...modalDataLots };
             let questions = state.questions;
@@ -66,7 +67,7 @@ export default function Asynchronous({ setModalDataLots, modalDataLots, data, qu
             setModalDataLots(state);
         }
         catch {
-
+            console.log("ERRO")
         }
     };
 
@@ -84,7 +85,7 @@ export default function Asynchronous({ setModalDataLots, modalDataLots, data, qu
                 onClose={() => {
                     setOpen(false);
                 }}
-                isOptionEqualToValue={(option, value) => option.code === value.code}
+                isOptionEqualToValue={(option, value) => option?.code === value?.code}
                 getOptionLabel={(option) => `${option.code} ${option.text}`}
                 options={options}
                 loading={loading}
