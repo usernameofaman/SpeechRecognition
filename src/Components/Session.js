@@ -35,20 +35,7 @@ export default function Session({ voice, useLLM, inputMode }) {
   const [timerDuration, setTimerDuration] = useState(5);
   const [midDelay, setMidDelay] = useState(5);
 
-  console.log(
-    "listenerState",
-    listenerState,
-    "submitInProcess",
-    submitInProcess,
-    "disorderCounts",
-    disorderCounts,
-    "answers",
-    answers,
-    "currentLot",
-    currentLot,
-    "instructions",
-    instructions
-  );
+
 
   const {
     seconds,
@@ -58,15 +45,13 @@ export default function Session({ voice, useLLM, inputMode }) {
     isRunning: isTimerRunning,
   } = MyTimer({ expiryTimestamp: Date.now() + 0 * 1000 });
   useEffect(() => {
+    window.speechSynthesis.cancel()
     getQuestions();
   }, []);
   useEffect(() => {
     setProgressBar((prev) => {
-      console.log("PERRR", prev.percentage);
       let newPercentage = (100 / 11) * (parseInt(currentLot) + 1);
-      console.log("PERRR NEW PER", newPercentage);
       if (prev.countPerLot > 4) newPercentage += 100 / 22;
-      console.log("PERRR NEW PER", newPercentage);
       return {
         prevLot: currentLot,
         percentage: newPercentage,
@@ -88,8 +73,8 @@ export default function Session({ voice, useLLM, inputMode }) {
       (question.instructions && question.instructions !== "NULL"
         ? midDelay
         : 0) *
-        1000 +
-        timeTakenToSpeak * 1000
+      1000 +
+      timeTakenToSpeak * 1000
     );
     speak({
       text:
@@ -97,20 +82,23 @@ export default function Session({ voice, useLLM, inputMode }) {
           ? question.instructions
           : "",
       onEnd: () => {
-        console.log("Done Reading Instruction");
+        // console.log("Done Reading Instruction");
       },
     });
   };
 
-  const nowReadQuestion = async () => {
+  const nowReadQuestion = async (question) => {
     setQuestion((prev) => {
       console.log(prev);
       speak({
         text: prev,
         onEnd: () => {
-          let restartDuration = Date.now() + timerDuration * 1000;
-          restart(restartDuration);
-          startListening();
+          setTimerDuration((prev) => {
+            let restartDuration = Date.now() + prev * 1000;
+            restart(restartDuration);
+            startListening();
+            return prev
+          })
         },
       });
       return prev;
@@ -144,9 +132,11 @@ export default function Session({ voice, useLLM, inputMode }) {
   };
 
   useEffect(() => {
+
     if (!isTimerRunning && listenerState === "STARTED") {
       setListenerState("ENDED");
       SpeechRecognition.stopListening();
+      setTimeout(submitQuestion , 1000)
     }
   }, [isTimerRunning]);
 
@@ -174,11 +164,11 @@ export default function Session({ voice, useLLM, inputMode }) {
   // }, [transcript])
 
   useEffect(() => {
-    const words = transcript.split(" ");
+    // const words = transcript.split(" ");
     setPatientAnswer(transcript);
-    if (words.length <= 5 && transcript !== "") {
-      detectLanguage(transcript);
-    }
+    // if (words.length <= 5 && transcript !== "") {
+    //   detectLanguage(transcript);
+    // }
   }, [transcript]);
 
   const getQuestions = async () => {
@@ -190,6 +180,7 @@ export default function Session({ voice, useLLM, inputMode }) {
     });
     if (data.question) {
       setQuestion(data.question.text);
+      setTimerDuration(data.question.timer === "HIGH" ? 15 : data.question.timer === "MEDIUM" ? 10 : 5)
       setInstructions(data.question.instructions);
       readInstructions(data.question);
       setAPIData(data);
@@ -200,12 +191,11 @@ export default function Session({ voice, useLLM, inputMode }) {
       localStorage.setItem("sessionId", data.sessionId);
     }
   };
-
   const submitQuestion = async () => {
     setSubmitInProcess(true);
     resetTranscript();
     if (patientAnswer === "") {
-      showErrorMessage("Answer Is Required");
+      showErrorMessage("Answer Is Required Please Type");
       setSubmitInProcess(false);
       return;
     }
@@ -213,25 +203,25 @@ export default function Session({ voice, useLLM, inputMode }) {
     if (!sId) {
     }
 
-    const detectedLanguage = detectLanguage(patientAnswer); // Implement the detectLanguage function
+    // const detectedLanguage = detectLanguage(patientAnswer); // Implement the detectLanguage function
     let translatedText
-    if (detectedLanguage !== "en") {
-      // If the detected language is not English, translate to English
-      try {
-        translatedText = await translateToEnglish(patientAnswer);
-        if (translatedText) {
-        } else {
-          showErrorMessage("Translation to English failed");
-        }
-      } catch (error) {
-        console.error("Translation error: ", error);
-        showErrorMessage("Translation to English failed");
-      }
-    }
+    // if (detectedLanguage !== "en") {
+    //   // If the detected language is not English, translate to English
+    //   try {
+    //     translatedText = await translateToEnglish(patientAnswer);
+    //     if (translatedText) {
+    //     } else {
+    //       showErrorMessage("Translation to English failed");
+    //     }
+    //   } catch (error) {
+    //     console.error("Translation error: ", error);
+    //     showErrorMessage("Translation to English failed");
+    //   }
+    // }
 
     const reqData = {
       currentQuestionCode: apiData.question?.code,
-      textResponse: translatedText ? translatedText :patientAnswer,
+      textResponse: translatedText ? translatedText : patientAnswer,
       sessionId: sId,
       answers: answers,
       disorderCounts: disorderCounts,
@@ -242,6 +232,7 @@ export default function Session({ voice, useLLM, inputMode }) {
     if (data.question) {
       setPatientAnswer("");
       setQuestion(data.question.text);
+      setTimerDuration(data.question.timer === "HIGH" ? 15 : data.question.timer === "MEDIUM" ? 10 : 5)
       setInstructions(data.question.instructions);
       setAPIData(data);
       setAnswers(data.answers);
@@ -260,7 +251,6 @@ export default function Session({ voice, useLLM, inputMode }) {
     if (data.message === "All Lots are completed") {
       speak({
         text: "Thank you for answering all of the questions.",
-        onEnd: () => console.log("Done with all questions"),
       });
     }
   };
@@ -431,7 +421,7 @@ export default function Session({ voice, useLLM, inputMode }) {
                             style={{
                               display:
                                 listenerState === "ENDED" &&
-                                patientAnswer === ""
+                                  patientAnswer === ""
                                   ? "block"
                                   : "none",
                             }}
@@ -477,7 +467,6 @@ export default function Session({ voice, useLLM, inputMode }) {
                               aria-valuemax="100"
                               style={{ width: `${progressBar.percentage}%` }}
                             ></div>
-                            {console.log(progressBar.percentage)}
                           </div>
                         </div>
                       </div>
