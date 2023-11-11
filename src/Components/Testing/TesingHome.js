@@ -2,10 +2,10 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import useClipboard from "react-use-clipboard";
 import { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../custom.css'
-import Session from './Session';
+import '../../custom.css'
+import Session from './TestingSession';
 import React, { useEffect } from 'react';
-import { SettingsService } from '../services';
+import { SettingsService } from '../../services';
 import { FormControlLabel, FormGroup, Switch, Button } from '@mui/material';
 
 const App = () => {
@@ -182,16 +182,14 @@ const App = () => {
             </header>
 
 
-            {!sessionStarted ? <div id="launchContent">
+            {false ? <div id="launchContent">
                 <div className="container mt-5">
                     <div className="row">
                         <div className="col-md-7">
                             <div className="bnrheading">
-                                <h2>Welcome <b className="fw-bold text-warning">Name</b> to the amazing world of <b
+                                <h2>Test <b className="fw-bold text-warning">Mode</b> <b
                                     className="fw-bold text-primary">Maya</b></h2>
-                                <h6 className="text-secondary lead fs-5">Maya is here to help you live a better life by help finding
-                                    the trends and tendencies about You. We will try to map these to the mental health disorder
-                                    possibilities so that you can lead a better life.
+                                <h6 className="text-secondary lead fs-5"> This is just a test page to check all the functionalites of this app
                                     <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#launchModal"
                                         className="text-decoration-none">Know
                                         More..</a>
@@ -300,20 +298,19 @@ const App = () => {
 export default App;
 
 
-function VoiceLoader({ useLLM, inputMode }) {
-    const [voicesLoaded, setVoicesLoaded] = useState(false);
+function VoiceLoader({ useLLM , inputMode }) {
+    const [voicesLoaded, setVoicesLoaded] = useState(true);
 
     useEffect(() => {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.onvoiceschanged = function () {
-                let voices = window.speechSynthesis.getVoices();
-                let voice = voices.filter(function (voice) {
-                    return voice.name == "Google हिन्दी"
-                })[0];
-                setVoicesLoaded(voice)
-            };
-        }
-
+        // if ('speechSynthesis' in window) {
+        //     window.speechSynthesis.onvoiceschanged = function () {
+        //         let voices = window.speechSynthesis.getVoices();
+        //         let voice = voices.filter(function (voice) {
+        //             return voice.name == "Google हिन्दी"
+        //         })[0];
+        //         setVoicesLoaded(voice)
+        //     };
+        // }
     }, []);
 
 

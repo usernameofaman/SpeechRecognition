@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import Typewriter from 'typewriter-effect';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { QuestionsService } from '../services';
+import { QuestionsService } from '../../services';
 import { useTimer } from 'react-timer-hook';
-import { showErrorMessage } from '../managers/utility'
-import "../App.css"
+import { showErrorMessage } from '../../managers/utility'
+import "../../App.css"
 
 
 console.log("REACT_APP_ALLOW_READING", process.env.REACT_APP_ALLOW_READING)

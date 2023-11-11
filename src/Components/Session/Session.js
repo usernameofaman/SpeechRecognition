@@ -3,14 +3,14 @@ import Typewriter from "typewriter-effect";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { QuestionsService } from "../services";
+import { QuestionsService } from "../../services";
 import { useTimer } from "react-timer-hook";
-import { showErrorMessage } from "../managers/utility";
+import { showErrorMessage } from "../../managers/utility";
 import {
   detectLanguage,
   translateToEnglish,
 } from "./GoogleTranslate/GoogleTranslate";
-import "../App.css";
+import "../../App.css";
 
 export default function Session({ voice, useLLM, inputMode }) {
   const [questionWriter, setQuestionWriter] = useState(null);

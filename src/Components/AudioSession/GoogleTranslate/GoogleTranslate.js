@@ -1,5 +1,5 @@
 import axios from "axios";
-import { TranslationService } from "../../services";
+import { TranslationService } from "../../../services";
 
 const getTranslateToken = async () => {
   try {

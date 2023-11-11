@@ -1,11 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import Home from './Components/Home'
+import Home from './Components/Session/Home'
 import Admin from './Components/AdminConsole/Admin';
-import Testing from './Components/TesingHome';
+import Testing from './Components/Testing/TesingHome';
 import './App.css'
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import AudioSession from './Components/AudioSession/Home';
 
 
 
@@ -76,6 +77,7 @@ function App() {
                         <Route path="/contact" element={Contact} />
                         <Route path="/admin" element={<Admin />} />
                         <Route path="/testing" element={<Testing />} />
+                        <Route path="/audio" element={<AudioSession />} />
 
                         <Route element={NotFound} />
                     </Routes>
