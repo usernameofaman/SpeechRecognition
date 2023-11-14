@@ -11,11 +11,10 @@ import DisorderModel from "./Models/DisorderModel";
 import QuestionModal from "./Models/QuestionModal";
 import LotModal from "./Models/LotModal";
 import DeleteDialog from "./Models/deleteDialog";
-import { QuestionsService } from "../../services";
-import { LotService } from "../../services";
-import { DisorderService } from "../../services";
-import { showErrorMessage, showSuccessMessage } from "../../managers/utility";
-
+import { QuestionsService } from "../../../services";
+import { LotService } from "../../../services";
+import { DisorderService } from "../../../services";
+import { showErrorMessage, showSuccessMessage } from "../../../managers/utility";
 
 function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
   // State for Questions
@@ -508,6 +507,8 @@ function DataTable({ activeTab, allQuestionsData, allLots, allDisorderData }) {
                   </TableCell>
                 </TableRow>
               ))}
+
+
             {activeTab === "Disorder" &&
               allDisorderData.map((item, index) => (
                 <TableRow key={item.id}>

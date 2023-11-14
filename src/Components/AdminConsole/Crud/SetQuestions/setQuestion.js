@@ -4,8 +4,8 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import SaveIcon from "@mui/icons-material/Save";
-import SettingsService from "../../../services/settings";
-import { showErrorMessage, showSuccessMessage } from "../../../managers/utility";
+import SettingsService from "../../../../services/settings";
+import { showErrorMessage, showSuccessMessage } from "../../../../managers/utility";
 
 export default function QuestionAnswerForm() {
   const [questionsAnswers, setQuestionsAnswers] = useState([

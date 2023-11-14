@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -15,81 +15,25 @@ import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import DataTable from "./dataTable";
-import SetQuestions from "./SetQuestions/setQuestion";
-import FreeUsers from "./freeUsers/freeUsers";
+import CRUDOperations from './Crud/CrudIndex'
 
-import {
-  Table,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Paper,
-  Button,
-} from "@mui/material";
-import { QuestionsService } from "../../services";
-import ChiefComplaint from "./Models/ChiefComplaint";
 
 const drawerWidth = 240;
 
 export default function ResponsiveDrawer(props) {
-  const { window } = props;
+
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [allQuestionsData, setAllQuestionsData] = useState([]);
-  const [allLots, setAllLots] = useState([]);
-  const [allDisorderData, setAllDisorderData] = useState([]);
-  const [activeTab, setActiveTab] = useState("Questions"); // Initial active tab
+  const [activeTab, setActiveTab] = useState("CRUD");
 
-  const fetchData = async () => {
-    try {
-      let response;
-      switch (activeTab) {
-        case "Questions":
-          const allQuestionsDataRes =
-            await QuestionsService.getAllQuestionsData();
-          response = allQuestionsDataRes; // Assign the correct response variable
-          break;
-        case "LOTS":
-          const allLotsRes = await QuestionsService.getAllLots();
-          response = allLotsRes; // Assign the correct response variable
-          break;
-        case "Disorder":
-          const allDisorderRes = await QuestionsService.getAllDisorderData();
-          response = allDisorderRes; // Assign the correct response variable
-          break;
-        default:
-          response = null;
-      }
+  let component
 
-      if (response) {
-        const data = await response;
-        switch (activeTab) {
-          case "Questions":
-            setAllQuestionsData(data);
-            ;
-            break;
-          case "LOTS":
-            setAllLots(data); // Check if this function name is correct
-            break;
-          case "Disorder":
-            let newData = data.sort((a , b) => a.lotId - b.lotId)
-            setAllDisorderData(newData);
-            break;
-          default:
-            break;
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-
-  useEffect(() => {
-    fetchData();
-  }, [activeTab]);
+  switch (activeTab) {
+    case "CRUD":
+      component = <CRUDOperations />
+      break;
+    default:
+      break;
+  }
 
   const drawer = (
     <div>
@@ -98,70 +42,27 @@ export default function ResponsiveDrawer(props) {
       <List>
         <ListItem disablePadding>
           <ListItemButton
-            variant={activeTab === "Questions" ? "contained" : "outlined"}
-            onClick={() => setActiveTab("Questions")}
+            variant={activeTab === "CRUD" ? "contained" : "outlined"}
+            onClick={() => setActiveTab("CRUD")}
           >
             <ListItemIcon>
               <InboxIcon />
             </ListItemIcon>
-            <ListItemText primary="Questions" />
+            <ListItemText primary="Crud Operations" />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
           <ListItemButton
-            variant={activeTab === "LOTS" ? "contained" : "outlined"}
-            onClick={() => setActiveTab("LOTS")}
-          >
-            <ListItemIcon>
-              <MailIcon />
-            </ListItemIcon>
-            <ListItemText primary="LOTS" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            variant={activeTab === "Disorder" ? "contained" : "outlined"}
-            onClick={() => setActiveTab("Disorder")}
+            variant={activeTab === "CORPORATE" ? "contained" : "outlined"}
+            onClick={() => setActiveTab("CORPORATE")}
           >
             <ListItemIcon>
               <InboxIcon />
             </ListItemIcon>
-            <ListItemText primary="Disorder" />
+            <ListItemText primary="Corporate" />
           </ListItemButton>
         </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            variant={activeTab === "SetQuestions" ? "contained" : "outlined"}
-            onClick={() => setActiveTab("SetQuestions")}
-          >
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary="SetQuestions" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            variant={activeTab === "FreeUsers" ? "contained" : "outlined"}
-            onClick={() => setActiveTab("FreeUsers")}
-          >
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary="FreeUsers" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            variant={activeTab === "Chief Complaint" ? "contained" : "outlined"}
-            onClick={() => setActiveTab("Chief Complaint")}
-          >
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary="Chief Complaint" />
-          </ListItemButton >
-        </ListItem >
+
       </List >
     </div >
   );
@@ -236,36 +137,17 @@ export default function ResponsiveDrawer(props) {
 
       </Box>
       <Box
-        component="main"
+        // component="main"
         sx={{
           flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+          height: "100vh",
           p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >
-        <Toolbar />
-        {activeTab === "SetQuestions" ? (
-          <>
-            <SetQuestions />
-          </>
-        ) : activeTab === "FreeUsers" ? (
-          <FreeUsers />
-        ) : activeTab === "Chief Complaint" ?
-          <ChiefComplaint />
-          : (
-            <DataTable
-              activeTab={activeTab}
-              allQuestionsData={allQuestionsData}
-              allLots={allLots}
-              allDisorderData={allDisorderData}
-            />
-          )}
-
-        {/* <DataGrid
-       activeTab={activeTab}
-       allQuestionsData={allQuestionsData}
-       allLots={allLots}
-       allDisorderData={allDisorderData}/> */}
+        {component}
       </Box>
     </Box>
 

@@ -4,8 +4,9 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import SaveIcon from "@mui/icons-material/Save";
-import SettingsService from "../../../services/settings";
-import { showErrorMessage, showSuccessMessage } from "../../../managers/utility";
+import SettingsService from "../../../../services/settings";
+import { showErrorMessage, showSuccessMessage } from "../../../../managers/utility";
+import { Typography } from "@mui/material";
 
 export default function FreeUsers() {
   const [lotNumber, setLotNumber] = useState([
@@ -39,6 +40,11 @@ export default function FreeUsers() {
 
   const addAnswerField = (index) => {
     const updatedLotNumber = [...lotNumber];
+    console.log(updatedLotNumber)
+    if(updatedLotNumber[index].lotNumber[updatedLotNumber[index].lotNumber.length -1 ] === ""){
+      showErrorMessage("Please fill previous box first")
+      return
+    }
     updatedLotNumber[index].lotNumber.push("");
     setLotNumber(updatedLotNumber);
   };
@@ -87,6 +93,8 @@ export default function FreeUsers() {
 
   return (
     <div>
+
+      <Typography variant="h4" sx={{padding: 1, mt:1, mb : 2}}>Please enter lots that you want to provide for Free Users.</Typography>
       {lotNumber.map((qa, index) => (
         <div key={index} style={{ display: "flex", marginTop: "10px" }}>
           
@@ -95,12 +103,13 @@ export default function FreeUsers() {
               key={lotIndex}
               style={{
                 display: "flex",
+                flexWrap:"wrap",
                 flexDirection: "column",
                 alignItems: "center",
               }}
             >
               <TextField
-                sx={{ ml: 1 }}
+                sx={{ ml: 1 , minWidth:"100px"}}
                 label="LotNumber"
                 variant="outlined"
                 value={answer}
@@ -109,7 +118,7 @@ export default function FreeUsers() {
               {lotIndex > 0 && (
                 <Button
                   variant="outlined"
-                  sx={{ mt: 1 }}
+                  sx={{ mt: 1 , minWidth:"100px"}}
                   onClick={() => removeAnswerField(index, lotIndex)}
                 >
                   <RemoveIcon />
@@ -124,28 +133,6 @@ export default function FreeUsers() {
           >
             <AddIcon />
           </Button>
-          {/* <div
-            style={{
-              marginLeft: "10px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Button
-              fullWidth
-              size="small"
-              variant="outlined"
-              onClick={() => addRemoveRow("ADD", index)}
-            >{`Add Row`}</Button>
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={() => addRemoveRow("REMOVE", index)}
-            >
-              Remove Row
-            </Button>
-          </div> */}
         </div>
       ))}
 

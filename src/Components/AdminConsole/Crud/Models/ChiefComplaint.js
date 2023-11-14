@@ -1,7 +1,7 @@
 import { Button, responsiveFontSizes, TextField } from '@mui/material'
 import React, { useEffect } from 'react'
-import { showSuccessMessage } from '../../../managers/utility'
-import { SettingsService } from '../../../services'
+import { showSuccessMessage } from '../../../../managers/utility'
+import { SettingsService } from '../../../../services'
 
 
 export default function ChiefComplaint() {

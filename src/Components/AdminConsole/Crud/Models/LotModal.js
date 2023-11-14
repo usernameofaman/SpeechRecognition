@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
 import AutoCompleteLot from './lotQuestionSelector'
-import { LotService, QuestionsService } from "../../../services";
+import { LotService, QuestionsService } from "../../../../services";
 
 
 export default function LotModal({

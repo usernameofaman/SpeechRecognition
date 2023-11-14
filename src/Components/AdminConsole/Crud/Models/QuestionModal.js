@@ -11,12 +11,10 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
 import { FormControl, MenuItem, Select } from "@mui/material";
 import { InputLabel } from "@mui/material";
-import { QuestionsService } from "../../../services";
+import { QuestionsService } from "../../../../services";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import SaveIcon from '@mui/icons-material/Save';
-import "../../../styles.css"
-import { showSuccessMessage, showErrorMessage } from "../../../managers/utility";
+import { showSuccessMessage, showErrorMessage } from "../../../../managers/utility";
 
 export default function QuestionModal({
   isModalOpenQuestions,
