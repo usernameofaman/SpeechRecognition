@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal, TextField, Typography, IconButton } from '@mui/material';
-import AuthUserService from '../../../../services/authUser';
-import { showErrorMessage, showSuccessMessage } from '../../../../managers/utility';
+import AuthUserService from '../../../services/authUser';
+import { showErrorMessage, showSuccessMessage } from '../../../managers/utility';
 import CloseIcon from '@mui/icons-material/Close';
 
 const LoginForm = ({ open, onClose }) => {
@@ -16,11 +16,12 @@ const LoginForm = ({ open, onClose }) => {
         email: email,
         password: password,
       });
-  
-      const token = response.token;
-  
-      console.log('Login successful:', response);
-      onClose();
+
+      if(response.token){
+        showSuccessMessage("Login Success")
+        localStorage.setItem('loginToken', response.token)
+        onClose();
+      }
     } catch (error) {
       console.error('Error during login:', error);
       showErrorMessage('Error during login');

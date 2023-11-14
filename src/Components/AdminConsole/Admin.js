@@ -16,6 +16,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import CRUDOperations from './Crud/CrudIndex'
+import Corporate from './Corporate/Main'
 
 
 const drawerWidth = 240;
@@ -27,7 +28,11 @@ export default function ResponsiveDrawer(props) {
 
   let component
 
+  console.log(activeTab)
   switch (activeTab) {
+    case "CORPORATE":
+      component = <Corporate />
+      break;
     case "CRUD":
       component = <CRUDOperations />
       break;

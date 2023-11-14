@@ -8,7 +8,10 @@ import React, { useEffect } from 'react';
 import { SettingsService } from '../../services';
 import { FormControlLabel, FormGroup, Switch, Button } from '@mui/material';
 import { showErrorMessage } from '../../managers/utility';
-import LoginForm from '../AdminConsole/Crud/Models/AuthModal';
+import LoginForm from './Models/AuthModal';
+import Profile from './Models/ProfilePopper'
+import { decodeToken } from 'react-jwt'
+
 
 const App = () => {
 
@@ -17,8 +20,22 @@ const App = () => {
     const [useLLM, setUseLLM] = React.useState(false)
     const [inputMode, setInputMode] = React.useState("VOICE")
 
+    const [userData, setUserData] = React.useState({})
+
+
+    const verifyJWT = () => {
+        let token = localStorage.getItem('loginToken') || ""
+        if (token) {
+            let decodedToken = decodeToken(token)
+            setUserData(decodedToken)
+            console.log(decodedToken)
+        }
+    }
+
     useEffect(() => {
         getCurrentSetting()
+        verifyJWT()
+
     }, []);
 
 
@@ -36,13 +53,13 @@ const App = () => {
         }
     }
 
-    const [viewLoginModal , setViewLoginModal ] = useState(false)
+    const [viewLoginModal, setViewLoginModal] = useState(false)
 
     const checkLoginBeforeSession = () => {
-        let loggedIn = false
-        if (loggedIn)
+        let token = localStorage.getItem('loginToken')
+        if (token)
             setSessionStarted(true)
-        else{
+        else {
             setViewLoginModal(true)
             showErrorMessage("Please Log in first")
         }
@@ -170,7 +187,8 @@ const App = () => {
                                     </div>
                                 </li>
                             </ul>
-                            <form className="userprofile ms-0 ms-sm-3">
+                            <Profile userData={userData} />
+                            {/* <form className="userprofile ms-0 ms-sm-3">
                                 <div className="dropdown">
                                     <button className="btn btn-warning dropdown-toggle d-flex align-items-center" type="button"
                                         id="userprofilemenu" data-bs-toggle="dropdown" aria-expanded="true">
@@ -189,17 +207,17 @@ const App = () => {
                                         <li><a className="dropdown-item" href="#">Logout</a></li>
                                     </ul>
                                 </div>
-                            </form>
+                            </form> */}
                         </div>
                     </div>
                 </nav>
             </header>
             {viewLoginModal && (
-    <LoginForm
-        open={viewLoginModal}
-        onClose={() => setViewLoginModal(false)}
-    />
-)}
+                <LoginForm
+                    open={viewLoginModal}
+                    onClose={() => setViewLoginModal(false)}
+                />
+            )}
 
 
             {!sessionStarted ? <div id="launchContent">
