@@ -8,6 +8,7 @@ import React, { useEffect } from 'react';
 import { SettingsService } from '../../services';
 import { FormControlLabel, FormGroup, Switch, Button } from '@mui/material';
 import { showErrorMessage } from '../../managers/utility';
+import LoginForm from '../AdminConsole/Crud/Models/AuthModal';
 
 const App = () => {
 
@@ -193,6 +194,12 @@ const App = () => {
                     </div>
                 </nav>
             </header>
+            {viewLoginModal && (
+    <LoginForm
+        open={viewLoginModal}
+        onClose={() => setViewLoginModal(false)}
+    />
+)}
 
 
             {!sessionStarted ? <div id="launchContent">
