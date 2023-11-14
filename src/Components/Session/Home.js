@@ -7,6 +7,7 @@ import Session from './Session';
 import React, { useEffect } from 'react';
 import { SettingsService } from '../../services';
 import { FormControlLabel, FormGroup, Switch, Button } from '@mui/material';
+import { showErrorMessage } from '../../managers/utility';
 
 const App = () => {
 
@@ -31,6 +32,18 @@ const App = () => {
         const updateToggle = await SettingsService.updateSettings({ useLLM: value })
         if (updateToggle && updateToggle.matchedCount) {
             getCurrentSetting()
+        }
+    }
+
+    const [viewLoginModal , setViewLoginModal ] = useState(false)
+
+    const checkLoginBeforeSession = () => {
+        let loggedIn = false
+        if (loggedIn)
+            setSessionStarted(true)
+        else{
+            setViewLoginModal(true)
+            showErrorMessage("Please Log in first")
         }
     }
 
@@ -197,7 +210,7 @@ const App = () => {
                                         More..</a>
                                 </h6>
 
-                                <button onClick={() => setSessionStarted(true)} className="btn btn-outline-primary text-uppercase mt-4 py-3 px-4 shadow-sm" type="button"
+                                <button onClick={() => checkLoginBeforeSession()} className="btn btn-outline-primary text-uppercase mt-4 py-3 px-4 shadow-sm" type="button"
                                     id="switchButton">
                                     <span className="d-none d-sm-inline-block">Start Session</span>
                                     <i className="fas fa-arrow-right ms-2"></i>
