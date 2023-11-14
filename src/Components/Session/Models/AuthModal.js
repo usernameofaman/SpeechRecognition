@@ -55,7 +55,9 @@ const LoginForm = ({ open, onClose }) => {
 
   return (
     <div>
-      <Modal open={open} onClose={onClose} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Modal open={open} onClose={onClose}  BackdropProps={{
+        onClick: null, 
+      }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
           <Typography variant="h5" gutterBottom>
             Login or Register
@@ -90,7 +92,9 @@ const LoginForm = ({ open, onClose }) => {
       </Modal>
 
       {/* Registration Modal */}
-      <Modal open={isRegisterModalOpen} onClose={handleCloseRegisterModal} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Modal  BackdropProps={{
+        onClick: null
+      }} open={isRegisterModalOpen} onClose={handleCloseRegisterModal} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
         <IconButton style={{ position: 'absolute', top: '10px', right: '10px' }} onClick={onClose}>
           <CloseIcon />

@@ -1,7 +1,9 @@
 import React from 'react'
-
+import ListTable from './CorporateDashboard/ListTable'
 export default function Main() {
   return (
-    <div style={{ marginTop : "60px" }}>Main Index File, Do not write all code here</div>
+    <>
+    <ListTable/>
+    </>
   )
 }
