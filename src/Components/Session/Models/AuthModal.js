@@ -21,6 +21,8 @@ const LoginForm = ({ open, onClose }) => {
         showSuccessMessage("Login Success")
         localStorage.setItem('loginToken', response.token)
         onClose();
+      }else {
+        showErrorMessage(response.message)
       }
     } catch (error) {
       console.error('Error during login:', error);
@@ -59,6 +61,7 @@ const LoginForm = ({ open, onClose }) => {
         onClick: null, 
       }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
+        <Button onClick={() => onClose()}>X</Button>
           <Typography variant="h5" gutterBottom>
             Login or Register
             <IconButton style={{ position: 'absolute', top: '10px', right: '10px' }} onClick={onClose}>

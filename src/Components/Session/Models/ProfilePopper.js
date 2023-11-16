@@ -10,7 +10,7 @@ import MenuList from '@mui/material/MenuList';
 import Stack from '@mui/material/Stack';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 
-export default function MenuListComposition({ userData }) {
+export default function MenuListComposition({ userData, viewLoginModal, setViewLoginModal }) {
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
 
@@ -49,7 +49,7 @@ export default function MenuListComposition({ userData }) {
 
     return (
         <Stack direction="row" spacing={2}>
-            <div>
+            {userData.name ? <div>
                 <Button
                     ref={anchorRef}
                     id="composition-button"
@@ -78,7 +78,7 @@ export default function MenuListComposition({ userData }) {
                     placement="bottom-start"
                     transition
                     disablePortal
-                    sx={{zIndex : 1}}
+                    sx={{ zIndex: 1 }}
                 >
                     {({ TransitionProps, placement }) => (
                         <Grow
@@ -99,14 +99,21 @@ export default function MenuListComposition({ userData }) {
                                     >
                                         <MenuItem onClick={handleClose}>Profile</MenuItem>
                                         <MenuItem onClick={handleClose}>My account</MenuItem>
-                                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                                        <MenuItem onClick={() => {
+                                            localStorage.clear();
+                                            window.location.reload()
+                                            handleClose()
+                                        }}>Logout</MenuItem>
                                     </MenuList>
                                 </ClickAwayListener>
                             </Paper>
                         </Grow>
                     )}
                 </Popper>
-            </div>
+            </div> :
+                <Button onClick={() => setViewLoginModal(true)}>
+                    Login
+                </Button>}
         </Stack>
     );
 }

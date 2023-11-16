@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './Components/Session/Home'
 import Admin from './Components/AdminConsole/Admin';
+import Corporate from './Components/CorporateConsole/Admin';
 import Testing from './Components/Testing/TesingHome';
 import './App.css'
 import "react-toastify/dist/ReactToastify.css";
@@ -17,7 +18,7 @@ function App() {
 
     React.useEffect(() => {
         let code = localStorage.getItem('code');
-        if(code)
+        if (code)
             setAllow(code)
     })
 
@@ -54,35 +55,22 @@ function App() {
     };
     return (
         <div>
-            {allow !== "8741" ?
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                    <form onSubmit={handleSubmit}>
-                        <label>
-                            Enter 4-digit Code:
-                            <input
-                                type="text"
-                                value={code}
-                                maxLength={4}
-                                onChange={(e) => setCode(e.target.value.replace(/\D/, ''))}
-                            />
-                        </label>
-                        <button type="submit">Submit</button>
-                    </form>
-                </div> :
-                <Router>
-                    <Routes>
-                        <Route path="/" element={<Home />} />
 
-                        <Route path="/about" element={About} />
-                        <Route path="/contact" element={Contact} />
-                        <Route path="/admin" element={<Admin />} />
-                        <Route path="/testing" element={<Testing />} />
-                        <Route path="/audio" element={<AudioSession />} />
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Home />} />
 
-                        <Route element={NotFound} />
-                    </Routes>
-                    {toast()}
-                </Router>}
+                    <Route path="/about" element={About} />
+                    <Route path="/contact" element={Contact} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/corporate" element={<Corporate />} />
+                    <Route path="/testing" element={<Testing />} />
+                    <Route path="/audio" element={<AudioSession />} />
+
+                    <Route element={NotFound} />
+                </Routes>
+                {toast()}
+            </Router>
         </div>
 
     );

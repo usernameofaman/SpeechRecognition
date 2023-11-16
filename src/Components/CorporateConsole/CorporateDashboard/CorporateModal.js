@@ -7,25 +7,24 @@ import {
   Button,
   IconButton
 } from '@mui/material';
-import { CorporateService } from '../../../../services';
-import { showErrorMessage, showSuccessMessage } from '../../../../managers/utility';
+import { CorporateService } from '../../../services';
+import { showErrorMessage, showSuccessMessage } from '../../../managers/utility';
 import CloseIcon from '@mui/icons-material/Close';
 
-const CorporateModal = ({ isOpen, onClose, onAdd }) => {
+const CorporateModal = ({ isOpen, onClose, corporateId }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [numberOfLicense, setNumberOfLicense] = useState('');
   const [sessionPerLicense, setSessionPerLicense] = useState('');
 
-  const handleAddCorporate = async () => {
+  const handleAddCorporateEmployee = async () => {
     try {
-      const response = await CorporateService.addCorporateUser({
+      const response = await CorporateService.addCorporateEmployee({
         name: name,
         email: email,
         password: password,
-        numberOfLicense: numberOfLicense,
-        sessionPerLicense: sessionPerLicense
+        corporateId : corporateId
       });
       if (response._id) {
         showSuccessMessage("Corporate User Added Successfully")
@@ -60,7 +59,7 @@ const CorporateModal = ({ isOpen, onClose, onAdd }) => {
         }}
       >
         <Typography variant="h5" gutterBottom>
-          Add Corporate
+          Add Employee
         </Typography>
         <IconButton onClick={onClose}>
           <CloseIcon />
@@ -83,32 +82,14 @@ const CorporateModal = ({ isOpen, onClose, onAdd }) => {
         />
         <TextField
           label="Password"
-          type="password"
+          type="text"
           fullWidth
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           margin="normal"
           name='password'
         />
-        <TextField
-          label="Number of Licenses"
-          fullWidth
-          type="number"
-          value={numberOfLicense}
-          onChange={(e) => setNumberOfLicense(parseInt(e.target.value.replace(/\D/g, '')))}
-          margin="normal"
-          name='numberOfLicense'
-        />
-        <TextField
-          label="Sessions Per License"
-          fullWidth
-          type="number"
-          value={sessionPerLicense}
-          onChange={(e) => setSessionPerLicense(parseInt(e.target.value.replace(/\D/g, '')))}
-          margin="normal"
-          name='sessionPerLicense'
-        />
-        <Button variant="contained" color="primary" onClick={handleAddCorporate}>
+        <Button variant="contained" color="primary" onClick={handleAddCorporateEmployee}>
           Add
         </Button>
 

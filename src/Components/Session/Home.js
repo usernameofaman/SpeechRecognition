@@ -11,9 +11,11 @@ import { showErrorMessage } from '../../managers/utility';
 import LoginForm from './Models/AuthModal';
 import Profile from './Models/ProfilePopper'
 import { decodeToken } from 'react-jwt'
+import { useNavigate } from 'react-router-dom';
 
 
 const App = () => {
+    const navigate = useNavigate();
 
     const [sessionStarted, setSessionStarted] = React.useState(false)
 
@@ -28,7 +30,8 @@ const App = () => {
         if (token) {
             let decodedToken = decodeToken(token)
             setUserData(decodedToken)
-            console.log(decodedToken)
+            if(decodedToken.type && decodedToken.type === "CORPORATE" )
+                navigate('/corporate')
         }
     }
 
@@ -187,7 +190,7 @@ const App = () => {
                                     </div>
                                 </li>
                             </ul>
-                            <Profile userData={userData} />
+                            <Profile userData={userData} setViewLoginModal={setViewLoginModal} viewLoginModal={viewLoginModal}/>
                             {/* <form className="userprofile ms-0 ms-sm-3">
                                 <div className="dropdown">
                                     <button className="btn btn-warning dropdown-toggle d-flex align-items-center" type="button"
@@ -215,7 +218,9 @@ const App = () => {
             {viewLoginModal && (
                 <LoginForm
                     open={viewLoginModal}
-                    onClose={() => setViewLoginModal(false)}
+                    onClose={() => {
+                        setViewLoginModal(false)
+                    }}
                 />
             )}
 

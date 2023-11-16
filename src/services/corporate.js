@@ -4,7 +4,9 @@ import { getAccessToken, getHeaders, getUserId } from "./baseFunctions";
 
 export default {
     getCorporateData,
-    addCorporateUser
+    addCorporateUser,
+    getCorporateEmployees,
+    addCorporateEmployee
 };
 
 
@@ -22,8 +24,36 @@ async function getCorporateData(requestData) {
         });
 }
 
+async function getCorporateEmployees(corporateId) {
+    let url = process.env.REACT_APP_API_URI + `/api/corporate/get-corporate-employees/${corporateId}`
+    return httpService(httpConstants.METHOD_TYPE.GET, getHeaders(),{}, url)
+        .then(
+            response => {
+                if (!response)
+                    return Promise.reject(response);
+                return Promise.resolve(response);
+            }
+        ).catch(function (err) {
+            return Promise.reject(err);
+        });
+}
+
 async function addCorporateUser(requestData) {
     let url = process.env.REACT_APP_API_URI + `/api/corporate/add-corporate-data`
+    return httpService(httpConstants.METHOD_TYPE.POST, getHeaders(),requestData, url)
+        .then(
+            response => {
+                if (!response)
+                    return Promise.reject(response);
+                return Promise.resolve(response);
+            }
+        ).catch(function (err) {
+            return Promise.reject(err);
+        });
+}
+
+async function addCorporateEmployee(requestData) {
+    let url = process.env.REACT_APP_API_URI + `/api/corporate/add-corporate-employee`
     return httpService(httpConstants.METHOD_TYPE.POST, getHeaders(),requestData, url)
         .then(
             response => {

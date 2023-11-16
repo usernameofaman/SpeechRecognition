@@ -1,6 +1,6 @@
+import { Button, capitalize } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { CamelCaseToString } from "../../../../managers/utility";
-import { CorporateService } from "../../../../services";
+import { CorporateService } from "../../../services";
 import CorporateModal from "./CorporateModal";
 
 const DataTable = ({ data, openAddModal }) => {
@@ -11,24 +11,18 @@ const DataTable = ({ data, openAddModal }) => {
 
   return (
     <div>
-      <button
-        style={{
-          padding: "8px",
-          backgroundColor: "#3f51b5",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
+      <Button
+      variant="contained"
+      sx={{mt : 1, mb:1}}
         onClick={openAddModal}
       >
         Add
-      </button>
+      </Button>
       <table border="1" style={{ width: "100%" }}>
         <thead>
           <tr>
             {columns.map((column) => (
-              <th key={column}>{CamelCaseToString(column)}</th>
+              <th key={column}>{capitalize(column)}</th>
             ))}
           </tr>
         </thead>
@@ -47,17 +41,19 @@ const DataTable = ({ data, openAddModal }) => {
   );
 };
 
-const App = () => {
+const App = ({ userData }) => {
   const [apiData, setApiData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
+    if(userData.userId)
     getCorporateData();
-  }, []);
+  }, [userData]);
 
   const getCorporateData = async () => {
     try {
-      const response = await CorporateService.getCorporateData();
+      console.log(userData)
+      const response = await CorporateService.getCorporateEmployees(userData.userId || "");
       console.log("Corporate Data:", response);
       setApiData(response);
     } catch (error) {
@@ -77,8 +73,11 @@ const App = () => {
   return (
     <div>
       <h1>Data Table</h1>
+      <div>
+        Corporate Name : {userData.name}
+      </div>
       <DataTable data={apiData} openAddModal={openAddModal} />
-      <CorporateModal isOpen={isModalOpen} onClose={closeAddModal} />
+      <CorporateModal isOpen={isModalOpen} onClose={closeAddModal} corporateId={userData.userId}/>
     </div>
   );
 };
