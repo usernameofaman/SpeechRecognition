@@ -1,7 +1,7 @@
 import { Button, capitalize } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { CorporateService } from "../../../services";
-import CorporateModal from "./CorporateModal";
+import CorporateModal from "./AddEmployees";
 
 const DataTable = ({ data, openAddModal }) => {
   const excludedColumns = ["_id", "__v"];
@@ -12,8 +12,8 @@ const DataTable = ({ data, openAddModal }) => {
   return (
     <div>
       <Button
-      variant="contained"
-      sx={{mt : 1, mb:1}}
+        variant="contained"
+        sx={{ mt: 1, mb: 1 }}
         onClick={openAddModal}
       >
         Add
@@ -41,19 +41,17 @@ const DataTable = ({ data, openAddModal }) => {
   );
 };
 
-const App = ({ userData }) => {
+const App = ({ userData , reload}) => {
   const [apiData, setApiData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   useEffect(() => {
-    if(userData.userId)
-    getCorporateData();
+    if (userData._id)
+      getCorporateData();
   }, [userData]);
 
   const getCorporateData = async () => {
     try {
-      console.log(userData)
-      const response = await CorporateService.getCorporateEmployees(userData.userId || "");
+      const response = await CorporateService.getCorporateEmployees(userData._id || "");
       console.log("Corporate Data:", response);
       setApiData(response);
     } catch (error) {
@@ -66,6 +64,7 @@ const App = ({ userData }) => {
   };
 
   const closeAddModal = () => {
+    reload()
     getCorporateData()
     setIsModalOpen(false);
   };
@@ -73,11 +72,16 @@ const App = ({ userData }) => {
   return (
     <div>
       <h1>Data Table</h1>
+      {console.log(userData)}
       <div>
-        Corporate Name : {userData.name}
+        Corporate Name : {userData.name} 
+      </div>
+      <div>
+      Remaining License : {userData.remainingLicense}
+
       </div>
       <DataTable data={apiData} openAddModal={openAddModal} />
-      <CorporateModal isOpen={isModalOpen} onClose={closeAddModal} corporateId={userData.userId}/>
+      <CorporateModal isOpen={isModalOpen} onClose={closeAddModal} corporateId={userData._id} />
     </div>
   );
 };

@@ -55,13 +55,9 @@ function App() {
     };
     return (
         <div>
-
             <Router>
                 <Routes>
                     <Route path="/" element={<Home />} />
-
-                    <Route path="/about" element={About} />
-                    <Route path="/contact" element={Contact} />
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/corporate" element={<Corporate />} />
                     <Route path="/testing" element={<Testing />} />
@@ -76,14 +72,7 @@ function App() {
     );
 }
 
-// Other child components
-function About() {
-    return <h2>About Component</h2>;
-}
 
-function Contact() {
-    return <h2>Contact Component</h2>;
-}
 
 function NotFound() {
     return <h2>404 - Not Found</h2>;

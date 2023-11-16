@@ -31,7 +31,8 @@ const CorporateModal = ({ isOpen, onClose, corporateId }) => {
         console.log('Response from addCorporateUser:', response);
         onClose()
       } else {
-        showErrorMessage("Unable to add")
+        showErrorMessage(response.error || response.message || "Unable To Add")
+
       }
     } catch (error) {
       console.error('Error adding corporate user:', error);

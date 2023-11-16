@@ -6,13 +6,28 @@ export default {
     getCorporateData,
     addCorporateUser,
     getCorporateEmployees,
-    addCorporateEmployee
+    addCorporateEmployee,
+    getCorporateById
 };
 
 
 async function getCorporateData(requestData) {
     let url = process.env.REACT_APP_API_URI + `/api/corporate/get-corporate-data`
     return httpService(httpConstants.METHOD_TYPE.GET, getHeaders(),requestData, url)
+        .then(
+            response => {
+                if (!response)
+                    return Promise.reject(response);
+                return Promise.resolve(response);
+            }
+        ).catch(function (err) {
+            return Promise.reject(err);
+        });
+}
+
+async function getCorporateById(id) {
+    let url = process.env.REACT_APP_API_URI + `/api/corporate/get-corporate-by-id/${id}`
+    return httpService(httpConstants.METHOD_TYPE.GET, getHeaders(),{}, url)
         .then(
             response => {
                 if (!response)

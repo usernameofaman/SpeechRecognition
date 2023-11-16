@@ -19,6 +19,7 @@ import { decodeToken } from 'react-jwt'
 import Employees from './CorporateDashboard/ListTable'
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { CorporateService } from "../../services";
 
 
 const drawerWidth = 240;
@@ -31,12 +32,13 @@ export default function ResponsiveDrawer(props) {
 
   const [userData, setUserData] = useState('')
 
-  const verifyJWT = () => {
+  const verifyJWT = async () => {
     let token = localStorage.getItem('loginToken') || ""
     if (token) {
       let decodedToken = decodeToken(token)
-      setUserData(decodedToken)
-    }else {
+      let userData = await CorporateService.getCorporateById(decodedToken.email)
+      setUserData(userData)
+    } else {
       navigate('/')
     }
   }
@@ -50,7 +52,7 @@ export default function ResponsiveDrawer(props) {
 
   switch (activeTab) {
     case "EMPLOYEES":
-      component = <Employees userData={userData} />
+      component = <Employees userData={userData} reload={verifyJWT}/>
       break;
     case "CRUD":
       break;
@@ -98,7 +100,7 @@ export default function ResponsiveDrawer(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography style={{flex:1}} variant="h6" noWrap component="div">
+          <Typography style={{ flex: 1 }} variant="h6" noWrap component="div">
             Corporate Portal
           </Typography>
           <Button onClick={() => {
