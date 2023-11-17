@@ -230,7 +230,7 @@ const App = () => {
                     <div className="row">
                         <div className="col-md-7">
                             <div className="bnrheading">
-                                <h2>Welcome <b className="fw-bold text-warning">Name</b> to the amazing world of <b
+                                <h2>Welcome <b className="fw-bold text-warning">{userData?.name}</b> to the amazing world of <b
                                     className="fw-bold text-primary">Maya</b></h2>
                                 <h6 className="text-secondary lead fs-5">Maya is here to help you live a better life by help finding
                                     the trends and tendencies about You. We will try to map these to the mental health disorder

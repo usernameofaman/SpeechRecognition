@@ -29,6 +29,9 @@ const CorporateModal = ({ isOpen, onClose, corporateId }) => {
       if (response._id) {
         showSuccessMessage("Corporate User Added Successfully")
         console.log('Response from addCorporateUser:', response);
+        setName("")
+        setEmail("")
+        setPassword("")
         onClose()
       } else {
         showErrorMessage(response.error || response.message || "Unable To Add")

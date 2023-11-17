@@ -6,13 +6,17 @@ import SpeechRecognition, {
 import { QuestionsService } from "../../services";
 import { useTimer } from "react-timer-hook";
 import { showErrorMessage } from "../../managers/utility";
+import { decodeToken } from 'react-jwt'
+
 import {
   detectLanguage,
   translateToEnglish,
 } from "./GoogleTranslate/GoogleTranslate";
 import "../../App.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Session({ voice, useLLM, inputMode }) {
+  const navigate = useNavigate()
   const [questionWriter, setQuestionWriter] = useState(null);
   const [question, setQuestion] = useState("");
   // const [instructions, setInstructions] = useState("Try to be brief and factual. If you do not know exact age, does not matter, give appx number as the age. Example: I am 45 years old or Patient is about 34 years old.");
@@ -31,6 +35,8 @@ export default function Session({ voice, useLLM, inputMode }) {
     prevLot: currentLot,
   });
 
+  const [userData, setUserData] = useState({})
+
   //Timer Duration
   const [timerDuration, setTimerDuration] = useState(5);
   const [midDelay, setMidDelay] = useState(5);
@@ -44,10 +50,29 @@ export default function Session({ voice, useLLM, inputMode }) {
     restart,
     isRunning: isTimerRunning,
   } = MyTimer({ expiryTimestamp: Date.now() + 0 * 1000 });
+
+
   useEffect(() => {
     window.speechSynthesis.cancel()
-    getQuestions();
+    setTokenInState()
   }, []);
+
+  useEffect(() => {
+    if (userData.userId && question === "")
+      getQuestions();
+  }, [userData]);
+
+  const setTokenInState = async () => {
+    let token = localStorage.getItem('loginToken') || ""
+    if (token) {
+      let decodedToken = await decodeToken(token)
+      setUserData(decodedToken)
+    } else (
+      navigate('/')
+    )
+  }
+
+
   useEffect(() => {
     setProgressBar((prev) => {
       let newPercentage = (100 / 11) * (parseInt(currentLot) + 1);
@@ -136,7 +161,7 @@ export default function Session({ voice, useLLM, inputMode }) {
     if (!isTimerRunning && listenerState === "STARTED") {
       setListenerState("ENDED");
       SpeechRecognition.stopListening();
-      setTimeout(submitQuestion , 1000)
+      setTimeout(submitQuestion, 1000)
     }
   }, [isTimerRunning]);
 
@@ -173,10 +198,11 @@ export default function Session({ voice, useLLM, inputMode }) {
 
   const getQuestions = async () => {
     let sId = localStorage.getItem("sessionId");
-
     const data = await QuestionsService.getQuestions({
       sessionId: sId,
       refetch: true,
+      userId: userData.userId,
+      userType: userData.type
     });
     if (data.question) {
       setQuestion(data.question.text);
@@ -191,6 +217,8 @@ export default function Session({ voice, useLLM, inputMode }) {
       localStorage.setItem("sessionId", data.sessionId);
     }
   };
+
+
   const submitQuestion = async () => {
     setSubmitInProcess(true);
     resetTranscript();
@@ -203,22 +231,7 @@ export default function Session({ voice, useLLM, inputMode }) {
     if (!sId) {
     }
 
-    // const detectedLanguage = detectLanguage(patientAnswer); // Implement the detectLanguage function
     let translatedText
-    // if (detectedLanguage !== "en") {
-    //   // If the detected language is not English, translate to English
-    //   try {
-    //     translatedText = await translateToEnglish(patientAnswer);
-    //     if (translatedText) {
-    //     } else {
-    //       showErrorMessage("Translation to English failed");
-    //     }
-    //   } catch (error) {
-    //     console.error("Translation error: ", error);
-    //     showErrorMessage("Translation to English failed");
-    //   }
-    // }
-
     const reqData = {
       currentQuestionCode: apiData.question?.code,
       textResponse: translatedText ? translatedText : patientAnswer,
@@ -227,6 +240,7 @@ export default function Session({ voice, useLLM, inputMode }) {
       disorderCounts: disorderCounts,
       lot: currentLot,
       useLLM: useLLM,
+      userId: userData.userId
     };
     const data = await QuestionsService.getQuestions(reqData);
     if (data.question) {
