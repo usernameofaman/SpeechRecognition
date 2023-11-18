@@ -176,20 +176,8 @@ const App = () => {
                                     </Button>
                                 </li>
                             </ul>
-                            <ul className="navbar-nav ms-0 ms-sm-3">
-                                <li className="nav-item">
-                                    <FormGroup>
-                                        <FormControlLabel onChange={() => setInputMode(inputMode === "VOICE" ? "TYPE" : "VOICE")} control={<Switch checked={inputMode === "VOICE"} />} label={inputMode === "VOICE" ? "Speak" : "Type"} />
-                                    </FormGroup>
-                                </li>
-                            </ul>
-                            <ul className="navbar-nav ms-0 ms-sm-3">
-                                <li className="nav-item">
-                                    <div className="p-2"><i className="fa-solid fa-wallet"></i>
-                                        <span className="ms-1 priceing">$30.56</span>
-                                    </div>
-                                </li>
-                            </ul>
+                          
+                          
                             <Profile userData={userData} setViewLoginModal={setViewLoginModal} viewLoginModal={viewLoginModal}/>
                             {/* <form className="userprofile ms-0 ms-sm-3">
                                 <div className="dropdown">

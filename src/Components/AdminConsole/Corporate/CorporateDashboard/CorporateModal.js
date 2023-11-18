@@ -10,6 +10,9 @@ import {
 import { CorporateService } from '../../../../services';
 import { showErrorMessage, showSuccessMessage } from '../../../../managers/utility';
 import CloseIcon from '@mui/icons-material/Close';
+import InputAdornment from '@mui/material/InputAdornment';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const CorporateModal = ({ isOpen, onClose, onAdd }) => {
   const [name, setName] = useState('');
@@ -17,6 +20,7 @@ const CorporateModal = ({ isOpen, onClose, onAdd }) => {
   const [password, setPassword] = useState('');
   const [numberOfLicense, setNumberOfLicense] = useState('');
   const [sessionPerLicense, setSessionPerLicense] = useState('');
+  const [showPin, setShowPin] = useState(false);
 
   const handleAddCorporate = async () => {
     try {
@@ -38,6 +42,10 @@ const CorporateModal = ({ isOpen, onClose, onAdd }) => {
       console.error('Error adding corporate user:', error);
       showErrorMessage("User Not Added, An Error Occured !")
     }
+  };
+  
+  const handleToggleVisibility = () => {
+    setShowPin((prevShowPin) => !prevShowPin);
   };
 
 
@@ -77,18 +85,27 @@ const CorporateModal = ({ isOpen, onClose, onAdd }) => {
           label="Email"
           fullWidth
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value.toLowerCase())}
           margin="normal"
           name='email'
         />
         <TextField
-          label="Password"
-          type="password"
+          label="PIN"
+          type={showPin ? 'text' : 'password'}
           fullWidth
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           margin="normal"
           name='password'
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={handleToggleVisibility} edge="end">
+                  {showPin ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <TextField
           label="Number of Licenses"

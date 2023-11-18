@@ -5,6 +5,9 @@ import { showErrorMessage, showSuccessMessage } from '../../../managers/utility'
 import CloseIcon from '@mui/icons-material/Close';
 import { decodeToken } from 'react-jwt'
 import { useNavigate } from 'react-router-dom';
+import InputAdornment from '@mui/material/InputAdornment';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 
 const LoginForm = ({ open, onClose }) => {
@@ -15,6 +18,7 @@ const LoginForm = ({ open, onClose }) => {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [loginAs, setLoginAs] = useState("PASSWORD")
   const [name, setName] = useState('');
+  const [showPin, setShowPin] = useState(false);
 
   const handleLogin = async () => {
     try {
@@ -42,30 +46,34 @@ const LoginForm = ({ open, onClose }) => {
     }
   };
 
-
-  const handleRegister = async () => {
-    try {
-      const response = await AuthUserService.registerNewUser({
-        name: name,
-        email: email,
-        password: password,
-      });
-      showSuccessMessage("Registration Successful")
-      onClose();
-    } catch (error) {
-      console.error('Error registering user:', error);
-      showErrorMessage('Error registering user')
-    }
+  const handleToggleVisibility = () => {
+    setShowPin((prevShowPin) => !prevShowPin);
   };
 
 
-  const handleOpenRegisterModal = () => {
-    setIsRegisterModalOpen(true);
-  };
+  // const handleRegister = async () => {
+  //   try {
+  //     const response = await AuthUserService.registerNewUser({
+  //       name: name,
+  //       email: email,
+  //       password: password,
+  //     });
+  //     showSuccessMessage("Registration Successful")
+  //     onClose();
+  //   } catch (error) {
+  //     console.error('Error registering user:', error);
+  //     showErrorMessage('Error registering user')
+  //   }
+  // };
 
-  const handleCloseRegisterModal = () => {
-    setIsRegisterModalOpen(false);
-  };
+
+  // const handleOpenRegisterModal = () => {
+  //   setIsRegisterModalOpen(true);
+  // };
+
+  // const handleCloseRegisterModal = () => {
+  //   setIsRegisterModalOpen(false);
+  // };
 
   return (
     <div>
@@ -89,7 +97,7 @@ const LoginForm = ({ open, onClose }) => {
             fullWidth
             margin="normal"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value.toLowerCase())}
           />
           {loginAs === "PASSWORD" ?
             <TextField
@@ -104,11 +112,20 @@ const LoginForm = ({ open, onClose }) => {
             <TextField
               sx={{ mb: 3 }}
               label="Pin"
-              type="text"
+              type={showPin ? 'text' : 'password'}
               fullWidth
               margin="normal"
               value={pin}
               onChange={(e) => setPin(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleToggleVisibility} edge="end">
+                      {showPin ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />}
           <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginRight: '10px' }}>
             Login
@@ -116,57 +133,14 @@ const LoginForm = ({ open, onClose }) => {
           <Button variant="contained" color="primary" onClick={() => {
             loginAs === "PASSWORD" ? setLoginAs("PIN") : setLoginAs("PASSWORD")
           }} style={{ marginRight: '10px' }}>
-            Login with Pin
+             Login with {loginAs === 'PIN' ? 'Password' : 'Pin'}
           </Button>
-          <Button variant="contained" color="secondary" onClick={handleOpenRegisterModal}>
-            Register
-          </Button>
+         
         </div>
       </Modal>
 
-      {/* Registration Modal */}
-      <Modal BackdropProps={{
-        onClick: null
-      }} open={isRegisterModalOpen} onClose={handleCloseRegisterModal} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
-          <IconButton style={{ position: 'absolute', top: '10px', right: '10px' }} onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h5" gutterBottom>
-            Register
-          </Typography>
-          <IconButton style={{ position: 'absolute', top: '10px', right: '10px' }} onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
-          <TextField
-            label="Name"
-            type="name"
-            fullWidth
-            margin="normal"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <TextField
-            label="Email"
-            type="email"
-            fullWidth
-            margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button variant="contained" color="secondary" onClick={handleRegister}>
-            Register
-          </Button>
-        </div>
-      </Modal>
+      {/* Registration Modal Will added here if needed!*/}
+     
     </div>
   );
 };

@@ -73,16 +73,7 @@ const App = () => {
                                         <li>
                                             <hr className="dropdown-divider" />
                                         </li>
-                                        <li className="nav-item">
-                                            <a className="nav-link" href="#">
-                                                <div className=" d-flex justify-content-between align-items-center">
-                                                    <span>My Wallet </span>
-                                                    <div><i className="fa-solid fa-wallet"></i>
-                                                        <span className="ms-1 priceing">$30.56</span>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
+                                       
                                         <li>
                                             <hr className="dropdown-divider" />
                                         </li>
