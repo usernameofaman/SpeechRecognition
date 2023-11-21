@@ -4,11 +4,26 @@ import { CorporateService } from "../../../../services";
 import CorporateModal from "./CorporateModal";
 
 const DataTable = ({ data, openAddModal }) => {
-  const excludedColumns = ["_id", "__v"];
-  const columns = Object.keys(data[0] || {}).filter(
-    (column) => !excludedColumns.includes(column)
-  );
+  
+  const [showInput, setShowInput] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 
+  const handleButtonClick = () => {
+    setShowInput(true);
+  };
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleInputSubmit = () => {
+    // Handle the submitted value, e.g., update the license
+    console.log('Submitted value:', inputValue);
+
+    // Reset the state
+    setShowInput(false);
+    setInputValue('');
+  };
   return (
     <div>
       <button
@@ -27,18 +42,51 @@ const DataTable = ({ data, openAddModal }) => {
       <table border="1" style={{ width: "100%" }}>
         <thead>
           <tr>
-            {columns.map((column) => (
-              <th key={column}>{CamelCaseToString(column)}</th>
-            ))}
+            <th>Name</th>
+            <th>Email</th>
+            <th>Number Of License</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {data.map((row) => (
             <tr key={row._id}>
-              {columns.map((column) => (
-                <td key={column}>{row[column]}</td>
-              ))}
-              <td></td>
+              <td>{row.name}</td>
+              <td>{row.email}</td>
+              <td>{row.numberOfLicense}</td>
+
+              <td>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+      <button
+        style={{
+          padding: '8px',
+          backgroundColor: '#3f51b5',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          marginRight: '8px',
+        }}
+        onClick={handleButtonClick}
+      >
+        Increase License
+      </button>
+
+      {showInput && (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <input
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            placeholder="Enter value"
+            style={{ marginRight: '8px' }}
+          />
+          <button onClick={handleInputSubmit}>Submit</button>
+        </div>
+      )}
+    </div>
+
+              </td>
             </tr>
           ))}
         </tbody>
@@ -70,7 +118,7 @@ const App = () => {
   };
 
   const closeAddModal = () => {
-    getCorporateData()
+    getCorporateData();
     setIsModalOpen(false);
   };
 

@@ -35,6 +35,7 @@ const App = () => {
         }
     }
 
+    console.log(userData, "UserData")
     useEffect(() => {
         getCurrentSetting()
         verifyJWT()
@@ -231,7 +232,10 @@ const App = () => {
                                 <button onClick={() => checkLoginBeforeSession()} className="btn btn-outline-primary text-uppercase mt-4 py-3 px-4 shadow-sm" type="button"
                                     id="switchButton">
                                     <span className="d-none d-sm-inline-block">Start Session</span>
+                                    
                                     <i className="fas fa-arrow-right ms-2"></i>
+                                    <br />
+    <span style={{ fontSize: '13px' }} className="additional-text">Remaining Sessions : {userData?.remainingSession}</span>
                                 </button>
                             </div>
                         </div>
