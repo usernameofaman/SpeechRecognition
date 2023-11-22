@@ -16,7 +16,7 @@ const LoginForm = ({ open, onClose }) => {
   const [password, setPassword] = useState('');
   const [pin, setPin] = useState('');
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-  const [loginAs, setLoginAs] = useState("PASSWORD")
+  const [loginAs, setLoginAs] = useState("PIN")
   const [name, setName] = useState('');
   const [showPin, setShowPin] = useState(false);
 
@@ -111,7 +111,7 @@ const LoginForm = ({ open, onClose }) => {
             /> :
             <TextField
               sx={{ mb: 3 }}
-              label="Pin"
+              label="Password"
               type={showPin ? 'text' : 'password'}
               fullWidth
               margin="normal"
@@ -130,11 +130,13 @@ const LoginForm = ({ open, onClose }) => {
           <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginRight: '10px' }}>
             Login
           </Button>
-          <Button variant="contained" color="primary" onClick={() => {
+          {/* <Button variant="contained" color="primary" onClick={() => {
             loginAs === "PASSWORD" ? setLoginAs("PIN") : setLoginAs("PASSWORD")
           }} style={{ marginRight: '10px' }}>
              Login with {loginAs === 'PIN' ? 'Password' : 'Pin'}
-          </Button>
+          </Button> */}
+
+          {/* // Not Needed Anymore */}
          
         </div>
       </Modal>

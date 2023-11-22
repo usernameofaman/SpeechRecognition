@@ -30,7 +30,7 @@ const App = () => {
         if (token) {
             let decodedToken = decodeToken(token)
             setUserData(decodedToken)
-            if(decodedToken.type && decodedToken.type === "CORPORATE" )
+            if (decodedToken.type && decodedToken.type === "CORPORATE")
                 navigate('/corporate')
         }
     }
@@ -177,9 +177,9 @@ const App = () => {
                                     </Button>
                                 </li>
                             </ul>
-                          
-                          
-                            <Profile userData={userData} setViewLoginModal={setViewLoginModal} viewLoginModal={viewLoginModal}/>
+
+
+                            <Profile userData={userData} setViewLoginModal={setViewLoginModal} viewLoginModal={viewLoginModal} />
                             {/* <form className="userprofile ms-0 ms-sm-3">
                                 <div className="dropdown">
                                     <button className="btn btn-warning dropdown-toggle d-flex align-items-center" type="button"
@@ -232,10 +232,10 @@ const App = () => {
                                 <button onClick={() => checkLoginBeforeSession()} className="btn btn-outline-primary text-uppercase mt-4 py-3 px-4 shadow-sm" type="button"
                                     id="switchButton">
                                     <span className="d-none d-sm-inline-block">Start Session</span>
-                                    
+
                                     <i className="fas fa-arrow-right ms-2"></i>
                                     <br />
-    <span style={{ fontSize: '13px' }} className="additional-text">Remaining Sessions : {userData?.remainingSession}</span>
+                                    {userData?.remainingSession ? <span style={{ fontSize: '13px' }} className="additional-text">Remaining Sessions : {userData?.remainingSession}</span> : ""}
                                 </button>
                             </div>
                         </div>
