@@ -211,6 +211,7 @@ export default function Session({ voice, useLLM, inputMode }) {
             if (data.message)
                 showErrorMessage(data.message)
             if (data.message === "All Lots are completed") {
+                setLogs(data.log)
                 localStorage.removeItem('sessionId')
             }
         }
