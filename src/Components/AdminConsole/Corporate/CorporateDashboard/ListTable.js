@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { CamelCaseToString } from "../../../../managers/utility";
+import { CamelCaseToString, showSuccessMessage } from "../../../../managers/utility";
 import { CorporateService } from "../../../../services";
 import CorporateModal from "./CorporateModal";
 
-const DataTable = ({ data, openAddModal }) => {
-  
+const DataTable = ({ data, openAddModal, getCorporateData }) => {
+
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [editableLicense, setEditableLicense] = useState('');
 
-  const handleButtonClick = () => {
-    setShowInput(true);
-  };
+
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
@@ -24,6 +23,28 @@ const DataTable = ({ data, openAddModal }) => {
     setShowInput(false);
     setInputValue('');
   };
+
+  const handleCheckClick = async () => {
+    if (isNaN(inputValue)) {
+      console.log("Number should be numeric")
+      return
+    }
+    const saved = await CorporateService.addCorporateLicense({ corporateId: editableLicense, numberOfLicense: parseInt(inputValue) })
+    if (saved && saved._id) {
+      showSuccessMessage("Updates successfully")
+      getCorporateData()
+      setShowInput(false);
+    }
+  };
+
+  const handleButtonClick = (buttonId) => {
+    setEditableLicense(buttonId);
+    setShowInput(true);
+
+  };
+
+
+
   return (
     <div>
       <button
@@ -56,35 +77,58 @@ const DataTable = ({ data, openAddModal }) => {
               <td>{row.numberOfLicense}</td>
 
               <td>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-      <button
-        style={{
-          padding: '8px',
-          backgroundColor: '#3f51b5',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          marginRight: '8px',
-        }}
-        onClick={handleButtonClick}
-      >
-        Increase License
-      </button>
 
-      {showInput && (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <input
-            type="text"
-            value={inputValue}
-            onChange={handleInputChange}
-            placeholder="Enter value"
-            style={{ marginRight: '8px' }}
-          />
-          <button onClick={handleInputSubmit}>Submit</button>
-        </div>
-      )}
-    </div>
+
+                <div>
+                  {showInput && editableLicense === row._id ? (
+                    <div style={{ display: 'flex' }}>
+                      <input
+                        onChange={(e) => {
+                          const inputValue = e.target.value;
+                          const numericValue = inputValue.replace(/[^0-9]/g, '');
+                          setInputValue(numericValue);
+                        }}
+                        type="text"
+                        style={{
+                          width: "101px",
+                          padding: '8px',
+                          borderRadius: '4px',
+                          marginRight: '8px',
+                        }}
+                      />
+                      <button
+                        style={{
+                          padding: '8px',
+                          backgroundColor: '#4caf50',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                        }}
+                        onClick={handleCheckClick}
+                      >
+                        &#10003;
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      id={row._id}
+                      style={{
+                        padding: '8px',
+                        backgroundColor: '#3f51b5',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => handleButtonClick(row._id)
+                      }
+                    >
+                      Increase License
+                    </button>
+                  )}
+                </div>
+
 
               </td>
             </tr>
@@ -107,7 +151,9 @@ const App = () => {
     try {
       const response = await CorporateService.getCorporateData();
       console.log("Corporate Data:", response);
-      setApiData(response);
+      if (response && response.length) {
+        setApiData(response);
+      }
     } catch (error) {
       console.error("Error fetching corporate data:", error);
     }
@@ -125,7 +171,7 @@ const App = () => {
   return (
     <div>
       <h1>Data Table</h1>
-      <DataTable data={apiData} openAddModal={openAddModal} />
+      <DataTable data={apiData} openAddModal={openAddModal}  getCorporateData={getCorporateData}/>
       <CorporateModal isOpen={isModalOpen} onClose={closeAddModal} />
     </div>
   );
