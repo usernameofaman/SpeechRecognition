@@ -5,6 +5,9 @@ import { QuestionsService } from '../../services';
 import { useTimer } from 'react-timer-hook';
 import { showErrorMessage } from '../../managers/utility'
 import "../../App.css"
+import { decodeToken } from 'react-jwt'
+import { useNavigate } from "react-router-dom";
+
 
 
 console.log("REACT_APP_ALLOW_READING", process.env.REACT_APP_ALLOW_READING)
@@ -23,6 +26,8 @@ const dummyAnswers = {
 }
 
 export default function Session({ voice, useLLM, inputMode }) {
+    const navigate = useNavigate()
+
     const [questionWriter, setQuestionWriter] = useState(null);
     const [question, setQuestion] = useState("");
     // const [instructions, setInstructions] = useState("Try to be brief and factual. If you do not know exact age, does not matter, give appx number as the age. Example: I am 45 years old or Patient is about 34 years old.");
@@ -44,6 +49,9 @@ export default function Session({ voice, useLLM, inputMode }) {
         prevLot: currentLot
     })
 
+    const [userData, setUserData] = useState({})
+    const [report, setReport] = useState("")
+
     //Timer Duration
     const [timerDuration, setTimerDuration] = useState(5);
     const [midDelay, setMidDelay] = useState(5)
@@ -52,8 +60,9 @@ export default function Session({ voice, useLLM, inputMode }) {
 
     const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (0 * 1000) });
     useEffect(() => {
-        getQuestions();
-    }, [])
+        if (userData.userId && question === "")
+            getQuestions();
+    }, [userData])
     useEffect(() => {
         setProgressBar((prev) => {
             console.log("PERRR", prev.percentage)
@@ -125,6 +134,25 @@ export default function Session({ voice, useLLM, inputMode }) {
     };
 
 
+
+    useEffect(() => {
+        window.speechSynthesis.cancel()
+        setTokenInState()
+    }, []);
+
+
+    const setTokenInState = async () => {
+        let token = localStorage.getItem('loginToken') || ""
+        if (token) {
+            let decodedToken = await decodeToken(token)
+            setUserData(decodedToken)
+        } else (
+            navigate('/')
+        )
+    }
+
+
+
     useEffect(() => {
         if (!isTimerRunning && listenerState === "STARTED") {
             setListenerState("ENDED")
@@ -142,7 +170,6 @@ export default function Session({ voice, useLLM, inputMode }) {
     }
 
     const { transcript, browserSupportsSpeechRecognition, listening, resetTranscript } = useSpeechRecognition();
-    console.log("Here is transcript", transcript)
 
     useEffect(() => {
         setPatientAnswer(transcript)
@@ -150,8 +177,12 @@ export default function Session({ voice, useLLM, inputMode }) {
 
     const getQuestions = async () => {
         let sId = localStorage.getItem('sessionId');
-
-        const data = await QuestionsService.getQuestions({ sessionId: sId, refetch: true });
+        console.log("S==========", userData)
+        const data = await QuestionsService.getQuestions({
+            sessionId: sId,
+            refetch: true,
+            userId: userData.userId
+        });
         if (data.question) {
             setQuestion(data.question.text);
             setInstructions(data.question.instructions);
@@ -183,6 +214,7 @@ export default function Session({ voice, useLLM, inputMode }) {
             currentQuestionCode: apiData.question?.code,
             textResponse: patientAnswer,
             sessionId: sId,
+            userId: userData.userId,
             answers: answers,
             disorderCounts: disorderCounts,
             lot: currentLot,
@@ -206,6 +238,7 @@ export default function Session({ voice, useLLM, inputMode }) {
         else {
             if (data.final) {
                 setFinal(data.final)
+                setReport(data.report)
                 setSubmitInProcess(false)
             }
             if (data.message)
@@ -389,6 +422,9 @@ export default function Session({ voice, useLLM, inputMode }) {
                     padding: "30px",
                     lineHeight: "40px"
                 }}>
+                    <div>
+                        {report}
+                    </div>
                     {logs}
                 </div>
             </div>

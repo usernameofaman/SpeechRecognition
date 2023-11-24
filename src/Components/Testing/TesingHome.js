@@ -7,13 +7,43 @@ import Session from './TestingSession';
 import React, { useEffect } from 'react';
 import { SettingsService } from '../../services';
 import { FormControlLabel, FormGroup, Switch, Button } from '@mui/material';
+import { showErrorMessage } from '../../managers/utility';
+import LoginForm from './Models/AuthModal';
+import Profile from './Models/ProfilePopper'
+import { decodeToken } from 'react-jwt'
+import { useNavigate } from 'react-router-dom';
+
+
 
 const App = () => {
+    const navigate = useNavigate();
 
     const [sessionStarted, setSessionStarted] = React.useState(false)
+    const [userData, setUserData] = React.useState({})
 
     const [useLLM, setUseLLM] = React.useState(false)
     const [inputMode, setInputMode] = React.useState("VOICE")
+
+
+    const verifyJWT = () => {
+        let token = localStorage.getItem('loginToken') || ""
+        if (token) {
+            let decodedToken = decodeToken(token)
+            setUserData(decodedToken)
+            if (decodedToken.type && decodedToken.type === "CORPORATE")
+                navigate('/corporate')
+        }
+    }
+
+    const [viewLoginModal, setViewLoginModal] = useState(false)
+
+
+    useEffect(() => {
+        getCurrentSetting()
+        verifyJWT()
+
+    }, []);
+
 
     useEffect(() => {
         getCurrentSetting()
@@ -147,26 +177,8 @@ const App = () => {
                                     </div>
                                 </li>
                             </ul>
-                            <form className="userprofile ms-0 ms-sm-3">
-                                <div className="dropdown">
-                                    <button className="btn btn-warning dropdown-toggle d-flex align-items-center" type="button"
-                                        id="userprofilemenu" data-bs-toggle="dropdown" aria-expanded="true">
-                                        <img className="img-fluid rounded-circle"
-                                            src="https://cdn4.sharechat.com/img_378239_1efadecf_1664979374920_sc.jpg?tenant=sc&amp;referrer=pwa-sharechat-service&amp;f=920_sc.jpg"
-                                            alt="user img" /><span className="d-none d-md-flex">Username</span>
-                                    </button>
-                                    <ul className="dropdown-menu dropdown-menu-end dropdown-menu-md-start"
-                                        aria-labelledby="userprofilemenu">
-                                        <li><a className="dropdown-item" href="#">My Profile</a></li>
-                                        <li><a className="dropdown-item" href="#">Settings</a></li>
-                                        <li><a className="dropdown-item" href="#">Another action</a></li>
-                                        <li>
-                                            <hr className="dropdown-divider" />
-                                        </li>
-                                        <li><a className="dropdown-item" href="#">Logout</a></li>
-                                    </ul>
-                                </div>
-                            </form>
+                            <Profile userData={userData} setViewLoginModal={setViewLoginModal} viewLoginModal={viewLoginModal} />
+                           
                         </div>
                     </div>
                 </nav>
