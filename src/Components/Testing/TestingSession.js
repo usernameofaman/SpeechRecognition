@@ -419,16 +419,20 @@ export default function Session({ voice, useLLM, inputMode }) {
                 </div>
                 <div style={{
                     whiteSpace: 'pre-line',
-                    padding: "30px",
-                    lineHeight: "40px"
+                    lineHeight: "40px",
+                    display:"flex",
+                    flexWrap:'wrap',
+                    justifyContent:"center",
                 }}>
-                    <div style={{
+                   { report === '' ? '' : <div  style={{
                      boxShadow: '10px 10px 10px 10px lightgray',
-                     padding: "30px",
-                     color:"green"
+                     padding: "50px",
+                     color:"black",
+                     width:"50%",
+                     
                 }}>
                         {report}
-                    </div>
+                    </div>}
                     {logs}
                 </div>
             </div>
