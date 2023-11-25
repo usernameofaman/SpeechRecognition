@@ -422,7 +422,11 @@ export default function Session({ voice, useLLM, inputMode }) {
                     padding: "30px",
                     lineHeight: "40px"
                 }}>
-                    <div>
+                    <div style={{
+                     boxShadow: '10px 10px 10px 10px lightgray',
+                     padding: "30px",
+                     color:"green"
+                }}>
                         {report}
                     </div>
                     {logs}
