@@ -154,7 +154,7 @@ export default function Session({ voice, useLLM, inputMode }) {
         const data = await QuestionsService.getQuestions({ sessionId: sId, refetch: true });
         if (data.question) {
             setQuestion(data.question.text);
-            setInstructions(data.question.instructions);
+            setInstructions("done");
             readInstructions(data.question)
             setAPIData(data)
             setLogs(data.log)
@@ -192,7 +192,7 @@ export default function Session({ voice, useLLM, inputMode }) {
         if (data.question) {
             setPatientAnswer("")
             setQuestion(data.question.text);
-            setInstructions(data.question.instructions);
+            setInstructions("Done");
             setAPIData(data)
             setAnswers(data.answers)
             setDisorderCounts(data.disorderCounts)
@@ -201,7 +201,8 @@ export default function Session({ voice, useLLM, inputMode }) {
             readInstructions(data.question)
             setLogs(data.log)
             setLotCount(data.lotCount || 11)
-            setTimeout(submitQuestion , 2000)
+            submitQuestion()
+            // setTimeout(submitQuestion , 2000)
         }
         else {
             if (data.final) {
