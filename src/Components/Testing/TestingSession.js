@@ -201,7 +201,7 @@ export default function Session({ voice, useLLM, inputMode }) {
             readInstructions(data.question)
             setLogs(data.log)
             setLotCount(data.lotCount || 11)
-            submitQuestion()
+            setTimeout(submitQuestion , 2000)
         }
         else {
             if (data.final) {
