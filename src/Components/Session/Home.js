@@ -36,9 +36,13 @@ const App = () => {
     const getUserDetails = async () => {
         let userData = localStorage.getItem('userDetails')
         if (userData) userData = JSON.parse(userData)
-        const userDetails = await CorporateService.getCorporateEmployeeDetails(userData._id);
-        setUserData(userDetails)
-        localStorage.setItem('userDetails', JSON.stringify(userDetails))
+        console.log("sdfsdfsdf",userData)
+        if (userData && userData._id) {
+            const userDetails = await CorporateService.getCorporateEmployeeDetails(userData?._id);
+            setUserData(userDetails)
+            localStorage.setItem('userDetails', JSON.stringify(userDetails))
+        }
+
     }
 
     useEffect(() => {
