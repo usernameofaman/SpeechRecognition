@@ -90,7 +90,7 @@ const CorporateModal = ({ isOpen, onClose, onAdd }) => {
           name='email'
         />
         <TextField
-          label="PIN"
+          label="Password"
           type={showPin ? 'text' : 'password'}
           fullWidth
           value={password}

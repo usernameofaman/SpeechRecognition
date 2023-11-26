@@ -8,7 +8,8 @@ export default {
     getCorporateEmployees,
     addCorporateEmployee,
     getCorporateById,
-    addCorporateLicense
+    addCorporateLicense,
+    getCorporateEmployeeDetails
 };
 
 
@@ -85,6 +86,21 @@ async function addCorporateLicense(requestData) {
 async function addCorporateEmployee(requestData) {
     let url = process.env.REACT_APP_API_URI + `/api/corporate/add-corporate-employee`
     return httpService(httpConstants.METHOD_TYPE.POST, getHeaders(),requestData, url)
+        .then(
+            response => {
+                if (!response)
+                    return Promise.reject(response);
+                return Promise.resolve(response);
+            }
+        ).catch(function (err) {
+            return Promise.reject(err);
+        });
+}
+
+
+async function getCorporateEmployeeDetails(userId) {
+    let url = process.env.REACT_APP_API_URI + `/api/user/getUserDetails?userId=${userId}`
+    return httpService(httpConstants.METHOD_TYPE.GET, getHeaders(),{}, url)
         .then(
             response => {
                 if (!response)

@@ -14,23 +14,21 @@ const LoginForm = ({ open, onClose }) => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [pin, setPin] = useState('');
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-  const [loginAs, setLoginAs] = useState("PIN")
-  const [name, setName] = useState('');
+  const [loginAs, setLoginAs] = useState('Corporate');
   const [showPin, setShowPin] = useState(false);
 
   const handleLogin = async () => {
     try {
       const response = await AuthUserService.loginUser({
         email: email,
-        password: loginAs === "PIN" ? pin : password,
-        loginAs
+        password: password,
+        loginAs: loginAs.toUpperCase()
       });
       if (response.token) {
         showSuccessMessage("Login Success")
         localStorage.setItem('loginToken', response.token)
         let decodedToken = decodeToken(response.token)
+        localStorage.setItem('userDetails', JSON.stringify(decodedToken))
         if (decodedToken.type === "CORPORATE") {
           navigate("/corporate")
         } else {
@@ -85,7 +83,7 @@ const LoginForm = ({ open, onClose }) => {
             <Button onClick={() => onClose()}>X</Button>
           </div>
           <Typography variant="h5" gutterBottom>
-            Login
+            Login as {loginAs}
             <IconButton style={{ position: 'absolute', top: '10px', right: '10px' }} onClick={onClose}>
               <CloseIcon />
             </IconButton>
@@ -106,8 +104,8 @@ const LoginForm = ({ open, onClose }) => {
             type={showPin ? 'text' : 'password'}
             fullWidth
             margin="normal"
-            value={pin}
-            onChange={(e) => setPin(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -118,17 +116,16 @@ const LoginForm = ({ open, onClose }) => {
               ),
             }}
           />
-          <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginRight: '10px' }}>
-            Login
-          </Button>
-          {/* <Button variant="contained" color="primary" onClick={() => {
-            loginAs === "PASSWORD" ? setLoginAs("PIN") : setLoginAs("PASSWORD")
-          }} style={{ marginRight: '10px' }}>
-             Login with {loginAs === 'PIN' ? 'Password' : 'Pin'}
-          </Button> */}
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between"
+          }}>
+            <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginRight: '10px' }}>
+              Login
+            </Button>
 
-          {/* // Not Needed Anymore */}
-
+            <span onClick={() => setLoginAs(loginAs === "Corporate" ? "Employee" : "Corporate")} style={{ backgroundColor: "#d7d7d7", borderRadius: "5px", padding: "0 10px", cursor: "pointer" }}>Login as {loginAs === "Corporate" ? "Employee" : "Corporate"}</span>
+          </div>
         </div>
       </Modal>
 

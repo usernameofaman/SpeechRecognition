@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../custom.css'
 import Session from './Session';
 import React, { useEffect } from 'react';
-import { SettingsService } from '../../services';
+import { CorporateService, SettingsService } from '../../services';
 import { FormControlLabel, FormGroup, Switch, Button } from '@mui/material';
 import { showErrorMessage } from '../../managers/utility';
 import LoginForm from './Models/AuthModal';
@@ -25,22 +25,27 @@ const App = () => {
     const [userData, setUserData] = React.useState({})
 
 
-    const verifyJWT = () => {
-        let token = localStorage.getItem('loginToken') || ""
-        if (token) {
-            let decodedToken = decodeToken(token)
-            setUserData(decodedToken)
-            if (decodedToken.type && decodedToken.type === "CORPORATE")
+    const verifyJWT = async () => {
+        let details = localStorage.getItem('userDetails') || ""
+        if (details) {
+            if (details.type && details.type === "CORPORATE")
                 navigate('/corporate')
         }
     }
 
-    console.log(userData, "UserData")
+    const getUserDetails = async () => {
+        let userData = localStorage.getItem('userDetails')
+        if (userData) userData = JSON.parse(userData)
+        const userDetails = await CorporateService.getCorporateEmployeeDetails(userData._id);
+        setUserData(userDetails)
+        localStorage.setItem('userDetails', JSON.stringify(userDetails))
+    }
+
     useEffect(() => {
+        getUserDetails()
         getCurrentSetting()
         verifyJWT()
     }, []);
-
 
     const getCurrentSetting = async () => {
         const setting = await SettingsService.getSettings()
@@ -60,8 +65,10 @@ const App = () => {
 
     const checkLoginBeforeSession = () => {
         let token = localStorage.getItem('loginToken')
-        if (token)
+        if (token) {
+            getUserDetails()
             setSessionStarted(true)
+        }
         else {
             setViewLoginModal(true)
             showErrorMessage("Please Log in first")
@@ -234,7 +241,7 @@ const App = () => {
 
                                     <i className="fas fa-arrow-right ms-2"></i>
                                     <br />
-                                    {userData?.remainingSession ? <span style={{ fontSize: '13px' }} className="additional-text">Remaining Sessions : {userData?.remainingSession}</span> : ""}
+                                    {userData?.remainingSession >= 0 ? <span style={{ fontSize: '13px' }} className="additional-text">Remaining Sessions : {userData?.remainingSession}</span> : ""}
                                 </button>
                             </div>
                         </div>

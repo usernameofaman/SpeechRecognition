@@ -19,7 +19,7 @@ import CRUDOperations from './Crud/CrudIndex'
 import Corporate from './Corporate/Main'
 
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 export default function ResponsiveDrawer(props) {
 
@@ -50,9 +50,7 @@ export default function ResponsiveDrawer(props) {
             variant={activeTab === "CRUD" ? "contained" : "outlined"}
             onClick={() => setActiveTab("CRUD")}
           >
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
+              <InboxIcon sx={{marginRight:1}}/>
             <ListItemText primary="Crud Operations" />
           </ListItemButton>
         </ListItem>
@@ -61,9 +59,7 @@ export default function ResponsiveDrawer(props) {
             variant={activeTab === "CORPORATE" ? "contained" : "outlined"}
             onClick={() => setActiveTab("CORPORATE")}
           >
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
+              <InboxIcon sx={{marginRight:1}}/>
             <ListItemText primary="Corporate" />
           </ListItemButton>
         </ListItem>

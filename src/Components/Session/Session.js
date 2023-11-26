@@ -3,7 +3,7 @@ import Typewriter from "typewriter-effect";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { QuestionsService } from "../../services";
+import { CorporateService, QuestionsService } from "../../services";
 import { useTimer } from "react-timer-hook";
 import { showErrorMessage } from "../../managers/utility";
 import { decodeToken } from 'react-jwt'
@@ -54,24 +54,21 @@ export default function Session({ voice, useLLM, inputMode }) {
 
   useEffect(() => {
     window.speechSynthesis.cancel()
-    setTokenInState()
+    getUserDetails()
   }, []);
 
   useEffect(() => {
-    if (userData.userId && question === "")
+    if (userData._id && question === "")
       getQuestions();
   }, [userData]);
 
-  const setTokenInState = async () => {
-    let token = localStorage.getItem('loginToken') || ""
-    if (token) {
-      let decodedToken = await decodeToken(token)
-      setUserData(decodedToken)
-    } else (
-      navigate('/')
-    )
+  const getUserDetails = async () => {
+    let userData = localStorage.getItem('userDetails')
+    if (userData) userData = JSON.parse(userData)
+    const userDetails = await CorporateService.getCorporateEmployeeDetails(userData._id);
+    setUserData(userDetails)
+    localStorage.setItem('userDetails', JSON.stringify(userDetails))
   }
-
 
   useEffect(() => {
     setProgressBar((prev) => {
@@ -201,7 +198,7 @@ export default function Session({ voice, useLLM, inputMode }) {
     const data = await QuestionsService.getQuestions({
       sessionId: sId,
       refetch: true,
-      userId: userData.userId,
+      userId: userData._id,
       userType: userData.type
     });
     if (data.question) {
@@ -240,8 +237,9 @@ export default function Session({ voice, useLLM, inputMode }) {
       disorderCounts: disorderCounts,
       lot: currentLot,
       useLLM: useLLM,
-      userId: userData.userId
+      userId: userData._id
     };
+
     const data = await QuestionsService.getQuestions(reqData);
     if (data.question) {
       setPatientAnswer("");

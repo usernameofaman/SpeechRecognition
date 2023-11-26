@@ -15,8 +15,6 @@ const CorporateModal = ({ isOpen, onClose, corporateId }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [numberOfLicense, setNumberOfLicense] = useState('');
-  const [sessionPerLicense, setSessionPerLicense] = useState('');
 
   const handleAddCorporateEmployee = async () => {
     try {
@@ -80,7 +78,7 @@ const CorporateModal = ({ isOpen, onClose, corporateId }) => {
           label="Email"
           fullWidth
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value.toLowerCase())}
           margin="normal"
           name='email'
         />

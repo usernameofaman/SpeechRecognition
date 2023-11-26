@@ -60,7 +60,13 @@ const DataTable = ({ data, openAddModal, getCorporateData }) => {
       >
         Add
       </button>
-      <table border="1" style={{ width: "100%" }}>
+      <table style={{
+        width: "100%",
+        marginTop: "10px",
+        padding: "2px",
+        border: "1px solid black",
+        borderRadius: "5px"
+      }}>
         <thead>
           <tr>
             <th>Name</th>
@@ -171,7 +177,7 @@ const App = () => {
   return (
     <div>
       <h1>Data Table</h1>
-      <DataTable data={apiData} openAddModal={openAddModal}  getCorporateData={getCorporateData}/>
+      <DataTable data={apiData} openAddModal={openAddModal} getCorporateData={getCorporateData} />
       <CorporateModal isOpen={isModalOpen} onClose={closeAddModal} />
     </div>
   );
