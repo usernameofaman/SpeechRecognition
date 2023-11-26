@@ -185,7 +185,7 @@ export default function Session({ voice, useLLM, inputMode }) {
         });
         if (data.question) {
             setQuestion(data.question.text);
-            setInstructions(data.question.instructions);
+            setInstructions("done");
             readInstructions(data.question)
             setAPIData(data)
             setLogs(data.log)
@@ -224,7 +224,7 @@ export default function Session({ voice, useLLM, inputMode }) {
         if (data.question) {
             setPatientAnswer("")
             setQuestion(data.question.text);
-            setInstructions(data.question.instructions);
+            setInstructions("Done");
             setAPIData(data)
             setAnswers(data.answers)
             setDisorderCounts(data.disorderCounts)
@@ -234,6 +234,7 @@ export default function Session({ voice, useLLM, inputMode }) {
             setLogs(data.log)
             setLotCount(data.lotCount || 11)
             submitQuestion()
+            // setTimeout(submitQuestion , 2000)
         }
         else {
             if (data.final) {
@@ -244,6 +245,7 @@ export default function Session({ voice, useLLM, inputMode }) {
             if (data.message)
                 showErrorMessage(data.message)
             if (data.message === "All Lots are completed") {
+                setLogs(data.log)
                 localStorage.removeItem('sessionId')
             }
         }
