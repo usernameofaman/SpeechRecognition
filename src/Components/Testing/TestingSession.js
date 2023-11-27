@@ -60,7 +60,7 @@ export default function Session({ voice, useLLM, inputMode }) {
 
     const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (0 * 1000) });
     useEffect(() => {
-        if (userData.userId && question === "")
+        if (userData._id && question === "")
             getQuestions();
     }, [userData])
     useEffect(() => {
@@ -181,7 +181,7 @@ export default function Session({ voice, useLLM, inputMode }) {
         const data = await QuestionsService.getQuestions({
             sessionId: sId,
             refetch: true,
-            userId: userData.userId
+            userId: userData._id
         });
         if (data.question) {
             setQuestion(data.question.text);
