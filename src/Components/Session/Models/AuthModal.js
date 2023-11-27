@@ -101,6 +101,7 @@ const LoginForm = ({ open, onClose }) => {
           <TextField
             sx={{ mb: 3 }}
             label="Password"
+            type="password"
             type={showPin ? 'text' : 'password'}
             fullWidth
             margin="normal"
@@ -121,7 +122,7 @@ const LoginForm = ({ open, onClose }) => {
             justifyContent: "space-between"
           }}>
             <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginRight: '10px' }}>
-              Login
+              Submit
             </Button>
 
             <span onClick={() => setLoginAs(loginAs === "Corporate" ? "Employee" : "Corporate")} style={{ backgroundColor: "#d7d7d7", borderRadius: "5px", padding: "0 10px", cursor: "pointer" }}>Login as {loginAs === "Corporate" ? "Employee" : "Corporate"}</span>
