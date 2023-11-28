@@ -435,7 +435,7 @@ export default function Session({ voice, useLLM, inputMode }) {
                     }}>
                         {report}
                     </div>}
-                    <div name="logs">
+                    <div name="logs" style={{paddingLeft:"40px"}}>
                         {logs}
                     </div>
                 </div>
