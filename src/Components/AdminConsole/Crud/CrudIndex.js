@@ -108,6 +108,7 @@ export default function CrudIndex() {
                 <BottomNavigationAction value="Disorder" label="Disorders" icon={<HealingIcon />} />
                 <BottomNavigationAction value="Questions" label="Questions" icon={<QuestionMarkIcon />} />
                 <BottomNavigationAction value="LOTS" label="LOTS" icon={<ListAltIcon />} />
+                <BottomNavigationAction value="SetQuestions" label="Set Questions" icon={<ListAltIcon />} />
                 <BottomNavigationAction value="FreeUsers" label="Free User" icon={<MoneyOffIcon />} />
                 <BottomNavigationAction value="Chief Complaint" label="Chief Complaint" icon={<DriveFileRenameOutlineIcon />} />
             </BottomNavigation>
