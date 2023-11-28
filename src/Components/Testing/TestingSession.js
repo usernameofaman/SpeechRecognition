@@ -422,20 +422,22 @@ export default function Session({ voice, useLLM, inputMode }) {
                 <div style={{
                     whiteSpace: 'pre-line',
                     lineHeight: "40px",
-                    display:"flex",
-                    flexWrap:'wrap',
-                    justifyContent:"center",
+                    display: "flex",
+                    flexWrap: 'wrap',
+                    justifyContent: "center",
                 }}>
-                   { report === '' ? '' : <div  style={{
-                     boxShadow: '10px 10px 10px 10px lightgray',
-                     padding: "50px",
-                     color:"black",
-                     width:"50%",
-                     
-                }}>
+                    {report === '' ? '' : <div style={{
+                        boxShadow: '10px 10px 10px 10px lightgray',
+                        padding: "50px",
+                        color: "black",
+                        width: "50%",
+
+                    }}>
                         {report}
                     </div>}
-                    {logs}
+                    <div name="logs">
+                        {logs}
+                    </div>
                 </div>
             </div>
             {/* <MyTimer expiryTimestamp={Date.now() + 10000} /> */}
