@@ -166,53 +166,6 @@ const LoginForm = ({ open, onClose }) => {
               </Button>
 
             </div>
-
-          {/* </CustomTabPanel> */}
-          {/* <CustomTabPanel value={value} index={1}>
-            <Typography variant="h5" gutterBottom>
-              <IconButton style={{ position: 'absolute', top: '10px', right: '10px' }} onClick={onClose}>
-              </IconButton>
-            </Typography>
-
-            <TextField
-              label="Employee Email"
-              type="email"
-              fullWidth
-              margin="normal"
-              value={email}
-              onChange={(e) => setEmail(e.target.value.toLowerCase())}
-            />
-
-            <TextField
-              sx={{ mb: 3 }}
-              label="Password"
-              type="password"
-              fullWidth
-              margin="normal"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleToggleVisibility} edge="end">
-                      {showPin ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <div style={{
-              display: "flex",
-              justifyContent: "space-between"
-            }}>
-              <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginRight: '10px' }}>
-                Submit
-              </Button>
-              <Button variant="outlined" color="primary" onClick={onClose} style={{ marginRight: '10px' }}>
-                Cancel
-              </Button>
-            </div>
-          </CustomTabPanel> */}
         </div>
       </Modal >
     </div >

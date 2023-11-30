@@ -99,7 +99,7 @@ async function addCorporateEmployee(requestData) {
 
 
 async function getCorporateEmployeeDetails(userId) {
-    let url = process.env.REACT_APP_API_URI + `/api/user/getUserDetails?userId=${userId}`
+    let url = process.env.REACT_APP_API_URI + `/api/user/getUserDetails/?userId=${userId}`
     return httpService(httpConstants.METHOD_TYPE.GET, getHeaders(),{}, url)
         .then(
             response => {
