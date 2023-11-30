@@ -77,12 +77,11 @@ const LoginForm = ({ open, onClose }) => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    if (newValue === 0) {
-      setLoginAs("Corporate")
-    } else {
-      setLoginAs("Employee")
-
-    }
+    // if (newValue === 0) {
+    //   setLoginAs("Corporate")
+    // } else {
+    //   setLoginAs("Employee")
+    // }
   };
 
   function a11yProps(index) {
@@ -114,27 +113,22 @@ const LoginForm = ({ open, onClose }) => {
 
   return (
     <div>
-      <Modal open={open} onClose={onClose} BackdropProps={{
-        onClick: null,
-      }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Modal open={open} onClose={onClose} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 0 }}>
         <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-
-          </div>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
               <Tab style={{ fontSize: "12px" }} label="Login as Corporate" {...a11yProps(0)} />
               <Tab style={{ fontSize: "12px" }} label="Login as Employee" {...a11yProps(1)} />
             </Tabs>
           </Box>
-          <CustomTabPanel value={value} index={0}>
+          {/* <CustomTabPanel value={value} index={0}> */}
             <Typography variant="h5" gutterBottom>
               <IconButton style={{ position: 'absolute', top: '10px', right: '10px' }} onClick={onClose}>
               </IconButton>
             </Typography>
 
             <TextField
-              label="Corporate Email"
+              label={value === 0 ? "Corporate Email" : "Employee Email"}
               type="email"
               fullWidth
               margin="normal"
@@ -173,8 +167,8 @@ const LoginForm = ({ open, onClose }) => {
 
             </div>
 
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
+          {/* </CustomTabPanel> */}
+          {/* <CustomTabPanel value={value} index={1}>
             <Typography variant="h5" gutterBottom>
               <IconButton style={{ position: 'absolute', top: '10px', right: '10px' }} onClick={onClose}>
               </IconButton>
@@ -217,16 +211,10 @@ const LoginForm = ({ open, onClose }) => {
               <Button variant="outlined" color="primary" onClick={onClose} style={{ marginRight: '10px' }}>
                 Cancel
               </Button>
-
             </div>
-
-
-          </CustomTabPanel>
+          </CustomTabPanel> */}
         </div>
       </Modal >
-
-      {/* Registration Modal Will added here if needed!*/}
-
     </div >
   );
 };
