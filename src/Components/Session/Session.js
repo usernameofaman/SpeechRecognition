@@ -238,6 +238,14 @@ export default function Session({ voice, useLLM, inputMode }) {
     return null;
   }
 
+  function createBoldText(instructions) {
+
+    return (
+      <div dangerouslySetInnerHTML={{ __html: instructions }} />
+    );
+  }
+
+
   return (
     <>
       <div id="startSession1">
@@ -257,8 +265,9 @@ export default function Session({ voice, useLLM, inputMode }) {
                           id="chat1"
                         >
                           <div>
-                            {instructions}
+                            {createBoldText(instructions)}
                           </div>
+
                         </p>
                       </>
                     )}
