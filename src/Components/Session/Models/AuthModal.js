@@ -1,53 +1,75 @@
-import React, { useState } from 'react';
-import { Button, Modal, TextField, Typography, IconButton, Tabs, Tab, Box } from '@mui/material';
-import AuthUserService from '../../../services/authUser';
-import { showErrorMessage, showSuccessMessage } from '../../../managers/utility';
-import CloseIcon from '@mui/icons-material/Close';
-import { decodeToken } from 'react-jwt'
-import { useNavigate } from 'react-router-dom';
-import InputAdornment from '@mui/material/InputAdornment';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-
+import React, { useState } from "react";
+import {
+  Button,
+  Modal,
+  TextField,
+  Typography,
+  IconButton,
+  Tabs,
+  Tab,
+  Box,
+} from "@mui/material";
+import AuthUserService from "../../../services/authUser";
+import {
+  showErrorMessage,
+  showSuccessMessage,
+} from "../../../managers/utility";
+import { decodeToken } from "react-jwt";
+import { useNavigate } from "react-router-dom";
+import InputAdornment from "@mui/material/InputAdornment";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const LoginForm = ({ open, onClose }) => {
-  const navigate = useNavigate()
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loginAs, setLoginAs] = useState('Corporate');
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginAs, setLoginAs] = useState("Corporate");
   const [showPin, setShowPin] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [state, setState] = useState("Login");  //for toggle login or forgot form
 
   const handleLogin = async () => {
     try {
       const response = await AuthUserService.loginUser({
         email: email,
         password: password,
-        loginAs: loginAs.toUpperCase()
+        loginAs: loginAs.toUpperCase(),
       });
       if (response.token) {
-        showSuccessMessage("Login Success")
-        localStorage.setItem('loginToken', response.token)
-        let decodedToken = decodeToken(response.token)
-        localStorage.setItem('userDetails', JSON.stringify(decodedToken))
+        showSuccessMessage("Login Success");
+        localStorage.setItem("loginToken", response.token);
+        let decodedToken = decodeToken(response.token);
+        localStorage.setItem("userDetails", JSON.stringify(decodedToken));
         if (decodedToken.type === "CORPORATE") {
-          navigate("/corporate")
+          navigate("/corporate");
         } else {
-          window.location.reload()
+          window.location.reload();
         }
         onClose();
       } else {
-        showErrorMessage(response.message)
+        showErrorMessage(response.message);
       }
     } catch (error) {
-      console.error('Error during login:', error);
-      showErrorMessage('Error during login');
+      console.error("Error during login:", error);
+      showErrorMessage("Error during login");
     }
   };
+
+  //for open forgot password form
+  const forgotPassword = () => {
+    setState("Forget Password");
+  };
+
+  const changeState = () => {
+    setState("Login");
+  }
+  //for reset password or forgot password
+  const resetPasswword = () => {};
 
   const handleToggleVisibility = () => {
     setShowPin((prevShowPin) => !prevShowPin);
   };
-
 
   // const handleRegister = async () => {
   //   try {
@@ -64,7 +86,6 @@ const LoginForm = ({ open, onClose }) => {
   //   }
   // };
 
-
   // const handleOpenRegisterModal = () => {
   //   setIsRegisterModalOpen(true);
   // };
@@ -78,16 +99,16 @@ const LoginForm = ({ open, onClose }) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
     if (newValue === 0) {
-      setLoginAs("Corporate")
+      setLoginAs("Corporate");
     } else {
-      setLoginAs("Employee")
+      setLoginAs("Employee");
     }
   };
 
   function a11yProps(index) {
     return {
       id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
     };
   }
 
@@ -113,63 +134,213 @@ const LoginForm = ({ open, onClose }) => {
 
   return (
     <div>
-      <Modal open={open} onClose={onClose} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 0 }}>
-        <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-              <Tab style={{ fontSize: "12px" }} label="Login as Corporate" {...a11yProps(0)} />
-              <Tab style={{ fontSize: "12px" }} label="Login as Employee" {...a11yProps(1)} />
-            </Tabs>
-          </Box>
-          {/* <CustomTabPanel value={value} index={0}> */}
-            <Typography variant="h5" gutterBottom>
-              <IconButton style={{ position: 'absolute', top: '10px', right: '10px' }} onClick={onClose}>
-              </IconButton>
-            </Typography>
-
-            <TextField
-              label={value === 0 ? "Corporate Email" : "Employee Email"}
-              type="email"
-              fullWidth
-              margin="normal"
-              value={email}
-              onChange={(e) => setEmail(e.target.value.toLowerCase())}
-            />
-
-            <TextField
-              sx={{ mb: 3 }}
-              label="Password"
-              type="password"
-              fullWidth
-              margin="normal"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleToggleVisibility} edge="end">
-                      {showPin ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+      <Modal
+        open={open}
+        onClose={onClose}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 0,
+        }}
+      >
+        {/* Login Form start */}
+        {
+          state === "Login" ? (
+            <div
+              style={{
+                background: "#fff",
+                padding: "20px",
+                borderRadius: "8px",
+                maxWidth: "400px",
+                width: "100%",
               }}
-            />
-            <div style={{
-              display: "flex",
-              justifyContent: "space-between"
-            }}>
-              <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginRight: '10px' }}>
-                Submit
-              </Button>
-              <Button variant="outlined" color="primary" onClick={onClose} style={{ marginRight: '10px' }}>
-                Cancel
-              </Button>
+            >
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="basic tabs example"
+                >
+                  <Tab
+                    style={{ fontSize: "12px" }}
+                    label="Login as Corporate"
+                    {...a11yProps(0)}
+                  />
+                  <Tab
+                    style={{ fontSize: "12px" }}
+                    label="Login as Employee"
+                    {...a11yProps(1)}
+                  />
+                </Tabs>
+              </Box>
+              {/* <CustomTabPanel value={value} index={0}> */}
+              <Typography variant="h5" gutterBottom>
+                <IconButton
+                  style={{ position: "absolute", top: "10px", right: "10px" }}
+                  onClick={onClose}
+                ></IconButton>
+              </Typography>
 
+              <TextField
+                label={value === 0 ? "Corporate Email" : "Employee Email"}
+                type="email"
+                fullWidth
+                margin="normal"
+                value={email}
+                onChange={(e) => setEmail(e.target.value.toLowerCase())}
+              />
+              <TextField
+                sx={{ mb: 3 }}
+                label="Password"
+                type={showPin ? 'text' : 'password'}
+                fullWidth
+                margin="normal"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleToggleVisibility} edge="end">
+                        {showPin ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <div
+                style={{
+                  padding: "0 0 15px 0",
+                  color: "#1877f2",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  cursor: "pointer",
+                  textDecoration: "none",
+                }}
+                onClick={forgotPassword}
+              >
+                Forgotten password?
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleLogin}
+                  style={{ marginRight: "10px" }}
+                >
+                  Submit
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={onClose}
+                  style={{ marginRight: "10px" }}
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
-        </div>
-      </Modal >
-    </div >
+          ) : //login form end here
+
+          //forgot form start here
+          state === "Forget Password" ? (
+            <div
+              style={{
+                background: "#fff",
+                padding: "20px",
+                borderRadius: "8px",
+                maxWidth: "400px",
+                width: "100%",
+              }}
+            >
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <h3
+                  style={{
+                    color: "#1877f2",
+                    textAlign: "center",
+                    fontWeight: "500",
+                  }}
+                >
+                  Forgot Password
+                </h3>
+              </Box>
+              {/* <CustomTabPanel value={value} index={0}> */}
+              <Typography variant="h5" gutterBottom>
+                <IconButton
+                  style={{ position: "absolute", top: "10px", right: "10px" }}
+                  onClick={onClose}
+                ></IconButton>
+              </Typography>
+
+              <TextField
+                label="Email"
+                type="email"
+                fullWidth
+                margin="normal"
+                value={email}
+                onChange={(e) => setEmail(e.target.value.toLowerCase())}
+              />
+              <TextField
+                label="OTP"
+                type="number"
+                fullWidth
+                margin="normal"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value.toLowerCase())}
+              />
+
+              <TextField
+                sx={{ mb: 3 }}
+                label="Password"
+                type={showPin ? 'text' : 'password'}
+                fullWidth
+                margin="normal"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleToggleVisibility} edge="end">
+                        {showPin ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={resetPasswword}
+                  style={{ marginRight: "10px" }}
+                >
+                  Submit
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={changeState}
+                  style={{ marginRight: "10px" }}
+                >
+                  Go Back
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={onClose}
+                  style={{ marginRight: "10px" }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          ) : (
+            "Login"
+          )
+          //forgot form end here
+        }
+      </Modal>
+    </div>
   );
 };
-
 export default LoginForm;

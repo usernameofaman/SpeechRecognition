@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useEffect } from 'react'
 import Button from '@mui/material/Button';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
@@ -60,17 +59,18 @@ export default function MenuListComposition({ userData, viewLoginModal, setViewL
                 >
                     <form className="userprofile ms-0">
                         <div className="dropdown">
-                            <button className="btn btn-warning dropdown-toggle d-flex align-items-center" type="button"
+                            <button style={{width:"175px",height:"40px"}} className="btn btn-warning dropdown-toggle d-flex align-items-center" type="button"
                                 id="userprofilemenu" data-bs-toggle="dropdown" aria-expanded="true">
                                 <AccountCircleRoundedIcon sx={{ mr: 1 }} />
                                 {/* <img className="img-fluid rounded-circle"
                                     src="https://cdn4.sharechat.com/img_378239_1efadecf_1664979374920_sc.jpg?tenant=sc&amp;referrer=pwa-sharechat-service&amp;f=920_sc.jpg"
                                     alt="user img" /> */}
-                                <span className="d-none d-md-flex">{userData.name}</span>
+                                <span className="d-none d-md-flex"  style={{width:"95px"}}>{userData.name}</span>
                             </button>
                         </div>
                     </form>
                 </Button>
+                <div>{userData?.remainingSession >= 0 ? <span style={{ fontSize: '15px', paddingLeft:"10px" }} className="additional-text">Remaining Sessions : {userData?.remainingSession}</span> : ""}</div>
                 <Popper
                     open={open}
                     anchorEl={anchorRef.current}
@@ -86,13 +86,13 @@ export default function MenuListComposition({ userData, viewLoginModal, setViewL
                             style={{
                                 transformOrigin:
                                     placement === 'bottom-start' ? 'left top' : 'left bottom',
-                            }}
+                                    marginLeft:"8px"}}
                         >
                             <Paper>
                                 <ClickAwayListener onClickAway={handleClose}>
                                     <MenuList
                                         autoFocusItem={open}
-                                        sx={{ width: "160px" }}
+                                        sx={{ width: "180px"}}
                                         id="composition-menu"
                                         aria-labelledby="composition-button"
                                         onKeyDown={handleListKeyDown}
