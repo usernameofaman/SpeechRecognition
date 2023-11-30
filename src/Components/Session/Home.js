@@ -12,7 +12,9 @@ import LoginForm from './Models/AuthModal';
 import Profile from './Models/ProfilePopper'
 import { decodeToken } from 'react-jwt'
 import { useNavigate } from 'react-router-dom';
-
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
 
 const App = () => {
     const navigate = useNavigate();
@@ -24,6 +26,10 @@ const App = () => {
 
     const [userData, setUserData] = React.useState({})
 
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const verifyJWT = async () => {
         let details = localStorage.getItem('userDetails') || ""
@@ -189,7 +195,9 @@ const App = () => {
                             </ul>
 
 
-                            <Profile userData={userData} setViewLoginModal={setViewLoginModal} viewLoginModal={viewLoginModal} />
+                            <Profile userData={userData} setViewLoginModal={setViewLoginModal} viewLoginModal={viewLoginModal} >
+                            {userData?.remainingSession >= 0 ? <span style={{ fontSize: '13px' }} className="additional-text">Remaining Sessions : {userData?.remainingSession}</span> : ""}
+                      </Profile>
                             {/* <form className="userprofile ms-0 ms-sm-3">
                                 <div className="dropdown">
                                     <button className="btn btn-warning dropdown-toggle d-flex align-items-center" type="button"
@@ -239,14 +247,35 @@ const App = () => {
                                         More..</a>
                                 </h6>
 
-                                <button onClick={() => checkLoginBeforeSession()} className="btn btn-outline-primary text-uppercase mt-4 py-3 px-4 shadow-sm" type="button"
+                                <button onClick={() => setOpen(true)} className="btn btn-outline-primary text-uppercase mt-4 py-3 px-4 shadow-sm" type="button"
                                     id="switchButton">
                                     <span className="d-none d-sm-inline-block">Start Session</span>
 
                                     <i className="fas fa-arrow-right ms-2"></i>
                                     <br />
-                                    {userData?.remainingSession >= 0 ? <span style={{ fontSize: '13px' }} className="additional-text">Remaining Sessions : {userData?.remainingSession}</span> : ""}
+                                    {userData?.remainingSession >= 0 ? <span style={{ fontSize: '13px' }} className="additional-text" onClick={handleOpen}>Remaining Sessions : {userData?.remainingSession}</span> : ""}
+                                
                                 </button>
+
+                                <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                                 <Box sx={{position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,}}>
+                                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                    <Button variant="contained" onClick={() => checkLoginBeforeSession()}>Do you want to continue the session</Button>
+                                    <Button variant="outlined"  onClick={() => {localStorage.removeItem("sessionId");window.location.reload()}}>
+                                        Do you want to restart the session
+                                    </Button>
+                                    </Typography>
+                                 </Box>
+                                </Modal>
+                                
                             </div>
                         </div>
                         <div className="col-md-5 ms-md-auto d-flex align-items-end">
