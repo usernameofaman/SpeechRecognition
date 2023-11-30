@@ -77,11 +77,11 @@ const LoginForm = ({ open, onClose }) => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    // if (newValue === 0) {
-    //   setLoginAs("Corporate")
-    // } else {
-    //   setLoginAs("Employee")
-    // }
+    if (newValue === 0) {
+      setLoginAs("Corporate")
+    } else {
+      setLoginAs("Employee")
+    }
   };
 
   function a11yProps(index) {
