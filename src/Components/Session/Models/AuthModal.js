@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, TextField, Typography, IconButton } from '@mui/material';
+import { Button, Modal, TextField, Typography, IconButton, Tabs, Tab, Box } from '@mui/material';
 import AuthUserService from '../../../services/authUser';
 import { showErrorMessage, showSuccessMessage } from '../../../managers/utility';
 import CloseIcon from '@mui/icons-material/Close';
@@ -73,6 +73,45 @@ const LoginForm = ({ open, onClose }) => {
   //   setIsRegisterModalOpen(false);
   // };
 
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    if (newValue === 0) {
+      setLoginAs("Corporate")
+    } else {
+      setLoginAs("Employee")
+
+    }
+  };
+
+  function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
+
+  function CustomTabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box sx={{ p: 3 }}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div>
       <Modal open={open} onClose={onClose} BackdropProps={{
@@ -80,59 +119,115 @@ const LoginForm = ({ open, onClose }) => {
       }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button onClick={() => onClose()}>X</Button>
+
           </div>
-          <Typography variant="h5" gutterBottom>
-            Login as {loginAs}
-            <IconButton style={{ position: 'absolute', top: '10px', right: '10px' }} onClick={onClose}>
-              <CloseIcon />
-            </IconButton>
-          </Typography>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+              <Tab style={{ fontSize: "12px" }} label="Login as Corporate" {...a11yProps(0)} />
+              <Tab style={{ fontSize: "12px" }} label="Login as Employee" {...a11yProps(1)} />
+            </Tabs>
+          </Box>
+          <CustomTabPanel value={value} index={0}>
+            <Typography variant="h5" gutterBottom>
+              <IconButton style={{ position: 'absolute', top: '10px', right: '10px' }} onClick={onClose}>
+              </IconButton>
+            </Typography>
 
-          <TextField
-            label="Email"
-            type="email"
-            fullWidth
-            margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value.toLowerCase())}
-          />
+            <TextField
+              label="Corporate Email"
+              type="email"
+              fullWidth
+              margin="normal"
+              value={email}
+              onChange={(e) => setEmail(e.target.value.toLowerCase())}
+            />
 
-          <TextField
-            sx={{ mb: 3 }}
-            label="Password"
-            type="password"
-            type={showPin ? 'text' : 'password'}
-            fullWidth
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={handleToggleVisibility} edge="end">
-                    {showPin ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between"
-          }}>
-            <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginRight: '10px' }}>
-              Submit
-            </Button>
+            <TextField
+              sx={{ mb: 3 }}
+              label="Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleToggleVisibility} edge="end">
+                      {showPin ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between"
+            }}>
+              <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginRight: '10px' }}>
+                Submit
+              </Button>
+              <Button variant="outlined" color="primary" onClick={onClose} style={{ marginRight: '10px' }}>
+                Cancel
+              </Button>
 
-            <span onClick={() => setLoginAs(loginAs === "Corporate" ? "Employee" : "Corporate")} style={{ backgroundColor: "#d7d7d7", borderRadius: "5px", padding: "0 10px", cursor: "pointer" }}>Login as {loginAs === "Corporate" ? "Employee" : "Corporate"}</span>
-          </div>
+            </div>
+
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={1}>
+            <Typography variant="h5" gutterBottom>
+              <IconButton style={{ position: 'absolute', top: '10px', right: '10px' }} onClick={onClose}>
+              </IconButton>
+            </Typography>
+
+            <TextField
+              label="Employee Email"
+              type="email"
+              fullWidth
+              margin="normal"
+              value={email}
+              onChange={(e) => setEmail(e.target.value.toLowerCase())}
+            />
+
+            <TextField
+              sx={{ mb: 3 }}
+              label="Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleToggleVisibility} edge="end">
+                      {showPin ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between"
+            }}>
+              <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginRight: '10px' }}>
+                Submit
+              </Button>
+              <Button variant="outlined" color="primary" onClick={onClose} style={{ marginRight: '10px' }}>
+                Cancel
+              </Button>
+
+            </div>
+
+
+          </CustomTabPanel>
         </div>
-      </Modal>
+      </Modal >
 
       {/* Registration Modal Will added here if needed!*/}
 
-    </div>
+    </div >
   );
 };
 
