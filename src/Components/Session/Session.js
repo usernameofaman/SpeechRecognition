@@ -5,8 +5,7 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { CorporateService, QuestionsService } from "../../services";
 import { useTimer } from "react-timer-hook";
-import { showErrorMessage } from "../../managers/utility";
-import { decodeToken } from 'react-jwt'
+import { showErrorMessage, showSuccessMessage } from "../../managers/utility";
 
 import {
   detectLanguage,
@@ -16,12 +15,9 @@ import "../../App.css";
 import { useNavigate } from "react-router-dom";
 
 export default function Session({ voice, useLLM, inputMode }) {
-  const navigate = useNavigate()
-  const [questionWriter, setQuestionWriter] = useState(null);
+  // const navigate = useNavigate()
   const [question, setQuestion] = useState("");
-  // const [instructions, setInstructions] = useState("Try to be brief and factual. If you do not know exact age, does not matter, give appx number as the age. Example: I am 45 years old or Patient is about 34 years old.");
   const [instructions, setInstructions] = useState("");
-  const [instructionWriter, setInstructionWriter] = useState(null);
   const [apiData, setAPIData] = useState({});
   const [currentLot, setCurrentLot] = useState(0);
   const [answers, setAnswers] = useState(null);
@@ -39,9 +35,8 @@ export default function Session({ voice, useLLM, inputMode }) {
 
   //Timer Duration
   const [timerDuration, setTimerDuration] = useState(5);
-  const [midDelay, setMidDelay] = useState(5);
 
-
+  const [audioElement, setAudioElement] = useState(new Audio());
 
   const {
     seconds,
@@ -53,7 +48,6 @@ export default function Session({ voice, useLLM, inputMode }) {
 
 
   useEffect(() => {
-    window.speechSynthesis.cancel()
     getUserDetails()
   }, []);
 
@@ -62,13 +56,6 @@ export default function Session({ voice, useLLM, inputMode }) {
       getQuestions();
   }, [userData]);
 
-  const getUserDetails = async () => {
-    let userData = localStorage.getItem('userDetails')
-    if (userData) userData = JSON.parse(userData)
-    const userDetails = await CorporateService.getCorporateEmployeeDetails(userData._id);
-    setUserData(userDetails)
-    localStorage.setItem('userDetails', JSON.stringify(userDetails))
-  }
 
   useEffect(() => {
     setProgressBar((prev) => {
@@ -82,82 +69,6 @@ export default function Session({ voice, useLLM, inputMode }) {
     });
   }, [currentLot]);
 
-  const readInstructions = async (question) => {
-    let text = question.instructions;
-    let length = text.split(" ").length;
-    let timeTakenToSpeak = length / 2.83;
-    // let restartDuration =
-    //   Date.now() + (midDelay * 1000 + timeTakenToSpeak * 1000);
-    let restartDuration = 1000
-    if (question.instructions && question.instructions !== "NULL")
-      restart(restartDuration);
-    nowReadQuestion()
-
-    //   setTimeout(
-    //   nowReadQuestion,
-    //   (question.instructions && question.instructions !== "NULL"
-    //     ? midDelay
-    //     : 0) *
-    //   1000 +
-    //   timeTakenToSpeak * 1000
-    // );
-    // No more reading instructions 
-
-    // speak({
-    //   text:
-    //     question.instructions && question.instructions !== "NULL"
-    //       ? question.instructions
-    //       : "",
-    //   onEnd: () => {
-    //     // console.log("Done Reading Instruction");
-    //   },
-    // });
-  };
-
-  const nowReadQuestion = async (question) => {
-    setQuestion((prev) => {
-      speak({
-        text: prev,
-        onEnd: () => {
-          setTimerDuration((prev) => {
-            let restartDuration = Date.now() + prev * 1000;
-            setTimeout(() => {
-              restart(restartDuration);
-              startListening();
-            }, 5000)
-            return prev
-          })
-        },
-      });
-      return prev;
-    });
-  };
-
-  const speak = ({ text, onEnd }) => {
-    const speakObj = new SpeechSynthesisUtterance();
-    speakObj.text = text;
-    speakObj.voice = voice;
-    speakObj.onend = () => {
-      if (onEnd) {
-        console.log("On End Check", onEnd);
-        onEnd();
-      }
-      clearInterval(resumeInterval);
-    };
-
-    // Start/resume the speech
-    window.speechSynthesis.speak(speakObj);
-
-    // Set up an interval to periodically pause and resume
-    const resumeInterval = setInterval(() => {
-      if (!window.speechSynthesis.speaking) {
-        clearInterval(resumeInterval);
-      } else {
-        window.speechSynthesis.pause();
-        window.speechSynthesis.resume();
-      }
-    }, 14000);
-  };
 
   useEffect(() => {
 
@@ -167,6 +78,57 @@ export default function Session({ voice, useLLM, inputMode }) {
       setTimeout(submitQuestion, 1000)
     }
   }, [isTimerRunning]);
+
+  const getUserDetails = async () => {
+    let userData = localStorage.getItem('userDetails')
+    if (userData) userData = JSON.parse(userData)
+    const userDetails = await CorporateService.getCorporateEmployeeDetails(userData._id);
+    setUserData(userDetails)
+    localStorage.setItem('userDetails', JSON.stringify(userDetails))
+  }
+
+
+  const readInstructions = async () => {
+    let restartDuration = 1000
+    restart(restartDuration);
+    nowReadQuestion()
+  };
+
+  const nowReadQuestion = async () => {
+    let currentQuestionDuration = 100;
+    setAudioElement(async (prev) => {
+      currentQuestionDuration = await getAudioDuration(prev, prev.src);
+      currentQuestionDuration = parseInt(currentQuestionDuration) * 1000
+      prev.play()
+
+      setTimerDuration((prevTimer) => {
+        let gapAfterQuestionSpeaks = 5000
+        let restartDuration = Date.now() + gapAfterQuestionSpeaks + prevTimer * 1000;
+        console.log("Expiry is", restartDuration - Date.now())
+        setTimeout(() => {
+          restart(restartDuration);
+          startListening();
+        }, gapAfterQuestionSpeaks)
+        return prevTimer
+      })
+      return prev
+    })
+  }
+
+  const getAudioDuration = (audio, url) => {
+    return new Promise((resolve, reject) => {
+      audio.addEventListener('loadedmetadata', () => {
+        resolve(audio.duration);
+      });
+
+      audio.addEventListener('error', (error) => {
+        reject(new Error(`Failed to load audio: ${error.message}`));
+      });
+
+      audio.src = url;
+    });
+  };
+
 
   const [patientAnswer, setPatientAnswer] = useState("");
   const [patientAnswerBox, setPatientAnswerBox] = useState(false);
@@ -182,7 +144,6 @@ export default function Session({ voice, useLLM, inputMode }) {
     listening,
     resetTranscript,
   } = useSpeechRecognition();
-  console.log("Here is transcript", transcript);
 
   // useEffect(() => {
   //     setPatientAnswer(transcript)
@@ -209,7 +170,8 @@ export default function Session({ voice, useLLM, inputMode }) {
     });
     if (data.question) {
       setQuestion(data.question.text);
-      setTimerDuration(data.question.timer === "HIGH" ? 15 : data.question.timer === "MEDIUM" ? 10 : 5)
+      setAudioElement(new Audio(`https://demoplayground4093662547.z20.web.core.windows.net/us-en/Code${data.question.code}.mp3`))
+      setTimerDuration(data.question.timer === "HIGH" ? 45 : data.question.timer === "MEDIUM" ? 30 : data.question.timer === "LOW" ? 10 : 5)
       setInstructions(data.question.instructions);
       readInstructions(data.question);
       setAPIData(data);
@@ -250,7 +212,8 @@ export default function Session({ voice, useLLM, inputMode }) {
     if (data.question) {
       setPatientAnswer("");
       setQuestion(data.question.text);
-      setTimerDuration(data.question.timer === "HIGH" ? 15 : data.question.timer === "MEDIUM" ? 10 : 5)
+      setAudioElement(new Audio(`https://demoplayground4093662547.z20.web.core.windows.net/us-en/Code${data.question.code}.mp3`))
+      setTimerDuration(data.question.timer === "HIGH" ? 45 : data.question.timer === "MEDIUM" ? 30 : data.question.timer === "LOW" ? 10 : 5)
       setInstructions(data.question.instructions);
       setAPIData(data);
       setAnswers(data.answers);
@@ -267,9 +230,7 @@ export default function Session({ voice, useLLM, inputMode }) {
     }
 
     if (data.message === "All Lots are completed") {
-      speak({
-        text: "Thank you for answering all of the questions.",
-      });
+      showSuccessMessage("Thank you")
     }
   };
 
@@ -298,17 +259,6 @@ export default function Session({ voice, useLLM, inputMode }) {
                           <div>
                             {instructions}
                           </div>
-                          {/* <Typewriter
-                            onInit={(typewriter) => {
-                              setInstructionWriter(typewriter);
-                              typewriter.typeString(instructions).start();
-                            }}
-                            key={instructions}
-                            options={{
-                              delay: 8,
-                              cursor: "",
-                            }}
-                          /> */}
                         </p>
                       </>
                     )}
@@ -323,7 +273,6 @@ export default function Session({ voice, useLLM, inputMode }) {
                         <Typewriter
                           onInit={(typewriter) => {
                             if (question !== "") {
-                              setQuestionWriter(typewriter);
                               typewriter.typeString(question).start();
                             }
                           }}
@@ -358,7 +307,6 @@ export default function Session({ voice, useLLM, inputMode }) {
                             </span>
                           </small>
                         </h5>
-                        {/* Todo - Text area */}
                         <div
                           style={{ minHeight: "50px" }}
                           className="form-control border-primary p-2 rounded mb-0 bg-white"
@@ -420,7 +368,7 @@ export default function Session({ voice, useLLM, inputMode }) {
                                 type="button"
                                 className="btn btn-danger btn-sm"
                               >
-                                Discard
+                                Skip
                               </button>
                             </>
                           )}
@@ -511,15 +459,6 @@ export default function Session({ voice, useLLM, inputMode }) {
                             </div>
                           </div>
                         ))}
-
-                        {/* <div className="col">
-                                                    <div className="card bg-success">
-                                                        <div className="card-body">
-                                                            <h6 className="card-subtitle">Dementia</h6>
-                                                            <p className="card-text">&nbsp;</p>
-                                                        </div>
-                                                    </div>
-                                                </div> */}
                       </div>
                     </div>
                   </div>
@@ -529,7 +468,6 @@ export default function Session({ voice, useLLM, inputMode }) {
           </div>
         </div>
       </div>
-      {/* <MyTimer expiryTimestamp={Date.now() + 10000} /> */}
     </>
   );
 }
