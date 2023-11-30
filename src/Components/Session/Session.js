@@ -86,39 +86,45 @@ export default function Session({ voice, useLLM, inputMode }) {
     let text = question.instructions;
     let length = text.split(" ").length;
     let timeTakenToSpeak = length / 2.83;
-    let restartDuration =
-      Date.now() + (midDelay * 1000 + timeTakenToSpeak * 1000);
+    // let restartDuration =
+    //   Date.now() + (midDelay * 1000 + timeTakenToSpeak * 1000);
+    let restartDuration = 1000
     if (question.instructions && question.instructions !== "NULL")
       restart(restartDuration);
-    setTimeout(
-      nowReadQuestion,
-      (question.instructions && question.instructions !== "NULL"
-        ? midDelay
-        : 0) *
-      1000 +
-      timeTakenToSpeak * 1000
-    );
-    speak({
-      text:
-        question.instructions && question.instructions !== "NULL"
-          ? question.instructions
-          : "",
-      onEnd: () => {
-        // console.log("Done Reading Instruction");
-      },
-    });
+    nowReadQuestion()
+
+    //   setTimeout(
+    //   nowReadQuestion,
+    //   (question.instructions && question.instructions !== "NULL"
+    //     ? midDelay
+    //     : 0) *
+    //   1000 +
+    //   timeTakenToSpeak * 1000
+    // );
+    // No more reading instructions 
+
+    // speak({
+    //   text:
+    //     question.instructions && question.instructions !== "NULL"
+    //       ? question.instructions
+    //       : "",
+    //   onEnd: () => {
+    //     // console.log("Done Reading Instruction");
+    //   },
+    // });
   };
 
   const nowReadQuestion = async (question) => {
     setQuestion((prev) => {
-      console.log(prev);
       speak({
         text: prev,
         onEnd: () => {
           setTimerDuration((prev) => {
             let restartDuration = Date.now() + prev * 1000;
-            restart(restartDuration);
-            startListening();
+            setTimeout(() => {
+              restart(restartDuration);
+              startListening();
+            }, 5000)
             return prev
           })
         },
@@ -289,7 +295,10 @@ export default function Session({ voice, useLLM, inputMode }) {
                           className="border border-info p-2 rounded"
                           id="chat1"
                         >
-                          <Typewriter
+                          <div>
+                            {instructions}
+                          </div>
+                          {/* <Typewriter
                             onInit={(typewriter) => {
                               setInstructionWriter(typewriter);
                               typewriter.typeString(instructions).start();
@@ -299,7 +308,7 @@ export default function Session({ voice, useLLM, inputMode }) {
                               delay: 8,
                               cursor: "",
                             }}
-                          />
+                          /> */}
                         </p>
                       </>
                     )}
