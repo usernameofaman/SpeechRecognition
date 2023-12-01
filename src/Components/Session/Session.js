@@ -14,7 +14,7 @@ import {
 import "../../App.css";
 import { useNavigate } from "react-router-dom";
 
-export default function Session({ voice, useLLM, inputMode }) {
+export default function Session({ useLLM, inputMode }) {
   // const navigate = useNavigate()
   const [question, setQuestion] = useState("");
   const [instructions, setInstructions] = useState("");
@@ -365,7 +365,7 @@ export default function Session({ voice, useLLM, inputMode }) {
                               <button
                                 style={{ marginRight: 3 }}
                                 onClick={submitQuestion}
-                                disabled={isTimerRunning}
+                                // disabled={isTimerRunning}
                                 type="button"
                                 className="btn btn-success btn-sm"
                                 id="submit-button"

@@ -442,9 +442,9 @@ export default function QuestionModal({
             <MenuItem value={"LOW"}>Low</MenuItem>
             <MenuItem value={"MEDIUM"}>Medium</MenuItem>
             <MenuItem value={"HIGH"}>High</MenuItem>
+            <MenuItem value={"HIGHEST"}>Highest</MenuItem>
           </Select>
         </FormControl>
-        {console.log("CHECKING HERE",selectedQuestion.hasCustomPrompt)}
         {!selectedQuestion.hasCustomPrompt &&
           < TextField
             label="Category"

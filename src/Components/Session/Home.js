@@ -273,7 +273,7 @@ const App = () => {
                         </div>
                     </div>
                 </div>
-            </div> : <VoiceLoader useLLM={useLLM} inputMode={inputMode} />}
+            </div> : <Session useLLM={useLLM} inputMode={inputMode} />}
 
             <div className="modal fade show" id="launchModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1"
                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -364,28 +364,5 @@ const App = () => {
 export default App;
 
 
-function VoiceLoader({ useLLM, inputMode }) {
-    const [voicesLoaded, setVoicesLoaded] = useState(false);
 
-    useEffect(() => {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.onvoiceschanged = function () {
-                let voices = window.speechSynthesis.getVoices();
-                let voice = voices.filter(function (voice) {
-                    return voice.name == "Google हिन्दी"
-                })[0];
-                setVoicesLoaded(voice)
-            };
-        }
-
-    }, []);
-
-
-
-    return (
-        <div>
-            {voicesLoaded ? <Session useLLM={useLLM} voice={voicesLoaded} inputMode={inputMode} /> : <p>Loading voices...</p>}
-        </div>
-    );
-}
 
