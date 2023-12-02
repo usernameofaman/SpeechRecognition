@@ -126,7 +126,7 @@ export default function Session({ useLLM, inputMode }) {
       }
 
       currentQuestionDuration = parseInt(Math.ceil(currentQuestionDuration)) * 1000
-  
+
 
       setTimerDuration((prevTimer) => {
         let gapAfterQuestionSpeaks = 3000;
@@ -360,6 +360,11 @@ export default function Session({ useLLM, inputMode }) {
                                 ""
                               )}
                             </span>
+                            {hasWarningProvided &&
+                              <span className="Blink text-danger">
+                                &nbsp; &nbsp; Your answer is about to be submitted in 3 seconds – press edit to change
+                              </span>
+                            }
                             <span id="textshow" style={{ display: "none" }}>
                               (Type your response below)
                             </span>
@@ -409,6 +414,7 @@ export default function Session({ useLLM, inputMode }) {
                                 setPatientAnswerBox(!patientAnswerBox)
                                 if (hasWarningProvided) {
                                   clearTimeout(preventAutoSubmitTimerId)
+                                  SpeechRecognition.stopListening();
                                   setDidUserStopSubmission(true)
                                   setHasWarningProvided(false)
                                 }
@@ -488,20 +494,6 @@ export default function Session({ useLLM, inputMode }) {
                   </div>
                 </div>
               </div>
-              {hasWarningProvided &&
-                <div className="card shadow-sm mt-2 mb-2">
-                  <div className="card-body">
-                    <div className="row d-flex justify-content-between align-items-center">
-                      <div className="col-md-12">
-                        <div className="row mb-2">
-                          <div className="col-12">
-                            Your answer is about to be submitted in 3 seconds – press edit to change
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>}
               <div className="card shadow-sm ">
                 <div className="card-body">
                   <div className="row d-flex justify-content-between align-items-center">

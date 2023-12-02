@@ -48,69 +48,69 @@ export default function MenuListComposition({ userData, viewLoginModal, setViewL
 
     return (
         <Stack direction="row" spacing={2}>
-            {userData.name ? <div>
-                <Button
-                    ref={anchorRef}
-                    id="composition-button"
-                    aria-controls={open ? 'composition-menu' : undefined}
-                    aria-expanded={open ? 'true' : undefined}
-                    aria-haspopup="true"
-                    onClick={handleToggle}
-                >
-                    <form className="userprofile ms-0">
-                        <div className="dropdown">
-                            <button style={{width:"175px",height:"40px"}} className="btn btn-warning dropdown-toggle d-flex align-items-center" type="button"
-                                id="userprofilemenu" data-bs-toggle="dropdown" aria-expanded="true">
-                                <AccountCircleRoundedIcon sx={{ mr: 1 }} />
-                                {/* <img className="img-fluid rounded-circle"
-                                    src="https://cdn4.sharechat.com/img_378239_1efadecf_1664979374920_sc.jpg?tenant=sc&amp;referrer=pwa-sharechat-service&amp;f=920_sc.jpg"
-                                    alt="user img" /> */}
-                                <span className="d-none d-md-flex"  style={{width:"95px"}}>{userData.name}</span>
-                            </button>
-                        </div>
-                    </form>
-                </Button>
-                <div>{userData?.remainingSession >= 0 ? <span style={{ fontSize: '15px', paddingLeft:"10px" }} className="additional-text">Remaining Sessions : {userData?.remainingSession}</span> : ""}</div>
-                <Popper
-                    open={open}
-                    anchorEl={anchorRef.current}
-                    role={undefined}
-                    placement="bottom-start"
-                    transition
-                    disablePortal
-                    sx={{ zIndex: 1 }}
-                >
-                    {({ TransitionProps, placement }) => (
-                        <Grow
-                            {...TransitionProps}
-                            style={{
-                                transformOrigin:
-                                    placement === 'bottom-start' ? 'left top' : 'left bottom',
-                                    marginLeft:"8px"}}
-                        >
-                            <Paper>
-                                <ClickAwayListener onClickAway={handleClose}>
-                                    <MenuList
-                                        autoFocusItem={open}
-                                        sx={{ width: "180px"}}
-                                        id="composition-menu"
-                                        aria-labelledby="composition-button"
-                                        onKeyDown={handleListKeyDown}
-                                    >
-                                        <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                        <MenuItem onClick={handleClose}>My account</MenuItem>
-                                        <MenuItem onClick={() => {
-                                            localStorage.clear();
-                                            window.location.reload()
-                                            handleClose()
-                                        }}>Logout</MenuItem>
-                                    </MenuList>
-                                </ClickAwayListener>
-                            </Paper>
-                        </Grow>
-                    )}
-                </Popper>
-            </div> :
+            {userData.name ?
+                <div style={{width:"100%", display:"flex", flexDirection:"column"}}>
+                    <Button
+                        ref={anchorRef}
+                        sx={{ padding: 0 }}
+                        id="composition-button"
+                        aria-controls={open ? 'composition-menu' : undefined}
+                        aria-expanded={open ? 'true' : undefined}
+                        aria-haspopup="true"
+                        onClick={handleToggle}
+                    >
+                        <form className="userprofile ms-0">
+                            <div className="dropdown">
+                                <button style={{ width: "100%", height: "40px" }} className="btn btn-warning dropdown-toggle d-flex align-items-center" type="button"
+                                    id="userprofilemenu" data-bs-toggle="dropdown" aria-expanded="true">
+                                    <AccountCircleRoundedIcon sx={{ mr: 1 }} />
+                                    <span className="d-none d-md-flex" style={{ width: "95px" }}>{userData.name}</span>
+                                </button>
+                            </div>
+                        </form>
+                    </Button>
+                    <div>{userData?.remainingSession >= 0 ? <span style={{ fontSize: '14px', paddingLeft: "10px" }} className="additional-text">Remaining Sessions : {userData?.remainingSession > 99 ? "99+" : userData?.remainingSession }</span> : ""}</div>
+                    <Popper
+                        open={open}
+                        anchorEl={anchorRef.current}
+                        role={undefined}
+                        placement="bottom-start"
+                        transition
+                        disablePortal
+                        sx={{ zIndex: 1 }}
+                    >
+                        {({ TransitionProps, placement }) => (
+                            <Grow
+                                {...TransitionProps}
+                                style={{
+                                    transformOrigin:
+                                        placement === 'bottom-start' ? 'left top' : 'left bottom',
+                                    marginLeft: "8px"
+                                }}
+                            >
+                                <Paper>
+                                    <ClickAwayListener onClickAway={handleClose}>
+                                        <MenuList
+                                            autoFocusItem={open}
+                                            sx={{ width: "180px" }}
+                                            id="composition-menu"
+                                            aria-labelledby="composition-button"
+                                            onKeyDown={handleListKeyDown}
+                                        >
+                                            <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                                            <MenuItem onClick={() => {
+                                                localStorage.clear();
+                                                window.location.reload()
+                                                handleClose()
+                                            }}>Logout</MenuItem>
+                                        </MenuList>
+                                    </ClickAwayListener>
+                                </Paper>
+                            </Grow>
+                        )}
+                    </Popper>
+                </div> :
                 <Button onClick={() => setViewLoginModal(true)}>
                     Login
                 </Button>}

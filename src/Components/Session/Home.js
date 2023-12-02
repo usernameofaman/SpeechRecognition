@@ -93,117 +93,22 @@ const App = () => {
     return (
         <>
             <header>
-                <nav className="navbar navbar-light bg-white shadow-sm">
+                <nav className="navbar navbar-light bg-white shadow-sm" style={{ display: "flex" }}>
                     <div className="container">
                         <div className="sessiondrawer">
                             <a className="btn btn-primary me-3" data-bs-toggle="offcanvas" href="#sessiondrawer" role="button"
                                 aria-controls="sessiondrawer">
                                 <i className=" fa-solid fa-sliders"></i>
                             </a>
-
-
-                            <div className="offcanvas offcanvas-start" tabIndex="1" id="sessiondrawer"
-                                aria-labelledby="sessiondrawerLabel">
-                                <div className="offcanvas-header">
-                                    <h5 className="offcanvas-title" id="sessiondrawerLabel">Sessions</h5>
-                                    <button type="button" className="btn-close" data-bs-dismiss="offcanvas"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div className="offcanvas-body">
-                                    <ul className="navbar-nav flex-column ms-auto mb-2 mb-md-0">
-                                        <li className="nav-item">
-                                            <a className="nav-link" href="#">Start Session</a>
-                                        </li>
-                                        <li>
-                                            <hr className="dropdown-divider" />
-                                        </li>
-                                        <li className="nav-item">
-                                            <a className="nav-link" href="#">My Sessions</a>
-                                        </li>
-                                        <li>
-                                            <hr className="dropdown-divider" />
-                                        </li>
-                                        <li className="nav-item">
-                                            <a className="nav-link" href="#">Resume Session</a>
-                                        </li>
-                                        <li>
-                                            <hr className="dropdown-divider" />
-                                        </li>
-                                        <li className="nav-item">
-                                            <a className="nav-link" href="#">
-                                                <div className=" d-flex justify-content-between align-items-center">
-                                                    <span>My Wallet </span>
-                                                    <div><i className="fa-solid fa-wallet"></i>
-                                                        <span className="ms-1 priceing">$30.56</span>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <hr className="dropdown-divider" />
-                                        </li>
-                                    </ul>
-
-                                    <div className="offcanvas-header px-0">
-                                        <h5 className="offcanvas-title" id="sessiondrawerLabel">Quick Links</h5>
-                                    </div>
-
-                                    <ul className="navbar-nav flex-column ms-auto mb-2 mb-md-0">
-                                        <li>
-                                            <hr className="dropdown-divider" />
-                                        </li>
-                                        <li className="nav-item">
-                                            <a className="nav-link" href="#">My Protocal</a>
-                                        </li>
-                                        <li>
-                                            <hr className="dropdown-divider" />
-                                        </li>
-                                        <li className="nav-item">
-                                            <a className="nav-link" href="#">Language</a>
-                                        </li>
-                                        <li>
-                                            <hr className="dropdown-divider" />
-                                        </li>
-                                        <li className="nav-item">
-                                            <a className="nav-link" href="#">Menu</a>
-                                        </li>
-                                        <li>
-                                            <hr className="dropdown-divider" />
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                            <a className="navbar-brand" href="#"><img src="/images/aipsychi.png" alt="Logo" className="img-fluid" /></a>
                         </div>
-                        <a className="navbar-brand" href="#"><img src="/images/aipsychi.png" alt="Logo" className="img-fluid" /></a>
-                        <div className="d-flex ms-auto">
-                            <div className="d-flex align-items-center customSwitch mb-3 mb-md-0">
-                                <div className="form-check form-switch form-switch-xl" id="togglecheckbox" style={{ display: "none" }}>
-                                    <input className="form-check-input " type="checkbox" id="flexSwitchCheckChecked" checked />
-                                </div>
-                            </div>
-                            {/* <ul className="navbar-nav ms-0 ms-sm-3">
+                        <div className="d-flex">
+                            <ul className="navbar-nav ms-0 ms-sm-3 mr-4 align-self-start">
                                 <li className="nav-item">
-                                    <FormGroup>
-                                        <FormControlLabel onChange={() => toggleUseLLM(!useLLM)} control={<Switch checked={useLLM} />} label="Use LLM" />
-                                    </FormGroup>
-                                </li>
-                            </ul> */}
-                            <FormControl sx={{width:"150px"}}>
-                                <InputLabel id="demo-simple-select-label">Language</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    // value={age}
-                                    label="Language"
-                                    // onChange={handleChange}
-                                >
-                                    <MenuItem value={10}>en-us</MenuItem>
-                                    <MenuItem value={20}>en-in</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <ul className="navbar-nav ms-0 ms-sm-3">
-                                <li className="nav-item">
-                                    <Button onClick={() => {
+                                    <Button
+                                    sx={{ width: "150px" , height:"40px" , marginRight:"8px"}}
+                                    variant="outlined"
+                                    onClick={() => {
                                         localStorage.removeItem("sessionId");
                                         window.location.reload()
                                     }}>
@@ -211,10 +116,25 @@ const App = () => {
                                     </Button>
                                 </li>
                             </ul>
+                            <div  className='align-self-start'>
+                                <FormControl size='small' sx={{ width: "150px"}}>
+                                    <InputLabel id="demo-simple-select-label">Language</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        // value={age}
+                                        label="Language"
+                                    // onChange={handleChange}
+                                    >
+                                        <MenuItem value={10}>en-us</MenuItem>
+                                        <MenuItem value={20}>en-in</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </div>
 
 
-                            <Profile userData={userData} setViewLoginModal={setViewLoginModal} viewLoginModal={viewLoginModal} >
-                                {userData?.remainingSession >= 0 ? <span style={{ fontSize: '13px' }} className="additional-text">Remaining Sessions : {userData?.remainingSession}</span> : ""}
+                            <Profile className='align-self-start' userData={userData} setViewLoginModal={setViewLoginModal} viewLoginModal={viewLoginModal} >
+                                {userData?.remainingSession >= 0 ? <span style={{ fontSize: '13px' }} className="additional-text">Remaining Sessions : {userData?.remainingSession > 99 ? "99+" : userData?.remainingSession}</span> : ""}
                             </Profile>
                         </div>
                     </div>
