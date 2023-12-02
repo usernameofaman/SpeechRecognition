@@ -88,7 +88,6 @@ export default function Session({ useLLM, inputMode }) {
   const [preventAutoSubmitTimerId, setPreventAutoSubmitTimerId] = useState(null)
 
   const startWarningMessage = () => {
-    console.log("CALLING WARNING MESSAGE")
     if (!hasWarningProvided) {
       if (!((apiData.question.code === "201" || apiData.question.code === "204" || apiData.question.code === "206") && patientAnswer === "")) {
         let restartDuration = Date.now() + 3000;
@@ -116,18 +115,18 @@ export default function Session({ useLLM, inputMode }) {
   };
 
   const nowReadQuestion = async () => {
-    let currentQuestionDuration = 100;
+    let currentQuestionDuration = 1;
     setAudioElement(async (prev) => {
       try {
         currentQuestionDuration = await getAudioDuration(prev, prev.src);
         prev.play()
       } catch (e) {
+        let placeHolderAudio = new Audio('https://demoplayground4093662547.z20.web.core.windows.net/us-en/placeholder.mp3')
+        placeHolderAudio.play()
         console.log("Audio Error")
       }
 
       currentQuestionDuration = parseInt(Math.ceil(currentQuestionDuration)) * 1000
-
-
       setTimerDuration((prevTimer) => {
         let gapAfterQuestionSpeaks = 3000;
         let restartDuration = Date.now() + gapAfterQuestionSpeaks + currentQuestionDuration + prevTimer * 1000;
@@ -150,7 +149,7 @@ export default function Session({ useLLM, inputMode }) {
 
       audio.addEventListener('error', (error) => {
         console.log(apiData)
-        showErrorMessage("Audio not found for")
+        // showErrorMessage("Audio not found for")
         reject(100);
       });
 
@@ -412,9 +411,9 @@ export default function Session({ useLLM, inputMode }) {
                               id="editButton"
                               onClick={() => {
                                 setPatientAnswerBox(!patientAnswerBox)
+                                SpeechRecognition.stopListening();
                                 if (hasWarningProvided) {
                                   clearTimeout(preventAutoSubmitTimerId)
-                                  SpeechRecognition.stopListening();
                                   setDidUserStopSubmission(true)
                                   setHasWarningProvided(false)
                                 }
