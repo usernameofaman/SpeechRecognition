@@ -7,7 +7,6 @@ import Testing from './Components/Testing/TesingHome';
 import './App.css'
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import AudioSession from './Components/AudioSession/Home';
 
 
 
@@ -61,7 +60,6 @@ function App() {
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/corporate" element={<Corporate />} />
                     <Route path="/testing" element={<Testing />} />
-                    <Route path="/audio" element={<AudioSession />} />
 
                     <Route element={NotFound} />
                 </Routes>
