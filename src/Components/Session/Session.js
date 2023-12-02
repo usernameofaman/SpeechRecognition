@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import Typewriter from "typewriter-effect";
 import SpeechRecognition, {
   useSpeechRecognition,
@@ -6,6 +6,7 @@ import SpeechRecognition, {
 import { CorporateService, QuestionsService } from "../../services";
 import { useTimer } from "react-timer-hook";
 import { showErrorMessage, showSuccessMessage } from "../../managers/utility";
+import '../../App.css'
 
 import {
   detectLanguage,
@@ -24,6 +25,7 @@ export default function Session({ useLLM, inputMode }) {
   const [disorderCounts, setDisorderCounts] = useState(null);
   const [submitInProcess, setSubmitInProcess] = useState(false);
   const [listenerState, setListenerState] = useState("NOT_STARTED");
+  const [controlsVisible, setControlsVisible] = useState(false)
   const [final, setFinal] = useState([]);
   const [progressBar, setProgressBar] = useState({
     percentage: 3,
@@ -70,14 +72,33 @@ export default function Session({ useLLM, inputMode }) {
   }, [currentLot]);
 
 
-  useEffect(() => {
 
+
+  useEffect(() => {
     if (!isTimerRunning && listenerState === "STARTED") {
       setListenerState("ENDED");
       SpeechRecognition.stopListening();
-      setTimeout(submitQuestion, 1000)
+      startWarningMessage()
     }
   }, [isTimerRunning]);
+
+
+  const [hasWarningProvided, setHasWarningProvided] = useState(false)
+  const [didUserStopSubmission, setDidUserStopSubmission] = useState(false)
+  const [preventAutoSubmitTimerId, setPreventAutoSubmitTimerId] = useState(null)
+
+  const startWarningMessage = () => {
+    console.log("CALLING WARNING MESSAGE")
+    if (!hasWarningProvided) {
+      if (!((apiData.question.code === "201" || apiData.question.code === "204" || apiData.question.code === "206") && patientAnswer === "")) {
+        let restartDuration = Date.now() + 3000;
+        restart(restartDuration)
+        let timerId = setTimeout(submitQuestion, 3000)
+        setPreventAutoSubmitTimerId(timerId)
+        setHasWarningProvided(true)
+      } else submitQuestion()
+    }
+  }
 
   const getUserDetails = async () => {
     let userData = localStorage.getItem('userDetails')
@@ -97,18 +118,24 @@ export default function Session({ useLLM, inputMode }) {
   const nowReadQuestion = async () => {
     let currentQuestionDuration = 100;
     setAudioElement(async (prev) => {
-      currentQuestionDuration = await getAudioDuration(prev, prev.src);
-      currentQuestionDuration = parseInt(currentQuestionDuration) * 1000
-      prev.play()
+      try {
+        currentQuestionDuration = await getAudioDuration(prev, prev.src);
+        prev.play()
+      } catch (e) {
+        console.log("Audio Error")
+      }
+
+      currentQuestionDuration = parseInt(Math.ceil(currentQuestionDuration)) * 1000
+  
 
       setTimerDuration((prevTimer) => {
-        let gapAfterQuestionSpeaks = 5000
-        let restartDuration = Date.now() + gapAfterQuestionSpeaks + prevTimer * 1000;
+        let gapAfterQuestionSpeaks = 3000;
+        let restartDuration = Date.now() + gapAfterQuestionSpeaks + currentQuestionDuration + prevTimer * 1000;
         console.log("Expiry is", restartDuration - Date.now())
         setTimeout(() => {
           restart(restartDuration);
           startListening();
-        }, gapAfterQuestionSpeaks)
+        }, gapAfterQuestionSpeaks + currentQuestionDuration)
         return prevTimer
       })
       return prev
@@ -122,7 +149,9 @@ export default function Session({ useLLM, inputMode }) {
       });
 
       audio.addEventListener('error', (error) => {
-        reject(new Error(`Failed to load audio: ${error.message}`));
+        console.log(apiData)
+        showErrorMessage("Audio not found for")
+        reject(100);
       });
 
       audio.src = url;
@@ -132,8 +161,15 @@ export default function Session({ useLLM, inputMode }) {
 
   const [patientAnswer, setPatientAnswer] = useState("");
   const [patientAnswerBox, setPatientAnswerBox] = useState(false);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    enableFieldAndFocus()
+  }, [patientAnswerBox])
+
 
   const startListening = () => {
+    setControlsVisible(true)
     setListenerState("STARTED");
     SpeechRecognition.startListening({ continuous: true, language: "en-IN" });
   };
@@ -170,7 +206,9 @@ export default function Session({ useLLM, inputMode }) {
     });
     if (data.question) {
       setQuestion(data.question.text);
-      setAudioElement(new Audio(`https://demoplayground4093662547.z20.web.core.windows.net/us-en/Code${data.question.code}.mp3`))
+      try {
+        setAudioElement(new Audio(`https://demoplayground4093662547.z20.web.core.windows.net/us-en/Code${data.question.code}.mp3`))
+      } catch (e) { console.log("Sdf") }
       setTimerDuration(data.question.timer === "HIGH" ? 45 : data.question.timer === "MEDIUM" ? 30 : data.question.timer === "LOW" ? 10 : 5)
       setInstructions(data.question.instructions);
       readInstructions(data.question);
@@ -184,11 +222,14 @@ export default function Session({ useLLM, inputMode }) {
   };
 
 
-  const submitQuestion = async () => {
+  const submitQuestion = async (skip) => {
+    setHasWarningProvided(false)
     setSubmitInProcess(true);
     resetTranscript();
-    if (patientAnswer === "") {
+    if (!skip && (apiData.question.code === "201" || apiData.question.code === "204" || apiData.question.code === "206") && patientAnswer === "") {
       showErrorMessage("Answer Is Required Please Type");
+      setPatientAnswerBox(true)
+      // enableFieldAndFocus()
       setSubmitInProcess(false);
       return;
     }
@@ -210,9 +251,12 @@ export default function Session({ useLLM, inputMode }) {
 
     const data = await QuestionsService.getQuestions(reqData);
     if (data.question) {
+      setControlsVisible(false)
       setPatientAnswer("");
       setQuestion(data.question.text);
-      setAudioElement(new Audio(`https://demoplayground4093662547.z20.web.core.windows.net/us-en/Code${data.question.code}.mp3`))
+      try {
+        setAudioElement(new Audio(`https://demoplayground4093662547.z20.web.core.windows.net/us-en/Code${data.question.code}.mp3`))
+      } catch (e) { console.log("Audio Error") }
       setTimerDuration(data.question.timer === "HIGH" ? 45 : data.question.timer === "MEDIUM" ? 30 : data.question.timer === "LOW" ? 10 : 5)
       setInstructions(data.question.instructions);
       setAPIData(data);
@@ -244,6 +288,11 @@ export default function Session({ useLLM, inputMode }) {
       <div dangerouslySetInnerHTML={{ __html: instructions }} />
     );
   }
+
+  const enableFieldAndFocus = () => {
+    setTimeout(inputRef.current.focus(), 500)
+  };
+
 
 
   return (
@@ -327,6 +376,7 @@ export default function Session({ useLLM, inputMode }) {
                             disabled={
                               inputMode === "VOICE" && !patientAnswerBox
                             }
+                            ref={inputRef}
                             cols="120"
                             style={{ maxWidth: "100%" }}
                             rows={3}
@@ -335,52 +385,60 @@ export default function Session({ useLLM, inputMode }) {
                           />
                         </div>
                         <div className="py-2 text-end">
-                          {submitInProcess ? (
+                          <button
+                            type="button"
+                            className={`btn btn-success btn-sm`}
+                            id="loader"
+                            style={{ display: submitInProcess ? "block" : "none" }}
+                          >
+                            <span
+                              className="spinner-border spinner-border-sm"
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
+                            Processing...
+                          </button>
+                          {/* Buttons div */}
+                          <div className={`animated ${controlsVisible ? 'expanded' : ''}`}>
                             <button
                               type="button"
-                              className="btn btn-success btn-sm"
-                              id="loader"
-                              style={{ display: "" }}
-                            >
-                              <span
-                                className="spinner-border spinner-border-sm"
-                                role="status"
-                                aria-hidden="true"
-                              ></span>
-                              Processing...
-                            </button>
-                          ) : (
-                            <>
-                              <button
-                                type="button"
-                                style={{ marginRight: 3 }}
-                                className="btn btn-primary btn-sm"
-                                id="editButton"
-                                onClick={() =>
-                                  setPatientAnswerBox(!patientAnswerBox)
+                              style={{ marginRight: 3 }}
+                              className="btn btn-primary btn-sm"
+                              id="editButton"
+                              onClick={() => {
+                                setPatientAnswerBox(!patientAnswerBox)
+                                if (hasWarningProvided) {
+                                  clearTimeout(preventAutoSubmitTimerId)
+                                  setDidUserStopSubmission(true)
+                                  setHasWarningProvided(false)
                                 }
-                              >
-                                Edit
-                              </button>
-                              <button
-                                style={{ marginRight: 3 }}
-                                onClick={submitQuestion}
-                                // disabled={isTimerRunning}
-                                type="button"
-                                className="btn btn-success btn-sm"
-                                id="submit-button"
-                              >
-                                Submit
-                              </button>
+                              }}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              style={{ marginRight: 3 }}
+                              onClick={submitQuestion}
+                              // disabled={isTimerRunning}
+                              type="button"
+                              className="btn btn-success btn-sm"
+                              id="submit-button"
+                            >
+                              Submit
+                            </button>
 
-                              <button
-                                type="button"
-                                className="btn btn-danger btn-sm"
-                              >
-                                Skip
-                              </button>
-                            </>
-                          )}
+                            <button
+                              type="button"
+                              className="btn btn-danger btn-sm"
+                              onClick={() => {
+                                setHasWarningProvided(false)
+                                submitQuestion(true)
+                              }
+                              }
+                            >
+                              Skip
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -430,6 +488,20 @@ export default function Session({ useLLM, inputMode }) {
                   </div>
                 </div>
               </div>
+              {hasWarningProvided &&
+                <div className="card shadow-sm mt-2 mb-2">
+                  <div className="card-body">
+                    <div className="row d-flex justify-content-between align-items-center">
+                      <div className="col-md-12">
+                        <div className="row mb-2">
+                          <div className="col-12">
+                            Your answer is about to be submitted in 3 seconds – press edit to change
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>}
               <div className="card shadow-sm ">
                 <div className="card-body">
                   <div className="row d-flex justify-content-between align-items-center">

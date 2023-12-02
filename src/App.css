@@ -30,6 +30,17 @@
 }
 
 
+.animated {
+  overflow: hidden;
+  height: 0px; /* Set the desired expanded height */
+  transition: height 0.3s ease;
+}
+
+.animated.expanded {
+  height: 35px; /* Set the desired expanded height */
+}
+
+
 
 .Blink {
   margin-left: 10px;

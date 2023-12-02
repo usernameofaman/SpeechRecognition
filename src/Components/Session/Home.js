@@ -6,7 +6,7 @@ import '../../custom.css'
 import Session from './Session';
 import React, { useEffect } from 'react';
 import { CorporateService, SettingsService } from '../../services';
-import { FormControlLabel, FormGroup, Switch, Button } from '@mui/material';
+import { FormControlLabel, FormGroup, Switch, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { showErrorMessage } from '../../managers/utility';
 import LoginForm from './Models/AuthModal';
 import Profile from './Models/ProfilePopper'
@@ -181,13 +181,26 @@ const App = () => {
                                     <input className="form-check-input " type="checkbox" id="flexSwitchCheckChecked" checked />
                                 </div>
                             </div>
-                            <ul className="navbar-nav ms-0 ms-sm-3">
+                            {/* <ul className="navbar-nav ms-0 ms-sm-3">
                                 <li className="nav-item">
                                     <FormGroup>
                                         <FormControlLabel onChange={() => toggleUseLLM(!useLLM)} control={<Switch checked={useLLM} />} label="Use LLM" />
                                     </FormGroup>
                                 </li>
-                            </ul>
+                            </ul> */}
+                            <FormControl sx={{width:"150px"}}>
+                                <InputLabel id="demo-simple-select-label">Language</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    // value={age}
+                                    label="Language"
+                                    // onChange={handleChange}
+                                >
+                                    <MenuItem value={10}>en-us</MenuItem>
+                                    <MenuItem value={20}>en-in</MenuItem>
+                                </Select>
+                            </FormControl>
                             <ul className="navbar-nav ms-0 ms-sm-3">
                                 <li className="nav-item">
                                     <Button onClick={() => {
