@@ -233,7 +233,8 @@ export default function Session({ voice, useLLM, inputMode }) {
             readInstructions(data.question)
             setLogs(data.log)
             setLotCount(data.lotCount || 11)
-            submitQuestion()
+            if (data.message !== "All Lots are completed")
+                submitQuestion()
             // setTimeout(submitQuestion , 2000)
         }
         else {
@@ -435,7 +436,7 @@ export default function Session({ voice, useLLM, inputMode }) {
                     }}>
                         {report}
                     </div>}
-                    <div name="logs" style={{paddingLeft:"40px"}}>
+                    <div name="logs" style={{ paddingLeft: "40px" }}>
                         {logs}
                     </div>
                 </div>

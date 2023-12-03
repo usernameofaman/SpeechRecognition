@@ -17,6 +17,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import CRUDOperations from './Crud/CrudIndex'
 import Corporate from './Corporate/Main'
+import SessionDash from "./SessionsDash/SessionDash";
 
 
 const drawerWidth = 200;
@@ -36,6 +37,9 @@ export default function ResponsiveDrawer(props) {
     case "CRUD":
       component = <CRUDOperations />
       break;
+    case "SESSION":
+      component = <SessionDash />
+      break;
     default:
       break;
   }
@@ -47,20 +51,30 @@ export default function ResponsiveDrawer(props) {
       <List>
         <ListItem disablePadding>
           <ListItemButton
-            variant={activeTab === "CRUD" ? "contained" : "outlined"}
+            sx={{ backgroundColor: activeTab === "CRUD" ? "#cfcfcf" : "" }}
             onClick={() => setActiveTab("CRUD")}
           >
-              <InboxIcon sx={{marginRight:1}}/>
+            <InboxIcon sx={{ marginRight: 1 }} />
             <ListItemText primary="Crud Operations" />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
           <ListItemButton
-            variant={activeTab === "CORPORATE" ? "contained" : "outlined"}
+            sx={{ backgroundColor: activeTab === "CORPORATE" ? "#cfcfcf" : "" }}
             onClick={() => setActiveTab("CORPORATE")}
           >
-              <InboxIcon sx={{marginRight:1}}/>
+            <InboxIcon sx={{ marginRight: 1 }} />
             <ListItemText primary="Corporate" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton
+            sx={{ backgroundColor: activeTab === "SESSION" ? "#cfcfcf" : "" }}
+
+            onClick={() => setActiveTab("SESSION")}
+          >
+            <InboxIcon sx={{ marginRight: 1 }} />
+            <ListItemText primary="Sessions" />
           </ListItemButton>
         </ListItem>
 

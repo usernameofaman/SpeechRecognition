@@ -9,13 +9,28 @@ export default {
     getAllLots,
     updateQuestion,
     addQuestion,
-    deleteQuestion
+    deleteQuestion,
+    getAllSessions
 };
 
 
 async function getQuestions(requestData) {
     let url = process.env.REACT_APP_API_URI + "/api/submit-answers"; 
     return httpService(httpConstants.METHOD_TYPE.POST, getHeaders(),requestData, url)
+        .then(
+            response => {
+                if (!response)
+                    return Promise.reject(response);
+                return Promise.resolve(response);
+            }
+        ).catch(function (err) {
+            return Promise.reject(err);
+        });
+}
+
+async function getAllSessions(page){
+    let url = process.env.REACT_APP_API_URI + `/api/answer-sessions?page=${page}`; 
+    return httpService(httpConstants.METHOD_TYPE.GET, getHeaders(),{}, url)
         .then(
             response => {
                 if (!response)

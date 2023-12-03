@@ -18,3 +18,8 @@ timer again starts for 3 sec.
 5.	When we give prompt answer is required, please type, 
 i.	the cursor is not in answer window, it should be in answer window.
 ii.	This should be given only for Question no 201 and 204 (names of participant and name of buddy)
+
+
+December 3 , 2023
+
+Add View to see all the sessions, Details, Logs, Reports, Created API to make it all viewable. There are Noticable UI Issues. Will be fixing next.
