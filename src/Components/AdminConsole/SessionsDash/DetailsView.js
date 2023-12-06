@@ -26,7 +26,7 @@ export default function DetailsView({ selectedSession , setSelectedSession}) {
                                 height: "300px",
                                 overflow: "auto"
                             }}>
-                                {Object.keys(selectedSession.answerWithString).map((item) => (
+                                {selectedSession && selectedSession.answerWithString && Object.keys(selectedSession?.answerWithString).map((item) => (
                                     <>{item} -  {selectedSession.answerWithString[item]} <br /></>
                                 ))}
                             </div>
@@ -56,7 +56,7 @@ export default function DetailsView({ selectedSession , setSelectedSession}) {
                     </Box>
                 </Paper>
                 <Paper sx={{ padding: 2, marginTop: 1 }} elevation={1}>
-                    Patient Report
+                <b>Patient Report</b>
                     <Divider />
                     <div style={{
                         whiteSpace: 'pre-line',
@@ -71,7 +71,7 @@ export default function DetailsView({ selectedSession , setSelectedSession}) {
                     </div>
                 </Paper>
                 <Paper sx={{ padding: 2, marginTop: 1 }} elevation={1}>
-                    <b>Patient Report</b>
+                    <b>Psycologist Report</b>
                     <Divider />
                     <div style={{
                         whiteSpace: 'pre-line',
