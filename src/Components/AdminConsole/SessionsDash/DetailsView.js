@@ -66,9 +66,11 @@ export default function DetailsView({ selectedSession , setSelectedSession}) {
                         justifyContent: "center",
                         height: "300px",
                         overflow: "auto"
-                    }}>
-                        {selectedSession.patientReport}
-                    </div>
+                    }}
+                    dangerouslySetInnerHTML={{__html : selectedSession.patientReport}}
+                    />
+                        {/* {selectedSession.patientReport} */}
+                    {/* </div> */}
                 </Paper>
                 <Paper sx={{ padding: 2, marginTop: 1 }} elevation={1}>
                     <b>Psycologist Report</b>
