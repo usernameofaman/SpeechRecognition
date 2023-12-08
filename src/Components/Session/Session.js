@@ -225,7 +225,7 @@ export default function Session({ useLLM, inputMode }) {
     setHasWarningProvided(false)
     setSubmitInProcess(true);
     resetTranscript();
-    if (!skip && (apiData.question.code === "201" || apiData.question.code === "204" || apiData.question.code === "206") && patientAnswer === "") {
+    if (!skip && (apiData.question.code === "201" || apiData.question.code === "204" || apiData.question.code === "206" || apiData.question.code === "204" || apiData.question.code === "208") && patientAnswer === "") {
       showErrorMessage("Answer Is Required Please Type");
       setPatientAnswerBox(true)
       // enableFieldAndFocus()

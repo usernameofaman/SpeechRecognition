@@ -171,7 +171,7 @@ const App = () => {
 
                                     <i className="fas fa-arrow-right ms-2"></i>
                                     <br />
-                                    {userData?.remainingSession >= 0 ? <span style={{ fontSize: '13px' }} className="additional-text" onClick={handleOpen}>Remaining Sessions : {userData?.remainingSession}</span> : ""}
+                                    {/* {userData?.remainingSession >= 0 ? <span style={{ fontSize: '13px' }} className="additional-text" onClick={handleOpen}>Remaining Sessions : {userData?.remainingSession}</span> : ""} */}
 
                                 </button>
 
