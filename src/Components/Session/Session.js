@@ -369,12 +369,7 @@ export default function Session({ useLLM, inputMode }) {
                             </span>
                           </small>
                         </h5>
-                        <div
-                          style={{ minHeight: "50px" }}
-                          className="form-control border-primary p-2 rounded mb-0 bg-white"
-                          id="chat3"
-                          readOnly
-                        >
+                        <div style={{ minHeight: "50px" }} className="form-control border-primary p-2 rounded mb-0 bg-white" id="chat3" readOnly>
                           <textarea
                             onChange={(e) => setPatientAnswer(e.target.value)}
                             disabled={

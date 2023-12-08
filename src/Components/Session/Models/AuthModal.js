@@ -152,7 +152,7 @@ const LoginForm = ({ open, onClose }) => {
                 background: "#fff",
                 padding: "20px",
                 borderRadius: "8px",
-                maxWidth: "400px",
+                maxWidth: "420px",
                 width: "100%",
               }}
             >
@@ -164,7 +164,7 @@ const LoginForm = ({ open, onClose }) => {
                 >
                   <Tab
                     style={{ fontSize: "12px" }}
-                    label="Login as Corporate"
+                    label="Login as Corporate Admin"
                     {...a11yProps(0)}
                   />
                   <Tab
