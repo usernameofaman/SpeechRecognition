@@ -189,7 +189,7 @@ export default function Session({ voice, useLLM, inputMode }) {
     const getQuestions = async () => {
         let sId = localStorage.getItem('sessionId');
         console.log("S==========", userData)
-        const data = await QuestionsService.getQuestions({
+        const data = await QuestionsService.getQuestionsTest({
             sessionId: sId,
             refetch: true,
             userId: userData._id
@@ -231,7 +231,7 @@ export default function Session({ voice, useLLM, inputMode }) {
             lot: currentLot,
             useLLM: false
         }
-        const data = await QuestionsService.getQuestions(reqData);
+        const data = await QuestionsService.getQuestionsTest(reqData);
         if (data.question) {
             setPatientAnswer("")
             setQuestion(data.question.text);
