@@ -8,6 +8,7 @@ import "../../App.css"
 import { decodeToken } from 'react-jwt'
 import { useNavigate } from "react-router-dom";
 
+import { AudioRecorder } from 'react-audio-voice-recorder';
 
 
 console.log("REACT_APP_ALLOW_READING", process.env.REACT_APP_ALLOW_READING)
@@ -48,6 +49,16 @@ export default function Session({ voice, useLLM, inputMode }) {
         countPerLot: 0,
         prevLot: currentLot
     })
+
+    // Audio Recorder
+    const addAudioElement = (blob) => {
+        const url = URL.createObjectURL(blob);
+        const audio = document.createElement("audio");
+        audio.src = url;
+        audio.controls = true;
+        document.body.appendChild(audio);
+      };
+
 
     const [userData, setUserData] = useState({})
     const [report, setReport] = useState("")
@@ -258,6 +269,62 @@ export default function Session({ voice, useLLM, inputMode }) {
         }
     };
 
+    // const submitQuestion = async (skip) => {
+    //     // setHasWarningProvided(false)
+    //     setSubmitInProcess(true);
+    //     resetTranscript();
+    //     if (!skip && (apiData.question.code === "201" || apiData.question.code === "204" || apiData.question.code === "206") && patientAnswer === "") {
+    //       showErrorMessage("Answer Is Required Please Type");
+    //       setPatientAnswerBox(true)
+    //       // enableFieldAndFocus()
+    //       setSubmitInProcess(false);
+    //       return;
+    //     }
+    //     let sId = localStorage.getItem("sessionId");
+    //     if (!sId) {
+    //     }
+    
+    //     let translatedText
+    //     const reqData = {
+    //       currentQuestionCode: apiData.question?.code,
+    //       textResponse: translatedText ? translatedText : patientAnswer,
+    //       sessionId: sId,
+    //       answers: answers,
+    //       disorderCounts: disorderCounts,
+    //       lot: currentLot,
+    //       useLLM: useLLM,
+    //       userId: userData._id
+    //     };
+    
+    //     const data = await QuestionsService.getQuestions(reqData);
+    //     if (data.question) {
+    //     //   setControlsVisible(false)
+    //       setPatientAnswer("");
+    //       setQuestion(data.question.text);
+    //       try {
+    //         // setAudioElement(new Audio(`https://demoplayground4093662547.z20.web.core.windows.net/us-en/Code${data.question.code}.mp3`))
+    //       } catch (e) { console.log("Audio Error") }
+    //       setTimerDuration(data.question.timer === "HIGH" ? 45 : data.question.timer === "MEDIUM" ? 30 : data.question.timer === "LOW" ? 10 : 5)
+    //       setInstructions(data.question.instructions);
+    //       setAPIData(data);
+    //       setAnswers(data.answers);
+    //       setDisorderCounts(data.disorderCounts);
+    //       setSubmitInProcess(false);
+    //       setCurrentLot(data.lot);
+    //       readInstructions(data.question);
+    //     } else {
+    //       if (data.final) {
+    //         setFinal(data.final);
+    //         setSubmitInProcess(false);
+    //       }
+    //     //   if (data.message) showErrorMessage(data.message);
+    //     }
+    
+    //     if (data.message === "All Lots are completed") {
+    //     //   showSuccessMessage("Thank you")
+    //     }
+    //   };
+    
 
     if (!browserSupportsSpeechRecognition) {
         return null
@@ -327,6 +394,8 @@ export default function Session({ voice, useLLM, inputMode }) {
                                                 {/* Todo - Text area */}
                                                 <div style={{ minHeight: "50px" }} className="form-control border-primary p-2 rounded mb-0 bg-white"
                                                     id="chat3" readOnly>
+                                                                                     <AudioRecorder onRecordingComplete={addAudioElement} audioTrackConstraints={{noiseSuppression: true, echoCancellation: true,}} downloadOnSavePress={true} downloadFileExtension="webm"/>
+
                                                     <textarea onChange={(e) => setPatientAnswer(e.target.value)}
                                                         disabled={inputMode === "VOICE" && !patientAnswerBox}
                                                         cols="120" style={{ maxWidth: "100%" }} rows={3} className='patient-answer-box' value={patientAnswer} />
@@ -346,7 +415,11 @@ export default function Session({ voice, useLLM, inputMode }) {
                                                                 Submit
                                                             </button>
 
-                                                            <button type="button" className="btn btn-danger btn-sm">Discard</button>
+                                                            <button type="button" className="btn btn-danger btn-sm" onClick={() => {
+                                // setHasWarningProvided(false)
+                                submitQuestion(true)
+                              }
+                              }>Discard</button>
                                                         </>}
                                                 </div>
                                             </div>
