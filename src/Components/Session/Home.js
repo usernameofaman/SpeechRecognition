@@ -40,15 +40,17 @@ const App = () => {
     }
 
     const getUserDetails = async () => {
-        let userData = localStorage.getItem('userDetails')
-        if (userData) userData = JSON.parse(userData)
-        console.log(userData);
-        if (userData && userData._id) {
-            const userDetails = await CorporateService.getCorporateEmployeeDetails(userData?._id);
-            setUserData(userDetails)
-            localStorage.setItem('userDetails', JSON.stringify(userDetails))
+        try {
+            let userData = localStorage.getItem('userDetails')
+            if (userData) userData = JSON.parse(userData)
+            if (userData && userData._id) {
+                const userDetails = await CorporateService.getCorporateEmployeeDetails(userData?._id);
+                setUserData(userDetails)
+                localStorage.setItem('userDetails', JSON.stringify(userDetails))
+            }
+        } catch (e) {
+            console.log("Here")
         }
-
     }
 
     useEffect(() => {
@@ -106,18 +108,18 @@ const App = () => {
                             <ul className="navbar-nav ms-0 ms-sm-3 mr-4 align-self-start">
                                 <li className="nav-item">
                                     <Button
-                                    sx={{ width: "150px" , height:"40px" , marginRight:"8px"}}
-                                    variant="outlined"
-                                    onClick={() => {
-                                        localStorage.removeItem("sessionId");
-                                        window.location.reload()
-                                    }}>
+                                        sx={{ width: "150px", height: "40px", marginRight: "8px" }}
+                                        variant="outlined"
+                                        onClick={() => {
+                                            localStorage.removeItem("sessionId");
+                                            window.location.reload()
+                                        }}>
                                         Reset
                                     </Button>
                                 </li>
                             </ul>
-                            <div  className='align-self-start'>
-                                <FormControl size='small' sx={{ width: "150px"}}>
+                            <div className='align-self-start'>
+                                <FormControl size='small' sx={{ width: "150px" }}>
                                     <InputLabel id="demo-simple-select-label">Language</InputLabel>
                                     <Select
                                         labelId="demo-simple-select-label"

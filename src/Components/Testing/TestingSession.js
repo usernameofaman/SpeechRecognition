@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Typewriter from 'typewriter-effect';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { QuestionsService } from '../../services';
@@ -8,11 +8,8 @@ import "../../App.css"
 import { decodeToken } from 'react-jwt'
 import { useNavigate } from "react-router-dom";
 
-import { AudioRecorder } from 'react-audio-voice-recorder';
+import { AudioRecorder , useAudioRecorder } from 'react-audio-voice-recorder';
 
-
-console.log("REACT_APP_ALLOW_READING", process.env.REACT_APP_ALLOW_READING)
-console.log("REACT_APP_ALLOW_TIMER", process.env.REACT_APP_ALLOW_TIMER)
 
 
 const dummyAnswers = {
@@ -50,14 +47,20 @@ export default function Session({ voice, useLLM, inputMode }) {
         prevLot: currentLot
     })
 
-    // Audio Recorder
     const addAudioElement = (blob) => {
         const url = URL.createObjectURL(blob);
         const audio = document.createElement("audio");
         audio.src = url;
         audio.controls = true;
         document.body.appendChild(audio);
-      };
+    };
+
+
+
+    const audioRecorderRef = useRef(<AudioRecorder onRecordingComplete={addAudioElement} audioTrackConstraints={{ noiseSuppression: true, echoCancellation: true, }} downloadOnSavePress={true} downloadFileExtension="webm" />);
+    const [isRecording, setIsRecording] = useState(false);
+
+    // Audio Recorder
 
 
     const [userData, setUserData] = useState({})
@@ -67,7 +70,6 @@ export default function Session({ voice, useLLM, inputMode }) {
     const [timerDuration, setTimerDuration] = useState(5);
     const [midDelay, setMidDelay] = useState(5)
 
-    console.log("listenerState", listenerState, "submitInProcess", submitInProcess, "disorderCounts", disorderCounts, "answers", answers, "currentLot", currentLot, "instructions", instructions)
 
     const { seconds, start, pause, restart, isRunning: isTimerRunning } = MyTimer({ expiryTimestamp: Date.now() + (0 * 1000) });
     useEffect(() => {
@@ -76,11 +78,8 @@ export default function Session({ voice, useLLM, inputMode }) {
     }, [userData])
     useEffect(() => {
         setProgressBar((prev) => {
-            console.log("PERRR", prev.percentage)
             let newPercentage = (100 / lotCount) * (parseInt(currentLot) + 1);
-            console.log("PERRR NEW PER", newPercentage)
             if (prev.countPerLot > 4) newPercentage += (100 / (lotCount * 2))
-            console.log("PERRR NEW PER", newPercentage)
             return {
                 prevLot: currentLot,
                 percentage: newPercentage,
@@ -119,31 +118,34 @@ export default function Session({ voice, useLLM, inputMode }) {
     }
 
 
-    const speak = ({ text, onEnd }) => {
-        // const speakObj = new SpeechSynthesisUtterance();
-        // speakObj.text = text;
-        // speakObj.voice = voice;
-        // speakObj.onend = () => {
-        //     if (onEnd) {
-        //         console.log("On End Check", onEnd)
-        //         onEnd();
-        //     }
-        //     clearInterval(resumeInterval);
-        // };
 
-        // // Start/resume the speech
+    const {
+        startRecording,
+        stopRecording,
+        recordingBlob
+      } = useAudioRecorder();
 
-        // // Set up an interval to periodically pause and resume
-        // const resumeInterval = setInterval(() => {
-        //     if (!window.speechSynthesis.speaking) {
-        //         clearInterval(resumeInterval);
-        //     } else {
-        //         window.speechSynthesis.pause();
-        //         window.speechSynthesis.resume();
-        //     }
-        // }, 14000);
+      useEffect(() => {
+
+        if(isRecording) stopRecording()
+        console.log(recordingBlob)
+      }, [isRecording])
+
+    const startRecordingFn = () => {
+        setTimeout(() => {
+            console.log("HERERERER",audioRecorderRef )
+            setTimeout(() => setIsRecording(false), 3000)
+            startRecording()
+            stopRecordingFn()
+        }, 3000)
     };
 
+    const stopRecordingFn = () => {
+        setTimeout(() => stopRecording , 3000)
+
+    }
+
+    const speak = () => {}
 
 
     useEffect(() => {
@@ -200,6 +202,8 @@ export default function Session({ voice, useLLM, inputMode }) {
             readInstructions(data.question)
             setAPIData(data)
             setLogs(data.log)
+            console.log("RIGHT ERHEHREHR")
+            startRecordingFn()
         } else {
             if (data.message)
                 showErrorMessage(data.message)
@@ -244,6 +248,14 @@ export default function Session({ voice, useLLM, inputMode }) {
             readInstructions(data.question)
             setLogs(data.log)
             setLotCount(data.lotCount || 11)
+            console.log("RIGHT ERHEHREHR")
+            setTimeout(() => {
+                console.log("HERERERER")
+                if (audioRecorderRef.current) {
+                    audioRecorderRef.current.startRecording();
+                    setIsRecording(true);
+                }
+            }, 3000)
             if (data.message !== "All Lots are completed")
                 submitQuestion()
             // setTimeout(submitQuestion , 2000)
@@ -283,7 +295,7 @@ export default function Session({ voice, useLLM, inputMode }) {
     //     let sId = localStorage.getItem("sessionId");
     //     if (!sId) {
     //     }
-    
+
     //     let translatedText
     //     const reqData = {
     //       currentQuestionCode: apiData.question?.code,
@@ -295,7 +307,7 @@ export default function Session({ voice, useLLM, inputMode }) {
     //       useLLM: useLLM,
     //       userId: userData._id
     //     };
-    
+
     //     const data = await QuestionsService.getQuestions(reqData);
     //     if (data.question) {
     //     //   setControlsVisible(false)
@@ -319,12 +331,12 @@ export default function Session({ voice, useLLM, inputMode }) {
     //       }
     //     //   if (data.message) showErrorMessage(data.message);
     //     }
-    
+
     //     if (data.message === "All Lots are completed") {
     //     //   showSuccessMessage("Thank you")
     //     }
     //   };
-    
+
 
     if (!browserSupportsSpeechRecognition) {
         return null
@@ -394,7 +406,7 @@ export default function Session({ voice, useLLM, inputMode }) {
                                                 {/* Todo - Text area */}
                                                 <div style={{ minHeight: "50px" }} className="form-control border-primary p-2 rounded mb-0 bg-white"
                                                     id="chat3" readOnly>
-                                                                                     <AudioRecorder onRecordingComplete={addAudioElement} audioTrackConstraints={{noiseSuppression: true, echoCancellation: true,}} downloadOnSavePress={true} downloadFileExtension="webm"/>
+                                                    <AudioRecorder  onRecordingComplete={addAudioElement} audioTrackConstraints={{ noiseSuppression: true, echoCancellation: true, }} downloadOnSavePress={true} downloadFileExtension="webm" />
 
                                                     <textarea onChange={(e) => setPatientAnswer(e.target.value)}
                                                         disabled={inputMode === "VOICE" && !patientAnswerBox}
@@ -416,10 +428,10 @@ export default function Session({ voice, useLLM, inputMode }) {
                                                             </button>
 
                                                             <button type="button" className="btn btn-danger btn-sm" onClick={() => {
-                                // setHasWarningProvided(false)
-                                submitQuestion(true)
-                              }
-                              }>Discard</button>
+                                                                // setHasWarningProvided(false)
+                                                                submitQuestion(true)
+                                                            }
+                                                            }>Discard</button>
                                                         </>}
                                                 </div>
                                             </div>
@@ -460,7 +472,6 @@ export default function Session({ voice, useLLM, inputMode }) {
                                                         <div className="progress-bar progress-bar-striped progress-bar-animated"
                                                             role="progressbar" aria-valuenow="16" aria-valuemin="0"
                                                             aria-valuemax="100" style={{ width: `${progressBar.percentage}%` }}></div>
-                                                        {console.log(progressBar.percentage)}
                                                     </div>
                                                 </div>
                                             </div>

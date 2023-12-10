@@ -29,7 +29,6 @@ export default function ResponsiveDrawer(props) {
 
   let component
 
-  console.log(activeTab)
   switch (activeTab) {
     case "CORPORATE":
       component = <Corporate />
