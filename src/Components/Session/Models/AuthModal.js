@@ -38,7 +38,7 @@ const LoginForm = ({ open, onClose }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await AuthUserService.loginUser({
+      const response = await AuthUserService.loginCorporateEmployee({
         email: email,
         password: password,
         loginAs: loginAs.toUpperCase(),
@@ -136,12 +136,12 @@ const LoginForm = ({ open, onClose }) => {
         password: password,
         // loginAs: loginAs.toUpperCase(),
       });
-      if (response) {
+      console.log(response)
+      if (response && response.userDetails) {
         showSuccessMessage("Sign Up Successfully");
-        localStorage.setItem("userDetails",JSON.stringify(response.userDetails));
+        localStorage.setItem("userDetails", JSON.stringify({ ...response.userDetails, type: "USER" }));
         window.location.reload();
         onClose();
-
       } else {
         showErrorMessage(response.message);
       }

@@ -20,10 +20,9 @@ export default function MenuListComposition({ userData, viewLoginModal, setViewL
     };
 
     const handleClose = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) {
+        if (event && event.target && anchorRef.current && anchorRef.current.contains(event.target)) {
             return;
         }
-
         setOpen(false);
     };
 

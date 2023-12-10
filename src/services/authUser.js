@@ -5,7 +5,8 @@ import { getAccessToken, getHeaders, getUserId } from "./baseFunctions";
 export default {
     registerNewUser,
     signUpUser,
-    loginUser
+    loginUser,
+    loginCorporateEmployee
 };
 
 
@@ -25,6 +26,20 @@ async function registerNewUser(requestData) {
 
 async function loginUser(requestData) {
     let url = process.env.REACT_APP_API_URI + `/api/user/userLogin`
+    return httpService(httpConstants.METHOD_TYPE.POST, getHeaders(),requestData, url)
+        .then(
+            response => {
+                if (!response)
+                    return Promise.reject(response);
+                return Promise.resolve(response);
+            }
+        ).catch(function (err) {
+            return Promise.reject(err);
+        });
+}
+
+async function loginCorporateEmployee(requestData) {
+    let url = process.env.REACT_APP_API_URI + `/api/user/login`
     return httpService(httpConstants.METHOD_TYPE.POST, getHeaders(),requestData, url)
         .then(
             response => {
