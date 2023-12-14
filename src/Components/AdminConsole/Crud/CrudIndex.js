@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import DataTable from "./dataTable";
 import SetQuestions from "./SetQuestions/setQuestion";
+import LlmAnswer from "./LLMAnswers/llMAnswer";
 import FreeUsers from "./freeUsers/freeUsers";
 import { QuestionsService } from "../../../services";
 import ChiefComplaint from "./Models/ChiefComplaint";
@@ -75,6 +76,9 @@ export default function CrudIndex() {
         case "Chief Complaint":
             content = <ChiefComplaint />;
             break;
+        case "LlmAnswer":
+            content = <LlmAnswer />;
+            break;
         default:
             content = (
                 <DataTable
@@ -109,6 +113,7 @@ export default function CrudIndex() {
                 <BottomNavigationAction value="Questions" label="Questions" icon={<QuestionMarkIcon />} />
                 <BottomNavigationAction value="LOTS" label="LOTS" icon={<ListAltIcon />} />
                 <BottomNavigationAction value="SetQuestions" label="Set Questions" icon={<ListAltIcon />} />
+                <BottomNavigationAction value="LlmAnswer" label="LLM Answers" icon={<ListAltIcon />} />
                 <BottomNavigationAction value="FreeUsers" label="Free User" icon={<MoneyOffIcon />} />
                 <BottomNavigationAction value="Chief Complaint" label="Chief Complaint" icon={<DriveFileRenameOutlineIcon />} />
             </BottomNavigation>

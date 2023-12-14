@@ -8,7 +8,7 @@ import "../../App.css"
 import { decodeToken } from 'react-jwt'
 import { useNavigate } from "react-router-dom";
 
-import { AudioRecorder , useAudioRecorder } from 'react-audio-voice-recorder';
+// import { AudioRecorder , useAudioRecorder } from 'react-audio-voice-recorder';
 
 
 
@@ -57,8 +57,8 @@ export default function Session({ voice, useLLM, inputMode }) {
 
 
 
-    const audioRecorderRef = useRef(<AudioRecorder onRecordingComplete={addAudioElement} audioTrackConstraints={{ noiseSuppression: true, echoCancellation: true, }} downloadOnSavePress={true} downloadFileExtension="webm" />);
-    const [isRecording, setIsRecording] = useState(false);
+    // const audioRecorderRef = useRef(<AudioRecorder onRecordingComplete={addAudioElement} audioTrackConstraints={{ noiseSuppression: true, echoCancellation: true, }} downloadOnSavePress={true} downloadFileExtension="webm" />);
+    // const [isRecording, setIsRecording] = useState(false);
 
     // Audio Recorder
 
@@ -119,29 +119,29 @@ export default function Session({ voice, useLLM, inputMode }) {
 
 
 
-    const {
-        startRecording,
-        stopRecording,
-        recordingBlob
-      } = useAudioRecorder();
+    // const {
+    //     startRecording,
+    //     stopRecording,
+    //     recordingBlob
+    //   } = useAudioRecorder();
 
-      useEffect(() => {
+    //   useEffect(() => {
 
-        if(isRecording) stopRecording()
-        console.log(recordingBlob)
-      }, [isRecording])
+    //     if(isRecording) stopRecording()
+    //     console.log(recordingBlob)
+    //   }, [isRecording])
 
     const startRecordingFn = () => {
-        setTimeout(() => {
-            console.log("HERERERER",audioRecorderRef )
-            setTimeout(() => setIsRecording(false), 3000)
-            startRecording()
-            stopRecordingFn()
-        }, 3000)
+        // setTimeout(() => {
+        //     console.log("HERERERER",audioRecorderRef )
+        //     setTimeout(() => setIsRecording(false), 3000)
+        //     startRecording()
+        //     stopRecordingFn()
+        // }, 3000)
     };
 
     const stopRecordingFn = () => {
-        setTimeout(() => stopRecording , 3000)
+        // setTimeout(() => stopRecording , 3000)
 
     }
 
@@ -251,10 +251,10 @@ export default function Session({ voice, useLLM, inputMode }) {
             console.log("RIGHT ERHEHREHR")
             setTimeout(() => {
                 console.log("HERERERER")
-                if (audioRecorderRef.current) {
-                    audioRecorderRef.current.startRecording();
-                    setIsRecording(true);
-                }
+                // if (audioRecorderRef.current) {
+                //     audioRecorderRef.current.startRecording();
+                //     setIsRecording(true);
+                // }
             }, 3000)
             if (data.message !== "All Lots are completed")
                 submitQuestion()
@@ -406,7 +406,7 @@ export default function Session({ voice, useLLM, inputMode }) {
                                                 {/* Todo - Text area */}
                                                 <div style={{ minHeight: "50px" }} className="form-control border-primary p-2 rounded mb-0 bg-white"
                                                     id="chat3" readOnly>
-                                                    <AudioRecorder  onRecordingComplete={addAudioElement} audioTrackConstraints={{ noiseSuppression: true, echoCancellation: true, }} downloadOnSavePress={true} downloadFileExtension="webm" />
+                                                    {/* <AudioRecorder  onRecordingComplete={addAudioElement} audioTrackConstraints={{ noiseSuppression: true, echoCancellation: true, }} downloadOnSavePress={true} downloadFileExtension="webm" /> */}
 
                                                     <textarea onChange={(e) => setPatientAnswer(e.target.value)}
                                                         disabled={inputMode === "VOICE" && !patientAnswerBox}
