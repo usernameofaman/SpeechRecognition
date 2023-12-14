@@ -4,10 +4,10 @@ import { getAccessToken, getHeaders, getUserId } from "./baseFunctions";
 
 export default {
     addLLMQuestionAnswer,
-    getLlm,
+    getLLMQuestionAnswer,
     };
 
-async function getLlm(requestData) {
+async function getLLMQuestionAnswer(requestData) {
     let url = process.env.REACT_APP_API_URI + `/api/llm-ans`
     return httpService(httpConstants.METHOD_TYPE.GET, getHeaders(), requestData, url)
         .then(

@@ -11,14 +11,15 @@ export default function LLMAnswerForm() {
   ]);
 
   useEffect(() => {
-    getQuestionAnswer();
+    getLLMQuestionAnswer();
   }, []);
 
-  const getQuestionAnswer = async () => {
-    const res = await LlmService.getLlm();
+  const getLLMQuestionAnswer = async () => {
+    const res = await LlmService.getLLMQuestionAnswer();
     if (res && res[0] && res[0].questionAnswers) {
       setQuestionsAnswers(res[0].questionAnswers);
     }
+    console.log(res);
   };
 
   const handleQuestionChange = (index, e) => {
